@@ -120,9 +120,9 @@ function create_diary_control($date, $colors=array()) {
 	$sql="select dy_date, dy_object from ${db_prefix}diary where month(dy_date)=month($sql_date) and year(dy_date)=year($sql_date) group by dy_date order by dy_date";
 
 	//echo $sql;
-	$result=mysql_query($sql, $cs) or die(mysql_error($cs));
+	$result=mysqli_query($cs, $sql) or die(mysqli_error($cs));
 	$rst=array();
-	while($rows=mysql_fetch_array($result)) {
+	while($rows=mysqli_fetch_array($result)) {
 		$rst[]=$rows["dy_date"];
 	}
 
@@ -383,9 +383,9 @@ function create_framed_diary_control($date, $target, $colors=array()) {
 		
 	$sql="select dy_date, dy_object from ${db_prefix}diary where month(dy_date)=month($sql_date) and year(dy_date)=year($sql_date) group by dy_date order by dy_date";
 
-	$result=mysql_query($sql, $cs);
+	$result=mysqli_query($cs, $sql);
 	$rst=array();
-	while($rows=mysql_fetch_array($result)) {
+	while($rows=mysqli_fetch_array($result)) {
 		$rst[]=$rows["dy_date"];
 	}
 
@@ -709,8 +709,8 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 	}
 
 	//echo "$sql<p>";
-	$result = mysql_query($sql, $conn) or die(mysql_error());
-	$num=mysql_num_rows($result);
+	$result = mysqli_query($sql, $conn) or die(mysqli_error());
+	$num=mysqli_num_rows($result);
 	$r=0;
 	$div="";
 	$i=0;
@@ -719,7 +719,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 	$_SESSION["javascript"].="\tvar vdiv$name=eval(document.getElementById(\"div$name\"));\n";
 	$_SESSION["javascript"].="\tvar v$name=eval(document.getElementById(\"$name\"));\n";
 	$_SESSION["javascript"].="\tvar v$tdname0=eval(document.getElementById(\"$tdname0\"));\n";
-	while($rows=mysql_fetch_array($result)) {
+	while($rows=mysqli_fetch_array($result)) {
 		$obj=$rows["dy_object"];
 		$len=$rows["dy_length"];
 		$time=$rows["dy_time"];
@@ -751,7 +751,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 	//Les colonnes auront la largeur définie par ordre d'indexation dans le tableau $col_width.
 	//Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
 	$width_count=count($col_widths);
-	$i=mysql_num_fields($result);
+	$i=mysqli_num_fields($result);
 	if($width_count<$i) {
 		
 		$j=$i-$width_count;
@@ -764,7 +764,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 	$table1="";
 	$table1.="<table id='$name' border='0' cellpadding='1' cellspacing='1' bordercolor='$border_color' width='100%'>\n".
 		"<tr bgcolor='$header_back_color'>\n";
-	//$index_fieldname=mysql_field_name($result, 0);
+	//$index_fieldname=$field->name;
 	for($j=0; $j<2; $j++) {
 		$tag_width="";
 		$tag_width=" width='".$col_widths[$j]."'";
@@ -843,7 +843,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 	
 	$table1.="</table>\n";
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 
 	
 	$table="<div id=\"div$name\" style=\"z-index:1;position:relative;\">\n";

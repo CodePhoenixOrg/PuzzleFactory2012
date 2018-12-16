@@ -64,8 +64,8 @@
 		$mk_fields.="<tr>\n";
 		$options=create_options_from_array($list, ",", 0, 0, array(), $defs[3], false);
 		$mk_fields.="<td><input type='text' size='25' value=\"$defs[0]\"></td>\n";
-		$mk_fields.="<td><input type='text' readonly size='5' value=\"$defs[1]\"></td>\n";
-		$mk_fields.="<td><input type='text' readonly size='5' value=\"$defs[2]\"></td>\n";
+		$mk_fields.="<td><input type='text' readonly size='10' value=\"$defs[1]\"></td>\n";
+		$mk_fields.="<td><input type='text' readonly size='10' value=\"$defs[2]\"></td>\n";
 		//echo "<td><input type='text' readonly size='8' value=\"$defs[3]\"></td>\n";
 		$mk_fields.="<td><select name='$defs[3]'>".$options["list"]."</select></td>\n";
 		$mk_fields.="<td><input type='text' size='5' value=\"$defs[4]\"></td>\n";

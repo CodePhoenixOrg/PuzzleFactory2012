@@ -16,15 +16,15 @@
 		case "Ajouter":
 
 			$sql="select max(sub_id) from subscribers;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$sub_id=$rows[0]+1;
 			$sub_email="";
 		break;
 		case "Modifier":
 			$sql="select * from subscribers where sub_id='$sub_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$sub_id=$rows["sub_id"];
 			$sub_email=$rows["sub_email"];
 		break;
@@ -39,7 +39,7 @@
 				"'$sub_id', ".
 				"'$sub_email'".
 			")";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$sub_id = $_POST["sub_id"];
@@ -48,11 +48,11 @@
 				"sub_id='$sub_id', ".
 				"sub_email='$sub_email' ".
 			"where sub_id='$sub_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from subscribers where sub_id='$sub_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";

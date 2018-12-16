@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  FONCTIONS DECLAREES DANS CE FICHIER
 
+
+ mysqli_field_name($result, $i)
+ mysqli_field_len($result, $i)
+ mysqli_field_type($result, $i)
  est_assigne($valeur="")
  sans_espace($chaine="")
  enquote($valeur="")
@@ -38,8 +42,70 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  tableau_sql($sql="", $page_lien="", $id=0, $index_fieldname="", $image_lien="", $compl_url="", $dialog, $largeurs_cols, $conn)
  fiche_sql($sql="", $page_lien="", $id=0, $index_fieldname="", $image_lien="", $compl_url="", $dialog, $titre, $largeurs_cols, $conn) 
 */
+global $mysqli_types, $mysqli_html_types;
 
+$mysqli_types[1] = "TINYINT";
+$mysqli_types[2] = "SMALLINT";
+$mysqli_types[3] = "INT";
+$mysqli_types[4] = "FLOAT";
+$mysqli_types[5] = "DOUBLE";
+$mysqli_types[7] = "TIMESTAMP";
+$mysqli_types[8] = "BIGINT";
+$mysqli_types[9] = "MEDIUMINT";
+$mysqli_types[10] = "DATE";
+$mysqli_types[11] = "TIME";
+$mysqli_types[12] = "DATETIME";
+$mysqli_types[13] = "YEAR";
+$mysqli_types[16] = "BIT";
+$mysqli_types[246] = "DECIMAL";
+$mysqli_types[252] = "BLOB";
+$mysqli_types[253] = "VARCHAR";
+$mysqli_types[254] = "CHAR";
 
+$mysqli_html_types[1] = "int";
+$mysqli_html_types[2] = "int";
+$mysqli_html_types[3] = "int";
+$mysqli_html_types[4] = "float";
+$mysqli_html_types[5] = "float";
+$mysqli_html_types[7] = "int";
+$mysqli_html_types[8] = "int";
+$mysqli_html_types[9] = "int";
+$mysqli_html_types[10] = "date";
+$mysqli_html_types[11] = "time";
+$mysqli_html_types[12] = "datetime";
+$mysqli_html_types[13] = "year";
+$mysqli_html_types[16] = "int";
+$mysqli_html_types[246] = "float";
+$mysqli_html_types[252] = "blob";
+$mysqli_html_types[253] = "string";
+$mysqli_html_types[254] = "string";
+
+function mysqli_to_string($type) {
+	global $mysqli_types;
+
+	return $mysqli_types[$type];
+}
+
+function mysqli_to_html($type) {
+	global $mysqli_html_types;
+
+	return $mysqli_html_types[$type];
+}
+
+function  mysqli_field_name($result, $i) {
+	$field_info = mysqli_fetch_field_direct($result, $i);
+	return $field_info->name;
+}
+
+function  mysqli_field_len($result, $i) {
+	$field_info = mysqli_fetch_field_direct($result, $i);
+	return $field_info->length;
+}
+
+function  mysqli_field_type($result, $i) {
+	$field_info = mysqli_fetch_field_direct($result, $i);
+	return $field_info->type;
+}
 
 $my_max_file_size    = "102400";    // in bytes 
 $image_max_width    = "300";    // in pixels 
@@ -172,8 +238,8 @@ function sql_options($champ="", $table="", $like="", $orderby="", $defaut="", $d
 			$liste="<OPTION></OPTION>";
 		*/
 		$sql="select $champ from $table$where_field_like$order_by_field";
-		$resultat = mysql_query($sql, $cs);
-		while ($lignes=mysql_fetch_array($resultat)) {
+		$resultat = mysqli_query($cs, $sql);
+		while ($lignes=mysqli_fetch_array($resultat)) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -210,8 +276,8 @@ function options($champ="", $table="", $like="", $orderby="", $defaut="", $defau
 			$liste="<OPTION></OPTION>";
 		*/
 		$sql="select $champ from $table$where_field_like$order_by_field";
-		$resultat = mysql_query($sql);
-		while ($lignes=mysql_fetch_array($resultat)) {
+		$resultat = mysqli_query($cs, $sql);
+		while ($lignes=mysqli_fetch_array($resultat)) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -259,8 +325,8 @@ function sql_options_concat($champ1="", $separe="", $champ2="", $champ, $table="
 
 		//echo "$sql<br>";
 
-		$resultat = mysql_query($sql, $cs);
-		while ($lignes=mysql_fetch_array($resultat)) {
+		$resultat = mysqli_query($cs, $sql);
+		while ($lignes=mysqli_fetch_array($resultat)) {
 			$valeur1=$lignes[0];
 			$separe=$lignes[1];
 			$valeur2=$lignes[2];
@@ -303,8 +369,8 @@ function options_concat($champ1="", $separe="", $champ2="", $champ, $table="", $
 
 		//echo "$sql<br>";
 
-		$resultat = mysql_query($sql);
-		while ($lignes=mysql_fetch_array($resultat)) {
+		$resultat = mysqli_query($cs, $sql);
+		while ($lignes=mysqli_fetch_array($resultat)) {
 			$valeur1=$lignes[0];
 			$separe=$lignes[1];
 			$valeur2=$lignes[2];
@@ -349,8 +415,8 @@ function options_select($champ_id, $valeur_id, $champ="", $index, $table="", $or
 			$liste="<OPTION></OPTION>";
 		*/
 		$sql="select $champ from $table where $champ_id=$valeur_id$where_field_like$order_by_field";
-		$resultat = mysql_query($sql);
-		while ($lignes=mysql_fetch_array($resultat)) {
+		$resultat = mysqli_query($cs, $sql);
+		while ($lignes=mysqli_fetch_array($resultat)) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -385,8 +451,8 @@ function options_sql($sql, $defaut="", $defaut_seulement=false) {
 		else
 			$liste="<OPTION></OPTION>";
 		*/
-		$resultat = mysql_query($sql);
-		while ($lignes=mysql_fetch_array($resultat)) {
+		$resultat = mysqli_query($cs, $sql);
+		while ($lignes=mysqli_fetch_array($resultat)) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -411,8 +477,8 @@ La liste des valeurs est le résultat de la requête SQL passée à $sql.
 function sql_array($sql, $conn) {
 	$liste="";
 
-	$result=mysql_query($sql, $conn);
-	while($rows=mysql_fetch_array($result)) {
+	$result=mysqli_query($sql, $conn);
+	while($rows=mysqli_fetch_array($result)) {
 		$liste.=$rows[0] . ",";
 	}
 
@@ -432,8 +498,8 @@ La liste des valeurs est le résultat de la requête SQL passée à $sql.
 function sql_list($sql, $conn) {
 	$liste="";
 
-	$result=mysql_query($sql, $conn);
-	while($rows=mysql_fetch_array($result)) {
+	$result=mysqli_query($sql, $conn);
+	while($rows=mysqli_fetch_array($result)) {
 		$liste.=$rows[0] . ",";
 	}
 
@@ -678,11 +744,11 @@ function tableau_sql(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -692,9 +758,9 @@ function tableau_sql(
 		
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
-		$index_fieldname=mysql_field_name($resultat, 0);
+		$index_fieldname=mysqli_field_name($resultat, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($resultat, $j);
+			$fieldname=mysqli_field_name($resultat, $j);
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
@@ -702,7 +768,7 @@ function tableau_sql(
 		}
 		echo "</tr>";
 		$r=0;
-		while($rows=mysql_fetch_array($resultat)) {
+		while($rows=mysqli_fetch_array($resultat)) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -712,8 +778,8 @@ function tableau_sql(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -741,7 +807,7 @@ function tableau_sql(
 		}
 		echo "</table>";
 
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	//}
 
 	return $num;
@@ -776,11 +842,11 @@ function tableau_sql_scroll(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -798,9 +864,9 @@ function tableau_sql_scroll(
 		echo "<form method='post' id='form_$name'>";
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
-		$index_fieldname=mysql_field_name($resultat, 0);
+		$index_fieldname=mysqli_field_name($resultat, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($resultat, $j);
+			$fieldname=mysqli_field_name($resultat, $j);
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
@@ -808,7 +874,7 @@ function tableau_sql_scroll(
 		}
 		echo "</tr>";
 		$r=0;
-		while($rows=mysql_fetch_array($resultat)) {
+		while($rows=mysqli_fetch_array($resultat)) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -818,8 +884,8 @@ function tableau_sql_scroll(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -847,7 +913,7 @@ function tableau_sql_scroll(
 		}
 		echo "</table></form></div>";
 
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	//}
 
 	return $num;
@@ -886,11 +952,11 @@ function tableau_sql_supp(
 	}
 
 	
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -906,9 +972,9 @@ function tableau_sql_supp(
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		echo "<td>&nbsp;</td>";
-		$index_fieldname=mysql_field_name($resultat, 0);
+		$index_fieldname=mysqli_field_name($resultat, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($resultat, $j);
+			$fieldname=mysqli_field_name($resultat, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -918,7 +984,7 @@ function tableau_sql_supp(
 		echo "</tr>";
 		$r=0;
 
-		while($rows=mysql_fetch_array($resultat)) {
+		while($rows=mysqli_fetch_array($resultat)) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -928,8 +994,8 @@ function tableau_sql_supp(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -962,7 +1028,7 @@ function tableau_sql_supp(
 			echo "</tr>";
 		}
 		echo "</table>";
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	}
 
 	return $num;
@@ -999,11 +1065,11 @@ function tableau_sql_vue(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1019,9 +1085,9 @@ function tableau_sql_vue(
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		echo "<td>&nbsp;</td>";
-		$index_fieldname=mysql_field_name($resultat, 0);
+		$index_fieldname=mysqli_field_name($resultat, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($resultat, $j);
+			$fieldname=mysqli_field_name($resultat, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1031,7 +1097,7 @@ function tableau_sql_vue(
 		echo "</tr>";
 		$r=0;
 
-		while($rows=mysql_fetch_array($resultat)) {
+		while($rows=mysqli_fetch_array($resultat)) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1041,8 +1107,8 @@ function tableau_sql_vue(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1075,7 +1141,7 @@ function tableau_sql_vue(
 			echo "</tr>";
 		}
 		echo "</table>";
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	//}
 
 	return $num;
@@ -1122,11 +1188,11 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 	$coul_ligne_paire="#BBB7CC";
 	$coul_ligne_impaire="#C6C3D3";
 	
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1143,7 +1209,7 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 		echo "<table border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($resultat, $j);
+			$fieldname=mysqli_field_name($resultat, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1153,7 +1219,7 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 		echo "<td><input type=checkbox name=checkall value=top onClick='return CheckAll(document.$name);'></td>";
 		echo "</tr>";
 		$r=0;
-		while($rows=mysql_fetch_array($resultat)) {
+		while($rows=mysqli_fetch_array($resultat)) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1163,8 +1229,8 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$champ_lien=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1194,7 +1260,7 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 		}
 		echo "</table>";
 		//echo "</form>";
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	//}
 	
 	$js= "<script language=\"JavaScript\">\n";
@@ -1257,11 +1323,11 @@ function tableau_sql_check_2(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1277,9 +1343,9 @@ function tableau_sql_check_2(
 		//echo "<form method='post' name='$name'>";
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
-		$index_fieldname=mysql_field_name($resultat, 0);
+		$index_fieldname=mysqli_field_name($resultat, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($resultat, $j);
+			$fieldname=mysqli_field_name($resultat, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1289,7 +1355,7 @@ function tableau_sql_check_2(
 		echo "<td><input type=checkbox name=checkall value=top onClick='return CheckAll(document.$name);'></td>";
 		echo "</tr>";
 		$r=0;
-		while($rows=mysql_fetch_array($resultat)) {
+		while($rows=mysqli_fetch_array($resultat)) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1299,8 +1365,8 @@ function tableau_sql_check_2(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1330,7 +1396,7 @@ function tableau_sql_check_2(
 		}
 		echo "</table>";
 		//echo "</form>";
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	//}
 	
 	$js= "<script language=\"JavaScript\">\n";
@@ -1378,11 +1444,11 @@ function fiche_sql(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	if($num) {
 		//$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		/*if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1396,8 +1462,8 @@ function fiche_sql(
 		$r=0;
 		$tag_width="";
 		if($largeurs_cols[1]!=0) $tag_width=" width='".$largeurs_cols[1]."'";
-		$index_fieldname=mysql_field_name($resultat, 0);
-		while($rows=mysql_fetch_array($resultat)) {
+		$index_fieldname=mysqli_field_name($resultat, 0);
+		while($rows=mysqli_fetch_array($resultat)) {
 			for($j=0; $j<$i; $j++) {
 			
 				$r++;
@@ -1409,13 +1475,13 @@ function fiche_sql(
 				else
 					$tag_bgcolor=" bgcolor='$coul_ligne_impaire'";
 				
-				$fieldname=mysql_field_name($resultat, $j);
+				$fieldname=mysqli_field_name($resultat, $j);
 
 				if($image_lien!="" && $j==0) $fieldname="<img border='0' src='$image_lien'>";
 				
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1440,7 +1506,7 @@ function fiche_sql(
 			echo "</tr>";
 		}
 		echo "</table>";
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	}
 
 	return $num;
@@ -1533,8 +1599,8 @@ function transfert_excel($sql,$filename,$cs){
 // définir des attributs de mise en forme pour les données : alignement,     //
 // gras, itallique, formats de données, ...                                  //
 // ------------------------------------------------------------------------- //
-define("FORMAT_REEL",   1); // #,##0.00
-define("FORMAT_ENTIER", 2); // #,##0
+define("FORMAT_REEL",   1); // #",##0.00
+define("FORMAT_ENTIER", 2); // #",##0
 define("FORMAT_TEXTE",  3); // @
 $cfg_formats[FORMAT_ENTIER] = "FF0";
 $cfg_formats[FORMAT_REEL]   = "FF2";
@@ -1560,9 +1626,9 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
 //		Array( 'jrn_email','E-mail ',FORMAT_TEXTE,'C',25),
 //	);
  
-	$resultat = mysql_query($sql, $cs);
-	$num = mysql_num_rows($resultat);
-	$nbcol = mysql_num_fields($resultat);
+	$resultat = mysqli_query($cs, $sql);
+	$num = mysqli_num_rows($resultat);
+	$nbcol = mysqli_num_fields($resultat);
 	
 	
 	if ($num > 0)
@@ -1646,7 +1712,7 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
         for ($cpt = 1; $cpt <= $nbcol; $cpt++)
         {
             echo "F;SDM4;FG0C;".($cpt == 1 ? "Y1;" : "")."X".$cpt."\n";
-            echo "C;N;K\"".mysql_field_name($resultat,$cpt-1)."\"\n";
+            echo "C;N;K\"".mysqli_field_name($resultat,$cpt-1)."\"\n";
         }
         echo "\n";
 
@@ -1656,7 +1722,7 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
 		// données
         // --------------------------------------------------------------------
         $ligne = 2;
-        while ($enr = mysql_fetch_array($resultat))
+        while ($enr = mysqli_fetch_array($resultat))
         {
             // parcours des champs
             for ($cpt = 0; $cpt < $nbcol; $cpt++)
@@ -1666,7 +1732,7 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
                 echo ($cpt == 0 ? ";Y".$ligne : "").";X".($cpt+1)."\n";
                 // valeur
                 if ($num_format[$cpt] == FORMAT_TEXTE)
-                    echo "C;N;K\"".str_replace(';', ';;', $enr[$cpt])."\"\n"; // ajout des ""
+                    echo "C;N;K\"".str_replace(';', ';', $enr[$cpt])."\"\n"; // ajout des ""
                 else
                     echo "C;N;K".$enr[$cpt]."\n";
             }
@@ -1688,9 +1754,9 @@ $message="";
 
 
  
-	$resultat = mysql_query($sql, $cs);
-	$num = mysql_num_rows($resultat);
-	$nbcol = mysql_num_fields($resultat);
+	$resultat = mysqli_query($cs, $sql);
+	$num = mysqli_num_rows($resultat);
+	$nbcol = mysqli_num_fields($resultat);
 	
 	
 	if ($num > 0)
@@ -1700,7 +1766,7 @@ $message="";
         for ($cpt = 1; $cpt <= $nbcol; $cpt++)
         {
          
-    	$message=$message.mysql_field_name($resultat,$cpt-1).";";
+    	$message=$message.mysqli_field_name($resultat,$cpt-1).";";
         }
        	$liste="$message\r\n";
 
@@ -1713,7 +1779,7 @@ $message="";
 		// données
         // --------------------------------------------------------------------
         $ligne = 2;
-        while ($enr = mysql_fetch_array($resultat))
+        while ($enr = mysqli_fetch_array($resultat))
         {
             // parcours des champs
 			$message="";
@@ -1748,10 +1814,10 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 
 	if($valide_cases=="OK") {
 		$sql2="update $table set $champ_case=0";
-		mysql_query($sql2, $conn);
+		mysqli_query($sql2, $conn);
 		
 		$sql2="update $table set $champ_case=1 where $champ_ref in ($chklist)";
-		mysql_query($sql2, $conn);
+		mysqli_query($sql2, $conn);
 	}
 	
 	$coul_entete="#DDD7CF";
@@ -1760,11 +1826,11 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 	
 	echo "<form method='post' name='myForm' action='$PHP_SELF'>";
 		
-	$resultat = mysql_query($sql, $conn);
-	$num=mysql_num_rows($resultat);
+	$resultat = mysqli_query($sql, $conn);
+	$num=mysqli_num_rows($resultat);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=mysql_num_fields($resultat);
+		$i=mysqli_num_fields($resultat);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1775,7 +1841,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 		echo "<table border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($resultat, $j);
+			$fieldname=mysqli_field_name($resultat, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1784,7 +1850,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 		}
 		echo "</tr>";
 		$r=0;
-		while($rows=mysql_fetch_array($resultat)) {
+		while($rows=mysqli_fetch_array($resultat)) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1794,8 +1860,8 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=mysql_field_type($resultat, $j);
-				$fieldlen=mysql_field_len($resultat, $j);
+				$fieldtype=mysqli_field_type($resultat, $j);
+				$fieldlen=mysqli_field_len($resultat, $j);
 					
 				$url="$page_lien?id=$id&$champ_lien=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1812,7 +1878,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 						echo "<td$tag_align$tag_width><a href='$url'>$field</a></td>";
 
 				} else {
-					if(mysql_field_name($resultat, $j)==$champ_case) {
+					if(mysqli_field_name($resultat, $j)==$champ_case) {
 						if($rows[$j]==1)
 							$field="<input type='checkbox' value='".$rows[$champ_ref]."' name='cases[]' checked><br>";
 						else
@@ -1830,7 +1896,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 			echo "</tr>";
 		}
 		echo "</table>";
-		mysql_free_result($resultat);
+		mysqli_free_result($resultat);
 	//}
 	echo "<input type='submit' name='valide_cases' value='OK'>";
 	echo "</form>";

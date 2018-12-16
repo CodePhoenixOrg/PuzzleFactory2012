@@ -18,12 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-define(STRING, 0);
-define(PERCENT, 1);
-define(NUMBER, 2);
-define(CURRENCY_USD, 4);
-define(CURRENCY_GBP, 6);
-define(CURRENCY_EUR, 8);
+define("STRING", 0);
+define("PERCENT", 1);
+define("NUMBER", 2);
+define("CURRENCY_USD", 4);
+define("CURRENCY_GBP", 6);
+define("CURRENCY_EUR", 8);
 
 include_once("ipz_db_controls.php");
 	
@@ -488,15 +488,15 @@ function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, 
 		
 /*	unset($ref_list);
 	unset($data_list);
-	$result=mysql_query($sql, $cs);
+	$result=mysqli_query($cs, $sql);
 	
-	$j=mysql_num_fields($result);*/
+	$j=mysqli_num_fields($result);*/
 	
 	$column_names=array();
 	$column_names[0]="Colonne : ".$names[0];
 	$column_names[1]="Ligne : ".$names[1];
 		
-/*	while($rows=mysql_fetch_array($result)) {
+/*	while($rows=mysqli_fetch_array($result)) {
 		$data_list.=$rows[$data_field].",";
 		if($data_field!=$ref_field)
 			$ref_list.=$rows[$ref_field].",";

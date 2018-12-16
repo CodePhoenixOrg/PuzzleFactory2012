@@ -205,8 +205,8 @@
 			$L_sqlFields="";
 			$A_sqlFields=Array();
 			
-			$result = mysql_query($sql, $cs) or die("SQL='$sql'<br>");
-			while($rows=mysql_fetch_array($result)) {
+			$result = mysqli_query($cs, $sql) or die("SQL='$sql'<br>");
+			while($rows=mysqli_fetch_array($result)) {
 				$L_sqlFields.=$rows[0].",";
 			}
 			$L_sqlFields=substr($L_sqlFields, 0, strlen($L_sqlFields)-1);

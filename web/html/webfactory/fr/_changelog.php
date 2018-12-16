@@ -17,8 +17,8 @@
 		case "Ajouter":
 
 			$sql="select max(cl_id) from changelog;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$cl_id=$rows[0]+1;
 			$cl_title="";
 			$cl_text="";
@@ -29,8 +29,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from changelog where cl_id='$cl_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$cl_id=$rows["cl_id"];
 			$cl_title=$rows["cl_title"];
 			$cl_text=$rows["cl_text"];
@@ -60,7 +60,7 @@
 				"'$fr_id', ".
 				"'$mbr_id'".
 			")";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$cl_id = $_POST["cl_id"];
@@ -79,11 +79,11 @@
 				"fr_id='$fr_id', ".
 				"mbr_id='$mbr_id' ".
 			"where cl_id='$cl_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from changelog where cl_id='$cl_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";
@@ -110,7 +110,7 @@ if($query=="SELECT") {
 <tr><td>Rapport n°</td>
 <td><?php   echo $cl_id?></td></tr>
 <tr><td>Date</td>
-<td><?php   echo date_mysql_to_french($cl_date)." ".$cl_time ?></td></tr>
+<td><?php   echo date_mysqli_to_french($cl_date)." ".$cl_time ?></td></tr>
 <tr><td>Intitulé</td>
 <td><input type='text' name='cl_title' value='<?php   echo $cl_title?>' size='80'></td></tr>
 <tr><td>Description *</td>

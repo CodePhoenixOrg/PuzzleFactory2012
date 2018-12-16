@@ -1,6 +1,9 @@
 <center>
 <?php   
 	include_once 'todo_code.php';
+	$td_expiry = date('Y-m-d H:i:s');
+	$td_expiry = date('Y-m-d H:i:s', strtotime($td_expiry . '+31 day'));
+
 	if($query=="SELECT") {
 		//$sql="select td_id, td_title from todo order by td_id";
 		$sql="select td.td_id, concat('<b>', td.td_title, '</b><br>', td.td_text, '<br>') as `tâches`, mb.mbr_ident as 'r&eacute;al.', td.td_status as '&eacute;tat', td.td_priority as 'priorité', td.td_expiry as '&eacute;ch&eacute;ance' from todo as td left outer join members as mb on td.mbr_id2=mb.mbr_id order by td.td_status, td.td_expiry, td.td_priority desc";
@@ -32,7 +35,7 @@
 					<tr>
 						<td>Date</td>
 						<td>
-							<input type='text' name='td_date' value='<?php   echo date('d/m/Y');?>' size='19' readonly>
+							<input type='text' name='td_date' value='<?php   echo date('Y-m-d');?>' size='19' readonly>
 						</td>
 					</tr>
 					<tr>

@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(td_id) from todo;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$td_id=$rows[0]+1;
 			$td_title="";
 			$td_text="";
@@ -30,8 +30,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from todo where td_id='$td_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$td_id=$rows["td_id"];
 			$td_title=$rows["td_title"];
 			$td_text=$rows["td_text"];
@@ -58,7 +58,7 @@
 			$td_title=escapeChars($td_title);
 			$td_text=escapeChars($td_text);
 			$td_status=escapeChars($td_status);
-                        $td_date = date_french_to_mysql($td_date);
+            $td_date = date_french_to_mysql($td_date);
 			$sql="insert into todo (".
 				"td_id, ".
 				"td_title, ".
@@ -80,9 +80,9 @@
 				"'$td_time', ".
 				"$mbr_id".
 			")";
-                        debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+            debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
                         
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$td_id = $_POST["td_id"];
@@ -97,7 +97,7 @@
 			$td_title=escapeChars($td_title);
 			$td_text=escapeChars($td_text);
 			$td_status=escapeChars($td_status);
-                        $td_date = date_french_to_mysql($td_date);
+            $td_date = date_french_to_mysql($td_date);
 			$sql="update todo set ".
 				"td_id=$td_id, ".
 				"td_title='$td_title', ".
@@ -109,11 +109,11 @@
 				"td_time='$td_time', ".
 				"mbr_id=$mbr_id ".
 			"where td_id='$td_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from todo where td_id='$td_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";

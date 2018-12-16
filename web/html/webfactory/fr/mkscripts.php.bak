@@ -23,12 +23,12 @@
 		$database_list=create_options_from_query("show databases", 0, 0, $userdb, false, $cs);
 		$table_list=create_options_from_query("show tables", 0, 0, $table, false, $cs);
 		
-		//Options de départ
+		//Options de dï¿½part
 		$rad_choice=(array) null;
 		if(!isset($choice)) $choice=0;
 		$rad_choice[$choice]=" checked"; 
 		
-		//Options de l'auto-génération
+		//Options de l'auto-gï¿½nï¿½ration
 		$rad_autogen=(array) null;
 		if(!isset($autogen)) $autogen=0;
 		$rad_autogen[$autogen]=" checked"; 
@@ -59,12 +59,12 @@
 		$tab_start="
 		<div id='tab_Start' style='display:inline;visibility:visible;'>
 		<fieldset>
-		<legend>Créer un script, un menu, un bloc ...</legend>
+		<legend>Crï¿½er un script, un menu, un bloc ...</legend>
 		<table border='0' bordercolor='0' width='100%' valign='top' style='display:hidden;'>
 		<tr><td>&nbsp;</td><td>
-		<label><input type='radio'".$rad_choice[0]." name='choice' value='0'>Auto-générer un script à partir d'une table<label><br>
-		<label><input type='radio'".$rad_choice[1]." name='choice' value='1'>Créer une nouvelle entrée de menu</label><br>
-		<label><input type='radio'".$rad_choice[2]." name='choice' value='2'>Créer un nouveau bloc</label>&nbsp;
+		<label><input type='radio'".$rad_choice[0]." name='choice' value='0'>Auto-gï¿½nï¿½rer un script ï¿½ partir d'une table<label><br>
+		<label><input type='radio'".$rad_choice[1]." name='choice' value='1'>Crï¿½er une nouvelle entrï¿½e de menu</label><br>
+		<label><input type='radio'".$rad_choice[2]." name='choice' value='2'>Crï¿½er un nouveau bloc</label>&nbsp;
 		</td><td>&nbsp;</td></tr>
 		<tr><td colspan='2' align='center'>
 		<br><input type='button' name='action' value='Suivant' onClick=''>
@@ -78,19 +78,19 @@
 		$tab_mk_menu="
 		<div id='tab_Menus' style='display:inline;visibility:visible;'>
 		<fieldset>
-		<legend>Créer une entrée de menu à partir d'un script existant</legend>
+		<legend>Crï¿½er une entrï¿½e de menu ï¿½ partir d'un script existant</legend>
 		<table border='0' bordercolor='0' width='100%' valign='top' style='display:hidden;'>
 		<tr><td>
 		$srvdir<br>
 		$srvfiles
 		</td><td>
 		<b>Index de menu :</b><br>
-		<label><input type='radio'".$rad_menu[0]." name='menu' value='0'>Auto-incrémenté</label><br>
+		<label><input type='radio'".$rad_menu[0]." name='menu' value='0'>Auto-incrï¿½mentï¿½</label><br>
 		<label><input type='radio'".$rad_menu[1]." name='menu' value='1'>Choisi</label>&nbsp;
 		<input type='text' name='me_index' value='$me_index' size=3>
 		</td></tr>
 		<tr><td colspan='2' align='center'>
-		<br><input type='submit' name='action' value='Créer' onClick='document.myTabForm.query.value=\"SCRIPT\";document.myTabForm.basedir.value=\"$basedir\"'>
+		<br><input type='submit' name='action' value='Crï¿½er' onClick='document.myTabForm.query.value=\"SCRIPT\";document.myTabForm.basedir.value=\"$basedir\"'>
 		</td></tr>
 		</table>
 		</fieldset>
@@ -101,9 +101,9 @@
 		$tab_mk_script="
 		<div id='tab_Scripts' style='display:inline;visibility:visible;'>
 		<fieldset>
-		<legend>Créer un script à partir d'une table</legend>
+		<legend>Crï¿½er un script ï¿½ partir d'une table</legend>
 		<table border='0' bordercolor='0' width='100%' valign='top' style='display:hidden;'>
-		<tr><td><b>Base de donnée</b></td><td><b>Table</b></td><td></td></tr>
+		<tr><td><b>Base de donnï¿½e</b></td><td><b>Table</b></td><td></td></tr>
 		<tr><td>
 		<select name='userdb' onChange='document.myTabForm.query.value=\"MENU\";document.myTabForm.submit();'>
 		$database_list
@@ -115,7 +115,7 @@
 		</td><td>
 		</td></tr>
 		<tr><td colspan='3'>
-		<b>Type d'auto-génération :</b>
+		<b>Type d'auto-gï¿½nï¿½ration :</b>
 		</td></tr>
 		<tr><td>
 		<label><input type='radio'".$rad_autogen[0]." name='autogen' value='0'>Script+Menu</label>
@@ -128,14 +128,14 @@
 		<b>Index de menu :</b>
 		</td></tr>
 		<tr><td>
-		<label><input type='radio'".$rad_menu2[0]." name='menu2' value='0'>Auto-incrémenté</label>
+		<label><input type='radio'".$rad_menu2[0]." name='menu2' value='0'>Auto-incrï¿½mentï¿½</label>
 		</td><td>
 		<label><input type='radio'".$rad_menu2[1]." name='menu2' value='1'>Choisi</label>&nbsp;
 		<input type='text' name='me_index' value='$me_index' size=3>
 		</td><td>&nbsp;
 		</td></tr>
 		<tr><td colspan='3'>
-		<b>Propriétés du script :</b>
+		<b>Propriï¿½tï¿½s du script :</b>
 		</td></tr>
 		<tr><td>
 		<label><input type='radio'".$rad_props[0]." name='props' value='0'>DB Grid seul</label>
@@ -145,13 +145,13 @@
 		<label><input type='checkbox'$chk_filter name='filter' value='0'>+ Filtre</label>
 		</td></tr>
 		<tr><td colspan='3'>
-		<b>Répertoire du script :</b>
+		<b>Rï¿½pertoire du script :</b>
 		</td></tr>
 		<tr><td colspan='3'>
 		$srvdir
 		</td></tr>
 		<tr><td colspan='3' align='center'>
-		<br><input type='submit' name='action' value='Créer' onClick='document.myTabForm.query.value=\"SCRIPT\";document.myTabForm.basedir.value=\"$basedir\"'>
+		<br><input type='submit' name='action' value='Crï¿½er' onClick='document.myTabForm.query.value=\"SCRIPT\";document.myTabForm.basedir.value=\"$basedir\"'>
 		</td></tr>
 		</table>
 		</fieldset>
@@ -173,18 +173,18 @@
 		$sql_file=array();
 		$sql_file=file("sql/v_menus_drop.sql");
 		$sql = implode ("", $sql_file);
-		$drop=mysql_query($sql, $cs) or die(mysql_error());
+		$drop=mysqli_query($cs, $sql) or die(mysqli_error());
 
 		if($drop) {
 			$sql_file=file("sql/v_menus_create.sql");
 			$sql = implode ("", $sql_file);
-			$create=mysql_query($sql, $cs) or die(mysql_error());
+			$create=mysqli_query($cs, $sql) or die(mysqli_error());
 		}
 		
 		if($create) {
 			$sql_file=file("sql/v_menus_insert.sql");
 			$sql = implode ("", $sql_file);
-			$insert=mysql_query($sql, $cs) or die(mysql_error());
+			$insert=mysqli_query($cs, $sql) or die(mysqli_error());
 		}
 		
 		if($insert) {
@@ -194,7 +194,7 @@
 		
 		$sql = 'delete from v_menus;';
 
-		$result=mysql_query($sql, $cs);
+		$result=mysqli_query($cs, $sql);
 		
 
 		echo $sql;
@@ -214,15 +214,15 @@
 		$siteroot=$filedir;
 		$http_root=get_http_root();
 	
-		if($action="Créer") {
+		if($action="Crï¿½er") {
 			$formname="fiche_$table";
 			$sql="show fields from $table;";
 	
 			$L_sqlFields="";
 			$A_sqlFields=Array();
 			
-			$result = mysql_query($sql, $cs);
-			while($rows=mysql_fetch_array($result)) {
+			$result = mysqli_query($cs, $sql);
+			while($rows=mysqli_fetch_array($result)) {
 				$L_sqlFields.=$rows[0].",";
 			}
 			$L_sqlFields=substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
@@ -253,7 +253,7 @@
 			}
 			
 			$sql="drop table v_menus;";
-			mysql_query($sql, $cs);
+			mysqli_query($cs, $sql);
 			
 			//$pa_filename="$siteroot/$catalog_pa_filename";
 			$pa_filename="$basedir$table.php";
@@ -283,7 +283,7 @@
 			$script_file = null;
 		}
 		echo "<textarea cols='80' rows='20'>$script</textarea><br>\n";
-		echo "Le fichier sera copié dans ce répertoire\n";
+		echo "Le fichier sera copiï¿½ dans ce rï¿½pertoire\n";
 		if(!isset($basedir)) $basedir=$filedir;
 		$onChange="document.scriptForm.query.value=\"SCRIPT\";";
 		$dir_selector=create_server_directory_selector("srvdirs", "scriptForm",$basedir, $onChange);
@@ -291,8 +291,8 @@
 
 		echo "$pa_filename<br>";
 		if(file_exists($pa_filename)) {
-			echo "Attention ! Un fichier portant ce nom existe déjà !<br>";
-			echo "Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?<br>\n";
+			echo "Attention ! Un fichier portant ce nom existe dï¿½jï¿½ !<br>";
+			echo "Voulez-vous ï¿½craser le script actuel sachant que toutes les modifications effectuï¿½es seront perdues ?<br>\n";
 		} else
 			echo "Voulez-vous enregistrer le script ?<br>\n";
 		echo "<input type='submit' name='save' value='Oui'>\n";

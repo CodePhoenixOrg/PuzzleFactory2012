@@ -2,17 +2,17 @@
 <?php    
 	require "openconn.php";
 	dbconnection("connect");
-	mysql_select_db($d);
+	mysqli_select_db($d);
  	$sql=urldecode($q);
-	$result=mysql_query($sql);
+	$result=mysqli_query($cs, $sql);
 	if($result) {
-		$i=mysql_num_fields($result);
+		$i=mysqli_num_fields($result);;
 		$k=0;
 
 		// Get recordset field names
 		$line="";
 		for($j=0; $j<$i; $j++) {
-			$fieldname=mysql_field_name($result, $j);
+			$fieldname=mysqli_field_name($result, $j);
 			if (strpos($fieldname, " ")==0)
 				$line=$line . $fieldname . ",";
 			else
@@ -24,12 +24,12 @@
 		// Get recordset field types
 		$line="";
 		for($j=0; $j<$i; $j++)
-			$line=$line . mysql_field_type($result, $j) . ",";
+			$line=$line . mysqli_field_type($result, $j) . ",";
 		$line=substr($line, 0, strlen($line)-1);
 		echo $line . "\r\n";
 
 		// Get recordset data rows
-		while($rows=mysql_fetch_array($result)) {
+		while($rows=mysqli_fetch_array($result)) {
 			echo $k . "=";
 			$line="";
 			for($j=0; $j<$i; $j++) {
@@ -39,7 +39,7 @@
 			echo $line . "\r\n";
 			$k++;
 		}
-		mysql_free_result($result);
+		mysqli_free_result($result);
 	}
 ?>
 </pre></body></html>

@@ -29,12 +29,12 @@ include_once("ipz_controls.php");
 function get_js_array_from_query($name, $sql, $cs) {
 	$js_array="<script language='JavaScript'>\n";
 
-	$result=mysql_query($sql, $cs);
-	$n=mysql_num_rows($result);
+	$result=mysqli_query($cs, $sql);
+	$n=mysqli_num_rows($result);
 	$i=0;
 	$js_array.="\tvar $name=new Array($n);\n";
 	$js_array.="\t$name"."[$i]=new Array(\"0\", \"\");"."\n";
-	while($rows=mysql_fetch_array($result)) {
+	while($rows=mysqli_fetch_array($result)) {
 		$i++;
 		$js_array.="\t$name"."[$i]=new Array(\"".implode("\",\"", array_unique($rows))."\");"."\n";
 	}
@@ -235,19 +235,18 @@ function get_recordset($sql, $cs) {
 	$types=(array) null;
 	$values=(array) null;
 
-	$result=mysql_query($sql, $cs) or die($sql);
-	$nfields=mysql_num_fields($result);
-	//$nrows=mysql_num_rows($result);
+	$result=mysqli_query($cs, $sql) or die($sql);
+	$nfields=mysqli_num_fields($result);
+	//$nrows=mysqli_num_rows($result);
 	
 	for($i=0;$i<$nfields;$i++) {
-		$names[$i]=mysql_field_name($result, $i);
-	}
-	for($i=0;$i<$nfields;$i++) {
-		$types[$i]=mysql_field_type($result, $i);
+		$field_info = mysqli_fetch_field_direct($result, $i);
+		$names[$i] = $field_info->name;
+		$types[$i] = $field_info->type;
 	}
 	
 	$i=0;
-	while(($rows=mysql_fetch_array($result)) && ($i<256)) {
+	while(($rows=mysqli_fetch_array($result)) && ($i<256)) {
 		$values[$i]=array_unique($rows);
 		$i++;
 	}
@@ -293,10 +292,10 @@ function create_pager_control($userdb="", $page_link="", $sql_query="", $id="", 
 		
 		//echo "SQL='$sql'<br>";
 		//echo "Database='$userdb'<br>";
-		$result=mysql_query($sql, $cs) or die(mysql_error());
-		//$rows=mysql_fetch_array($result);
+		$result=mysqli_query($cs, $sql) or die(mysqli_error());
+		//$rows=mysqli_fetch_array($result);
 		//$pc=$rows[0];
-		$pc=mysql_num_rows($result);
+		$pc=mysqli_num_rows($result);
 		//echo "Count='$pc'<br>";
 	}
 	$min_sr=0;
@@ -399,10 +398,10 @@ function create_enhanced_pager_control($page_link="", $sql_query="", $id="", $lg
 		//echo "SQL='$sql'<br>";
 		//echo "UserDB='$userdb'<br>";
 		//echo "Database='$database'<br>";
-		$result=mysql_query($sql, $cs) or die(mysql_error());
-		//$rows=mysql_fetch_array($result);
+		$result=mysqli_query($cs, $sql) or die(mysqli_error());
+		//$rows=mysqli_fetch_array($result);
 		//$pc=$rows[0];
-		$pc=mysql_num_rows($result);
+		$pc=mysqli_num_rows($result);
 		//echo "Count='$pc'<br>";
 	}
 	$min_sr=0;
@@ -496,7 +495,8 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		global $grid_colors;
 		$color=$grid_colors;
 	}
-	
+	$hidden_fields = '';
+
 	if(!empty($colors)) {
 		$border_color=$colors["border_color"];
 		$header_back_color=$colors["header_back_color"];
@@ -645,8 +645,8 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$pager=$pager_ctrl["pager_ctrl"];
 
 	//echo "sql='$sql'<br>";
-	$result=mysql_query($sql, $cs) or die("Il y a peut-être une erreur dans la requête :<br>$sql<br>");
-	$num=mysql_num_rows($result);
+	$result=mysqli_query($cs, $sql) or die("Il y a peut-être une erreur dans la requête :<br>$sql<br>");
+	$num=mysqli_num_rows($result);
 	
 	//if($num) {
 
@@ -654,7 +654,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	//Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
 	$width_count=count($col_widths);
 
-	$fields_count=mysql_num_fields($result);
+	$fields_count=mysqli_num_fields($result);
 	$cols=$fields_count;
 	if($width_count<$fields_count) {
 		
@@ -680,18 +680,18 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$filter_button="";
 	}
 		
-	$index_fieldname=mysql_field_name($result, 0);
+	$index_fieldname=mysqli_field_name($result, 0);
 	$k=0;
 	$javascript="";	
 	for($j=0; $j<$fields_count; $j++) {
-		$fieldname=mysql_field_name($result, $j);
+		$fieldname=mysqli_field_name($result, $j);
 		if($fieldname==$web_field && $is_url===false) {
 			$cols--;
 		} else {
 			if($can_filter && $fields_count>1 && $j==0) {
 				//nop;
 			} else if($can_filter) {
-				if($criterions[$k]=="") $criterions[$k]="*";
+				if(!isset($criterions[$k])) $criterions[$k]="*";
 				$filters.="<td id='crit_td$k' bgcolor='$pager_color'><input id='crit_inp$k' type='text' name='criterions[$k]' value='".$criterions[$k]."' size='10'></td>\n";
 				$javascript.="\tvar critinp$k=eval(document.getElementById(\"crit_inp$k\"));\n\tvar crittd$k=eval(document.getElementById(\"crit_td$k\"));\n\tcritinp$k.style.width=crittd$k.offsetWidth+\"px\";\n";
 			}
@@ -716,7 +716,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</tr>\n";
 	$r=0;
 	$i=$fields_count;
-	while($rows=mysql_fetch_array($result)) {
+	while($rows=mysqli_fetch_array($result)) {
 		$on_mouse_over="";
 		$on_mouse_out="";
 	
@@ -739,7 +739,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		
 		if(!empty($acompl_url)) {
 			for($j=0; $j<$i; $j++) {
-				$fieldname=mysql_field_name($result, $j);
+				$fieldname=mysqli_field_name($result, $j);
 				$sharpname="#".$fieldname;
 				if(isset($acompl_url[$sharpname])) {
 					$curl_rows.="&".$acompl_url[$sharpname]."=".$rows[$fieldname];
@@ -789,13 +789,13 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$url="";
 		for($j=0; $j<$i; $j++) {
 							
-			$fieldname=mysql_field_name($result, $j);
+			$fieldname=mysqli_field_name($result, $j);
 			if($fieldname==$web_field && $is_url===false) {
 				//nop
 			} else {
 			
-				$fieldtype=mysql_field_type($result, $j);
-				$fieldlen=mysql_field_len($result, $j);
+				$fieldtype=mysqli_field_type($result, $j);
+				$fieldlen=mysqli_field_len($result, $j);
 
 				$field=$rows[$j];	
 					
@@ -833,7 +833,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$rows=array();
 		$rows[0]="0";
 		$rows[1]="($add)";
-		for($i=2; $i<mysql_num_fields($result); $i++) {
+		for($i=2; $i<mysqli_num_fields($result); $i++) {
 			$rows[$i]="...";
 		}
 		
@@ -866,7 +866,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$table.="<tr id='$name$r' bgcolor='$back_color' onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
 		for($j=0; $j<$i; $j++) {
 							
-			$fieldname=mysql_field_name($result, $j);
+			$fieldname=mysqli_field_name($result, $j);
 			if($fieldname==$web_field && $is_url===false) {
 				if($rows[$j]=="(Ajouter)" && $rows[$j+1]=="...")
 					$rows[$j+1]=$rows[$j];
@@ -897,7 +897,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 			$table.="<tr bgcolor='$pager_color'>\n";
 			$table.="<td><img border='0' src='$img/edit_bw.png'></td>";
 			for($j=1; $j<$i; $j++) {
-				$fieldname=mysql_field_name($result, $j);
+				$fieldname=mysqli_field_name($result, $j);
 				if($fieldname==$web_field && $is_url===false) {
 					//nop
 				} else {
@@ -913,7 +913,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</table>\n";
 	if($javascript) $_SESSION["javascript"].=$javascript;
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 
 	return $table;
 }
@@ -1065,15 +1065,15 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$pager=$pager_ctrl["pager_ctrl"];
 
 	//echo "sql='$sql'<br>";
-	$result=mysql_query($sql, $cs) or die(mysql_error());
-	$num=mysql_num_rows($result);
+	$result=mysqli_query($cs, $sql) or die(mysqli_error());
+	$num=mysqli_num_rows($result);
 	
 	//if($num) {
 
 	//Les colonnes auront la largeur définie par ordre d'indexation dans le tableau $col_width.
 	//Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
 	$width_count=count($col_widths);
-	$fields_count=mysql_num_fields($result);
+	$fields_count=mysqli_num_fields($result);
 	$cols=$fields_count;
 	if($width_count<$fields_count) {
 		
@@ -1095,14 +1095,14 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$filter_button="";
 	}
 		
-	$index_fieldname=mysql_field_name($result, 0);
+	$index_fieldname=mysqli_field_name($result, 0);
 	$k=0;
 	$javascript="";	
 	$tag_width=" width='100'";
 	$table.="<td align='center'$tag_width><font color='$header_fore_color'><b>image<b></font></td>\n";
 	for($j=0; $j<$fields_count; $j++) {
 		
-		$fieldname=mysql_field_name($result, $j);
+		$fieldname=mysqli_field_name($result, $j);
 		if($fieldname==$web_field && $is_url===false) {
 			$cols--;
 		} else {
@@ -1137,7 +1137,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</tr>\n";
 	$r=0;
 	$i=$fields_count;
-	while($rows=mysql_fetch_array($result)) {
+	while($rows=mysqli_fetch_array($result)) {
 		$on_mouse_over="";
 		$on_mouse_out="";
 		$al_id=$rows["al_id"];
@@ -1161,7 +1161,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		
 		if(!empty($acompl_url)) {
 			for($j=0; $j<$i; $j++) {
-				$fieldname=mysql_field_name($result, $j);
+				$fieldname=mysqli_field_name($result, $j);
 				$sharpname="#".$fieldname;
 				if($acompl_url[$sharpname]!="") {
 					$curl_rows.="&".$acompl_url[$sharpname]."=".$rows[$fieldname];
@@ -1220,14 +1220,14 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		if($r==0) $table.="<td rowspan='$rowspan' width='100' valign='top'><img id='thumbnail' width='100'></td>";
 		for($j=0; $j<$i; $j++) {
 			
-			$fieldname=mysql_field_name($result, $j);
+			$fieldname=mysqli_field_name($result, $j);
 			if($fieldname==$web_field && $is_url===false) {
 				//nop
 			} else {
 				if($fieldname!="al_id") {
 			
-				$fieldtype=mysql_field_type($result, $j);
-				$fieldlen=mysql_field_len($result, $j);
+				$fieldtype=mysqli_field_type($result, $j);
+				$fieldlen=mysqli_field_len($result, $j);
 
 				$field=$rows[$j];	
 					
@@ -1261,7 +1261,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$rows=array();
 		$rows[0]="0";
 		$rows[1]="($add)";
-		for($i=2; $i<mysql_num_fields($result); $i++) {
+		for($i=2; $i<mysqli_num_fields($result); $i++) {
 			$rows[$i]="...";
 		}
 		
@@ -1294,7 +1294,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$table.="<tr id='$name$r' bgcolor='$back_color' onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
 		for($j=0; $j<$i; $j++) {
 							
-			$fieldname=mysql_field_name($result, $j);
+			$fieldname=mysqli_field_name($result, $j);
 			if($fieldname==$web_field && $is_url===false) {
 				if($rows[$j]=="(Ajouter)" && $rows[$j+1]=="...")
 					$rows[$j+1]=$rows[$j];
@@ -1326,7 +1326,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 			$table.="<tr bgcolor='$pager_color'>\n";
 			$table.="<td><img border='0' src='$img/edit_bw.png'></td>";
 			for($j=1; $j<$i; $j++) {
-				$fieldname=mysql_field_name($result, $j);
+				$fieldname=mysqli_field_name($result, $j);
 				if($fieldname==$web_field && $is_url===false) {
 					//nop
 				} else {
@@ -1344,7 +1344,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</table>\n";
 	if($javascript) $_SESSION["javascript"].=$javascript;
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 
 	return $table;
 }
@@ -1426,14 +1426,14 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 	}
 
 	//echo "SQL='$sql'<br>";
-	$result = mysql_query($sql, $cs) or die(mysql_error());
-	$num=mysql_num_rows($result);
+	$result = mysqli_query($cs, $sql) or die(mysqli_error());
+	$num=mysqli_num_rows($result);
 	//if($num) {
 
 	//Les colonnes auront la largeur définie par ordre d'indexation dans le tableau $col_width.
 	//Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
 	$width_count=count($col_widths);
-	$i=mysql_num_fields($result);
+	$i=mysqli_num_fields($result);
 	if($width_count<$i) {
 		
 		$j=$i-$width_count;
@@ -1444,9 +1444,9 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 	$table="";
 	$table.="<table id='$name' border='0' cellpadding='2' cellspacing='1' bordercolor='$border_color'>\n".
 		"<tr bgcolor='$header_back_color'>\n";
-	$index_fieldname=mysql_field_name($result, 0);
+	$index_fieldname=mysqli_field_name($result, 0);
 	for($j=0; $j<$i; $j++) {
-		$fieldname=mysql_field_name($result, $j);
+		$fieldname=mysqli_field_name($result, $j);
 		if($fieldname==$web_field && $is_url===false) {
 			//nop
 		} else {
@@ -1458,7 +1458,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 	}
 	$table.="</tr>\n";
 	$r=0;
-	while($rows=mysql_fetch_array($result)) {
+	while($rows=mysqli_fetch_array($result)) {
 		$on_mouse_over="";
 		$on_mouse_out="";
 	
@@ -1481,7 +1481,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 		
 		if(!empty($acompl_url)) {
 			for($j=0; $j<$i; $j++) {
-				$fieldname=mysql_field_name($result, $j);
+				$fieldname=mysqli_field_name($result, $j);
 				$sharpname="#".$fieldname;
 				if($acompl_url[$sharpname]!="") {
 					$curl_rows.="&".$acompl_url[$sharpname]."=".$rows[$fieldname];
@@ -1530,13 +1530,13 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 		$table.="<tr id='$name$r' bgcolor='$back_color'$js_events";
 		for($j=0; $j<$i; $j++) {
 							
-			$fieldname=mysql_field_name($result, $j);
+			$fieldname=mysqli_field_name($result, $j);
 			if($fieldname==$web_field && $is_url===false) {
 				//nop
 			} else {
 			
-				$fieldtype=mysql_field_type($result, $j);
-				$fieldlen=mysql_field_len($result, $j);
+				$fieldtype=mysqli_field_type($result, $j);
+				$fieldlen=mysqli_field_len($result, $j);
 
 				$field=$rows[$j];	
 					
@@ -1568,7 +1568,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 		$rows=array();
 		$rows[0]="0";
 		$rows[1]="($add)";
-		for($i=2; $i<mysql_num_fields($result); $i++) {
+		for($i=2; $i<mysqli_num_fields($result); $i++) {
 			$rows[$i]="...";
 		}
 		
@@ -1601,7 +1601,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 		$table.="<tr id='$name$r' bgcolor='$back_color' onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\">";
 		for($j=0; $j<$i; $j++) {
 							
-			$fieldname=mysql_field_name($result, $j);
+			$fieldname=mysqli_field_name($result, $j);
 			if($fieldname==$web_field && $is_url===false) {
 				if($rows[$j]=="(Ajouter)" && $rows[$j+1]=="...")
 					$rows[$j+1]=$rows[$j];
@@ -1632,7 +1632,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 			$table.="<tr bgcolor='$pager_color'>\n";
 			$table.="<td><img border='0' src='$img/edit_bw.png'></td>";
 			for($j=1; $j<$i; $j++) {
-				$fieldname=mysql_field_name($result, $j);
+				$fieldname=mysqli_field_name($result, $j);
 				if($fieldname==$web_field && $is_url===false) {
 					//nop
 				} else {
@@ -1645,7 +1645,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 	
 	$table.="</table>\n";
 
-	mysql_free_result($result);
+	mysqli_free_result($result);
 
 	return $table;
 }
@@ -1666,8 +1666,8 @@ function create_options_from_table($index_field="", $option_field="", $table="",
 	if(!$only_default) {
 		$sql="select $index_field, $option_field from $table$where_field_like$order_by_field";
 		//echo "sql='$sql'<br>";
-		$result = mysql_query($sql, $cs);
-		while ($rows=mysql_fetch_array($result)) {
+		$result = mysqli_query($cs, $sql);
+		while ($rows=mysqli_fetch_array($result)) {
 			$value=$rows[$index_field];
 			$option=$rows[$option_field];
 			//$option=strtoupper($option);
@@ -1685,8 +1685,8 @@ function create_options_from_table($index_field="", $option_field="", $table="",
 		$sql="select $index_field, $option_field from $table$where_field_like$order_by_field";
 		//echo "$sql<br>";
 		
-		$result = mysql_query($sql, $cs);
-		while ($rows=mysql_fetch_array($result)) {
+		$result = mysqli_query($cs, $sql);
+		while ($rows=mysqli_fetch_array($result)) {
 			$value=$rows[$index_field];
 			$option=$rows[$option_field];
 			$list.="<OPTION SELECTED VALUE=\"$value\" LABEL=\"$option\">$option</OPTION>\n";
@@ -1714,8 +1714,8 @@ function create_options_from_query($sql="", $value_col=0, $option_col=0, $select
 	*/
 	if(!$only_default) {
 		$list.="<OPTION SELECTED VALUE=\"0\">".$PZ_ZERO_SELECT."</OPTION>\n";
-		$result = mysql_query($sql, $cs);
-		while ($rows=mysql_fetch_array($result)) {
+		$result = mysqli_query($cs, $sql);
+		while ($rows=mysqli_fetch_array($result)) {
 			$value=$rows[$value_col];
 			$option=$rows[$option_col];
 			if(!empty($selected)) {
@@ -1733,8 +1733,8 @@ function create_options_from_query($sql="", $value_col=0, $option_col=0, $select
 		$value_field=$fields[$value_col];
 		$sql=insert_test($sql, $value_field, $default, "=", true);
 		
-		$result = mysql_query($sql, $cs);
-		while ($rows=mysql_fetch_array($result)) {
+		$result = mysqli_query($cs, $sql);
+		while ($rows=mysqli_fetch_array($result)) {
 			$value=$rows[$value_col];
 			$option=$rows[$option_col];
 			$list.="<OPTION SELECTED VALUE=\"$value\">$option</OPTION>\n";

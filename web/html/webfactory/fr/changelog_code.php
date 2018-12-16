@@ -1,6 +1,6 @@
-<?php    
-	include_once 'puzzle/ipz_mysqlconn.php';
-	include_once 'puzzle/ipz_db_controls.php';
+<?php   
+	include_once("puzzle/ipz_mysqlconn.php");
+	include_once("puzzle/ipz_db_controls.php");
 	$cs=connection(CONNECT,$database);
 	$query = get_variable("query");
 	$event = get_variable("event");
@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(cl_id) from changelog;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$cl_id=$rows[0]+1;
 			$cl_title="";
 			$cl_text="";
@@ -28,8 +28,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from changelog where cl_id='$cl_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$cl_id=$rows["cl_id"];
 			$cl_title=$rows["cl_title"];
 			$cl_text=$rows["cl_text"];
@@ -49,9 +49,7 @@
 			$cl_time = $_POST["cl_time"];
 			$fr_id = $_POST["fr_id"];
 			$mbr_id = $_POST["mbr_id"];
-			$cl_title=escapeChars($cl_title);
-			$cl_text=escapeChars($cl_text);
-                        $cl_date = date_french_to_mysql($cl_date);
+;
 			$sql="insert into changelog (".
 				"cl_id, ".
 				"cl_title, ".
@@ -61,16 +59,15 @@
 				"fr_id, ".
 				"mbr_id".
 			") values (".
-				"$cl_id, ".
+				"'$cl_id', ".
 				"'$cl_title', ".
 				"'$cl_text', ".
 				"'$cl_date', ".
 				"'$cl_time', ".
-				"$fr_id, ".
-				"$mbr_id".
+				"'$fr_id', ".
+				"'$mbr_id'".
 			")";
-                        debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$cl_id = $_POST["cl_id"];
@@ -80,23 +77,21 @@
 			$cl_time = $_POST["cl_time"];
 			$fr_id = $_POST["fr_id"];
 			$mbr_id = $_POST["mbr_id"];
-			$cl_title=escapeChars($cl_title);
-			$cl_text=escapeChars($cl_text);
-                        $cl_date = date_french_to_mysql($cl_date);
+;
 			$sql="update changelog set ".
-				"cl_id=$cl_id, ".
+				"cl_id='$cl_id', ".
 				"cl_title='$cl_title', ".
 				"cl_text='$cl_text', ".
 				"cl_date='$cl_date', ".
 				"cl_time='$cl_time', ".
-				"fr_id=$fr_id, ".
-				"mbr_id=$mbr_id ".
+				"fr_id='$fr_id', ".
+				"mbr_id='$mbr_id' ".
 			"where cl_id='$cl_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from changelog where cl_id='$cl_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";

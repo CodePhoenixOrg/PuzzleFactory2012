@@ -12,8 +12,8 @@
 		case "Ajouter":
 
 			$sql="select max(br_id) from bugreport;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$br_id=$rows[0]+1;
 			$br_title="";
 			$br_text="";
@@ -25,8 +25,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from bugreport where br_id='$br_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$br_id=$rows["br_id"];
 			$br_title=$rows["br_title"];
 			$br_text=$rows["br_text"];
@@ -61,7 +61,7 @@
 				"'$br_time', ".
 				"'$mbr_id'".
 			")";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$sql="update bugreport set ".
@@ -74,11 +74,11 @@
 				"br_time='$br_time', ".
 				"mbr_id='$mbr_id' ".
 			"where br_id='$br_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from bugreport where br_id='$br_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";
@@ -105,7 +105,7 @@ if($query=="SELECT") {
 <tr><td>Bug n°</td>
 <td><?php   echo $br_id?></td></tr>
 <tr><td>Date</td>
-<td><?php   echo date_mysql_to_french($br_date)." ".$br_time ?></td></tr>
+<td><?php   echo date_mysqli_to_french($br_date)." ".$br_time ?></td></tr>
 <tr><td>Rapporté par</td>
 <td><select name='mbr_id'>
 <?php   $options=options_concat("mbr_id", " | ", "mbr_nom", "mbr_id", "members", "", "mbr_id", $mbr_id, false);

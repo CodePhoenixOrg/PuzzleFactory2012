@@ -16,16 +16,16 @@
 		case "Ajouter":
 
 			$sql="select max(pa_id) from pages;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$pa_id=$rows[0]+1;
 			$di_name="";
 			$pa_filename="";
 		break;
 		case "Modifier":
 			$sql="select * from pages where pa_id='$pa_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$pa_id=$rows["pa_id"];
 			$di_name=$rows["di_name"];
 			$pa_filename=$rows["pa_filename"];
@@ -43,7 +43,7 @@
 				"'$di_name', ".
 				"'$pa_filename'".
 			")";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$pa_id = $_POST["pa_id"];
@@ -54,11 +54,11 @@
 				"di_name='$di_name', ".
 				"pa_filename='$pa_filename' ".
 			"where pa_id='$pa_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from pages where pa_id='$pa_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";

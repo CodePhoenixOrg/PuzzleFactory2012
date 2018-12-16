@@ -4,15 +4,15 @@ function dbconnection($a="") {
 	$user="root";
 	$passwd="root";
 		if($a=="connect") {
-		$myconn=mysql_pconnect($host, $user, $passwd);
+		$myconn=mysqli_pconnect($host, $user, $passwd);
 			if($myconn) {
 				echo "succeeded\r\n";
 			} else {
 				echo "failed\r\n";
 			}
 		} else if($a=="disconnect") {
-			$myconn=mysql_pconnect($host, $user, $passwd);
-			mysql_close($myconn);
+			$myconn=mysqli_pconnect($host, $user, $passwd);
+			mysqli_close($myconn);
 		}
 	}
 ?>

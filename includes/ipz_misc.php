@@ -139,13 +139,13 @@ function get_days_delta($recent_date, $old_date) {
 				
 function date_mysql_to_french($date) {
 	if(strlen($date) > 10) $date = substr($date, 0, 10);
-	$date = ereg_replace('^([0-9]{2,4})-([0-9]{1,2})-([0-9]{1,2})$', '\3/\2/\1', $date);
+	$date = preg_replace('^([0-9]{2,4})-([0-9]{1,2})-([0-9]{1,2})$', '\3/\2/\1', $date);
 
 	return $date;
 }
 
 function date_french_to_mysql($date) {
-	$date = ereg_replace('^([0-9]{1,2})/([0-9]{1,2})/([0-9]{2,4})$', '\3-\2-\1', $date);
+	$date = preg_replace('^([0-9]{1,2})/([0-9]{1,2})/([0-9]{2,4})$', '\3-\2-\1', $date);
 
 	return $date;
 }
@@ -310,15 +310,15 @@ function raise_error($message, $action, $on_click) {
 	if($on_click!='') $on_click=" onClick=\"$on_click\"";
 ?>
 <center>
-<form method='POST' name='errorForm' action='<?php   echo $action?>'>
-<table border='1' bordercolor='<?php   echo $panel_colors["border_color"]?>' cellpadding='0' cellspacing='0' witdh='100%' height='1'><tr><td align='center' valign='top' bgcolor='<?php   echo $panel_colors["back_color"]?>'>
+<form method='POST' name='errorForm' action='<?php echo $action?>'>
+<table border='1' bordercolor='<?php echo $panel_colors["border_color"]?>' cellpadding='0' cellspacing='0' witdh='100%' height='1'><tr><td align='center' valign='top' bgcolor='<?php echo $panel_colors["back_color"]?>'>
 <table border="0" cellpadding="20">
     <tr>
       <td align="center">
         <?php   
 	echo 'ERREUR<br>'.$message;
 	?><br><br>
-        <input type="submit" name="action" value="OK"<?php   echo $on_click?>><br>
+        <input type="submit" name="action" value="OK"<?php echo $on_click?>><br>
       </td>
     </tr>
 </table>
@@ -335,15 +335,15 @@ function msg_box($message, $action, $on_click) {
 	if($on_click!='') $on_click=" onClick=\"$on_click\"";
 ?>
 <center>
-<form method='POST' name='msgForm' action='<?php   echo $action?>'>
-<table border='1' bordercolor='<?php   echo $panel_colors["border_color"]?>' cellpadding='0' cellspacing='0' witdh='100%' height='1'><tr><td align='center' valign='top' bgcolor='<?php   echo $panel_colors["back_color"]?>'>
+<form method='POST' name='msgForm' action='<?php echo $action?>'>
+<table border='1' bordercolor='<?php echo $panel_colors["border_color"]?>' cellpadding='0' cellspacing='0' witdh='100%' height='1'><tr><td align='center' valign='top' bgcolor='<?php echo $panel_colors["back_color"]?>'>
 <table border="0" cellpadding="20">
     <tr>
       <td align="center">
         <?php   
 	echo $message;
 	?><br><br>
-        <input type="submit" name="action" value="OK"<?php   echo $on_click?>><br>
+        <input type="submit" name="action" value="OK"<?php echo $on_click?>><br>
       </td>
     </tr>
 </table>

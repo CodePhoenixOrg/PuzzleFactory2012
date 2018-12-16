@@ -12,8 +12,8 @@
 		case "Ajouter":
 
 			$sql="select max(td_id) from todo;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$td_id=$rows[0]+1;
 			$td_title="";
 			$td_text="";
@@ -27,8 +27,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from todo where td_id='$td_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$td_id=$rows["td_id"];
 			$td_title=$rows["td_title"];
 			$td_text=$rows["td_text"];
@@ -69,7 +69,7 @@
 				"'$mbr_id', ".
 				"'$mbr_id'".
 			")";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$sql="update todo set ".
@@ -84,11 +84,11 @@
 				"mbr_id='$mbr_id', ".
 				"mbr_id2='$mbr_id2' ".
 			"where td_id='$td_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from todo where td_id='$td_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";
@@ -115,7 +115,7 @@ if($query=="SELECT") {
 <tr><td>Tâche n°</td>
 <td><?php   echo $td_id?></td></tr>
 <tr><td>Date</td>
-<td><?php   echo date_mysql_to_french($td_date)." ".$td_time ?></td></tr>
+<td><?php   echo date_mysqli_to_french($td_date)." ".$td_time ?></td></tr>
 <tr><td>Demandée par</td>
 <td><select name='mbr_id'>
 <?php   $options=options_concat("mbr_id", " | ", "mbr_nom", "mbr_id", "members", "", "mbr_id", $mbr_id, false);

@@ -1,6 +1,6 @@
 <?php
-define(CONNECT, "connect");
-define(DISCONNECT, "disconnect");
+define("CONNECT", "connect");
+define("DISCONNECT", "disconnect");
 
 function connection($c="", $d="") { 
 	$host="mysql";
@@ -8,11 +8,11 @@ function connection($c="", $d="") {
 	$passwd="demo";
 	$dbname=$d;
 
-	$myconn=mysql_pconnect($host, $user, $passwd) or die("Connection failed");
+	$myconn=mysqli_connect($host, $user, $passwd) or die("Connection failed");
 	if($c=="connect") 
-		mysql_select_db($dbname, $myconn);
+		mysqli_select_db($myconn, $dbname);
 	else if($c=="disconnect") 
-		mysql_close($myconn);
+		mysqli_close($myconn);
 	
 	return $myconn;
 }

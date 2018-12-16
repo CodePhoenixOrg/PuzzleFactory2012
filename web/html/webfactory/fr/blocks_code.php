@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(bl_id) from blocks;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$bl_id=$rows[0]+1;
 			$bl_column="";
 			$bl_type="";
@@ -25,8 +25,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from blocks where bl_id='$bl_id';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$bl_id=$rows["bl_id"];
 			$bl_column=$rows["bl_column"];
 			$bl_type=$rows["bl_type"];
@@ -47,7 +47,7 @@
 				"'$bl_type', ".
 				"'$di_name'".
 			")";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$bl_id = $_POST["bl_id"];
@@ -60,11 +60,11 @@
 				"bl_type='$bl_type', ".
 				"di_name='$di_name' ".
 			"where bl_id='$bl_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from blocks where bl_id='$bl_id'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";

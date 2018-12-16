@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(di_name) from dictionary;";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$di_name=$rows[0]+1;
 			$di_fr_short="";
 			$di_fr_long="";
@@ -28,8 +28,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from dictionary where di_name='$di_name';";
-			$result = mysql_query($sql, $cs);
-			$rows = mysql_fetch_array($result);
+			$result = mysqli_query($cs, $sql);
+			$rows = mysqli_fetch_array($result);
 			$di_name=$rows["di_name"];
 			$di_fr_short=$rows["di_fr_short"];
 			$di_fr_long=$rows["di_fr_long"];
@@ -59,7 +59,7 @@
 				"'$di_ru_short', ".
 				"'$di_ru_long'".
 			")";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Modifier":
 			$di_name = $_POST["di_name"];
@@ -78,11 +78,11 @@
 				"di_ru_short='$di_ru_short', ".
 				"di_ru_long='$di_ru_long' ".
 			"where di_name='$di_name'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		case "Supprimer":
 			$sql="delete from dictionary where di_name='$di_name'";
-			$result = mysql_query($sql, $cs);
+			$result = mysqli_query($cs, $sql);
 		break;
 		}
 		$query="SELECT";

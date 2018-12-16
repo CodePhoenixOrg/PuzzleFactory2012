@@ -20,8 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 include_once("ipz_menus.php");
 
-define(FRAME, true);
-define(NO_FRAME, false);
+define("FRAME", true);
+define("NO_FRAME", false);
 
 function make_catalog(
 	$database="", 
@@ -44,7 +44,7 @@ function make_catalog(
 	$script.="?>\n";
 	/*
 	if($with_frames)
-		$script.="\t<form method='POST' name='$formname' action='<?php   echo \$lg?>/$catalog_page?id=$catalog&lg=fr'>\n";
+		$script.="\t<form method='POST' name='$formname' action='<?php echo \$lg?>/$catalog_page?id=$catalog&lg=fr'>\n";
 	else if(!$with_frames)
 		$script.="\t<form method='POST' name='$formname' action='page.php?id=$catalog&lg=fr'>\n";
 	$script.="\t<table width='100%' height='100%'>\n";
@@ -69,7 +69,7 @@ function make_catalog(
 	$script.="\t\t\$cs=connection(\"disconnect\",\"$database\");\n";
 
 	if($with_frames) 
-		$script.="\t\techo \"<script language='JavaScript'>window.location.href='<?php   echo \$lg?>/$editor_page?id=$editor&action=Ajouter'</script>\";\n";
+		$script.="\t\techo \"<script language='JavaScript'>window.location.href='<?php echo \$lg?>/$editor_page?id=$editor&action=Ajouter'</script>\";\n";
 	else if(!$with_frames)
 		$script.="\t\techo \"<script language='JavaScript'>window.location.href='page.php?id=$editor&action=Ajouter'</script>\";\n";
 	$script.="\t} else if(\$event==\"onUnload\") {\n";
@@ -78,7 +78,7 @@ function make_catalog(
 	$script.="\t}\n";
 	$script.="?>\n";
 	$script.="\t\t\t</td></tr>\n<tr>\n\t\t\t\t<input type='hidden' name='event' value=''>\n";
-	$script.="\t\t\t\t<td><input type='submit' name='action' value='<?php   echo \$action?>' onClick='return runForm();'></td>\n";
+	$script.="\t\t\t\t<td><input type='submit' name='action' value='<?php echo \$action?>' onClick='return runForm();'></td>\n";
 	$script.="\t\t\t\t<td><input type='submit' name='action' value='Fermer' onClick='return unloadForm();'></td>\n";
 	$script.="\t\t\t</tr></table>\n";
 	$script.="\t\t</td></tr></table>\n";
@@ -115,8 +115,8 @@ function make_editor(
 		if ($i==0) {
 			$indexfield=$fieldname;
 			$script.="\t\t\t\$sql=\"select max($fieldname) from $table;\";\n";
-			$script.="\t\t\t\$result = mysql_query(\$sql, \$cs);\n";
-			$script.="\t\t\t\$rows = mysql_fetch_array(\$result);\n";
+			$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
+			$script.="\t\t\t\$rows = mysqli_fetch_array(\$result);\n";
 			$script.="\t\t\t\$$fieldname=\$rows[0]+1;\n";
 		} else
 			$script.="\t\t\t\$$fieldname=\"\";\n";
@@ -127,8 +127,8 @@ function make_editor(
 		$fieldname=$A_sqlFields[$i];
 		if ($i==0) {
 			$script.="\t\t\t\$sql=\"select * from $table where $fieldname=$$fieldname;\";\n";
-			$script.="\t\t\t\$result = mysql_query(\$sql, \$cs);\n";
-			$script.="\t\t\t\$rows = mysql_fetch_array(\$result);\n";
+			$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
+			$script.="\t\t\t\$rows = mysqli_fetch_array(\$result);\n";
 			$script.="\t\t\t\$$fieldname=\$rows[\"$fieldname\"];\n";
 		} else
 			$script.="\t\t\t\$$fieldname=\$rows[\"$fieldname\"];\n";
@@ -153,7 +153,7 @@ function make_editor(
 	}
 	$script.=implode($insert, ", \".\n") . "\".\n";
 	$script.="\t\t\t\")\";\n";
-	$script.="\t\t\t\$result = mysql_query(\$sql, \$cs);\n";
+	$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
 	$script.="\t\tbreak;\n";
 	$script.="\t\tcase \"Modifier\":\n";
 	$script.="\t\t\t\$sql=\"update $table set \".\n";
@@ -164,15 +164,15 @@ function make_editor(
 	}
 	$script.=implode($update, ", \".\n") . " \".\n";
 	$script.="\t\t\t\"where $indexfield='\$$indexfield'\";\n";
-	$script.="\t\t\t\$result = mysql_query(\$sql, \$cs);\n";
+	$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
 	$script.="\t\tbreak;\n";
 	$script.="\t\tcase \"Supprimer\":\n";
 	$script.="\t\t\t\$sql=\"delete from $table where $indexfield='\$$indexfield'\";\n";
-	$script.="\t\t\t\$result = mysql_query(\$sql, \$cs);\n";
+	$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
 	$script.="\t\tbreak;\n";
 	$script.="\t\t}\n";
 	if($with_frames)
-		$script.="\t\techo \"<script language='JavaScript'>window.location.href='<?php   echo \$lg?>/$catalog_page?id=$catalog&lg=fr'</script>\";\n";
+		$script.="\t\techo \"<script language='JavaScript'>window.location.href='<?php echo \$lg?>/$catalog_page?id=$catalog&lg=fr'</script>\";\n";
 	else if(!$with_frames)
 		$script.="\t\techo \"<script language='JavaScript'>window.location.href='page.php?id=$catalog&lg=fr'</script>\";\n";
 	$script.="\t} else if(\$event==\"onUnload\") {\n";
@@ -182,11 +182,11 @@ function make_editor(
 	$script.="?>\n";
 	$editor_page=get_page_filename($database, $editor);
 	if($with_frames)
-		$script.="<form method='POST' name='$formname' action='<?php   echo \$lg?>/$editor_page?id=$editor&lg=fr'>\n";
+		$script.="<form method='POST' name='$formname' action='<?php echo \$lg?>/$editor_page?id=$editor&lg=fr'>\n";
 	else if(!$with_frames)
 		$script.="<form method='POST' name='$formname' action='page.php?id=$editor&lg=fr'>\n";
 	$script.="<input type='hidden' name='event' value=''>\n";
-	$script.="<input type='hidden' name='$indexfield' value='<?php   echo $$indexfield?>'>\n";
+	$script.="<input type='hidden' name='$indexfield' value='<?php echo $$indexfield?>'>\n";
 	$script.="<table witdh='100%' height='100%'><tr><td align='center' valign='middle'>";
 	$script.="<table>";
 	$inputs="";
@@ -194,13 +194,13 @@ function make_editor(
 		$fieldname=$A_formFields[$i];
 		$top=20+(24*$i)."px";
 		if($fieldname==$indexfield)
-			$inputs.="<tr><td>$fieldname</td>\n<td><?php   echo $$fieldname?></td></tr>\n";
+			$inputs.="<tr><td>$fieldname</td>\n<td><?php echo $$fieldname?></td></tr>\n";
 		else
-			$inputs.="<tr><td>$fieldname</td>\n<td><input type='text' name='$fieldname' value='<?php   echo $$fieldname?>'></td></tr>\n";
+			$inputs.="<tr><td>$fieldname</td>\n<td><input type='text' name='$fieldname' value='<?php echo $$fieldname?>'></td></tr>\n";
 	}
 	$top=20+(24*($i+2))."px";
 	$script.="$inputs\n";
-	$script.="<tr><td align='center' colspan='2'><input type='submit' name='action' value='<?php   echo \$action?>' onClick='return runForm();'>\n";
+	$script.="<tr><td align='center' colspan='2'><input type='submit' name='action' value='<?php echo \$action?>' onClick='return runForm();'>\n";
 	$script.="<input type='submit' name='action' value='Supprimer' onClick='return runForm($formname);'>\n";
 	$script.="<input type='reset' name='action' value='Annuler'>\n";
 	$script.="<input type='submit' name='action' value='Fermer' onClick='return unloadForm($formname);'>\n";

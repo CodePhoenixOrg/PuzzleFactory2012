@@ -53,18 +53,18 @@ class pz_pdf extends FPDF {
 			$table_offset=$this->GetLeftMargin()+round(($this->GetWorkSpaceWidth()-$table_width)/2);
 		//$this->SetX($table_offset);
 	
-		$result=mysql_query($sql, $cs);
+		$result=mysqli_query($cs, $sql);
 		
 		//Récupération des noms de champs
-		$n=mysql_num_fields($result);
+		$n=mysqli_num_fields($result);
 		$fieldnames=array();
-		for($i=0;$i<$n;$i++) $fieldnames[]=mysql_field_name($result, $i);
+		for($i=0;$i<$n;$i++) $fieldnames[]=$field->name;
 		
 		//Données
 		$fill=0;
 		$begin_page=true;
 		$end_page=false;
-		while($rows=mysql_fetch_array($result)) {
+		while($rows=mysqli_fetch_array($result)) {
 		
 			if($begin_page) {
 				//Ecriture de l'entête de tableau en début de page
@@ -90,7 +90,7 @@ class pz_pdf extends FPDF {
 			for($i=0;$i<$n;$i++) {
 
 				$value=$rows[$i];
-				if(mysql_field_type($result, $i)=="date") $value=date_mysql_to_french($value);
+				if(mysqli_field_type($result, $i)=="date") $value=date_mysql_to_french($value);
 				$this->Cell($col_widths[$i],6,$value,'LR',0,'L',$fill);
 				
 				//$this->Cell($w[1],6,$rows[1],'LR',0,'L',$fill);
