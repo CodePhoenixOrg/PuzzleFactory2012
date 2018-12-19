@@ -26,13 +26,13 @@ global $DEBUG_LOG_FILE;
 
 $DEBUG_LOG_FILE = serverPath() . '/logs/debug.log';
 
-function debugLog($message) {
+function debugLog($message, $object = '') {
     global $DEBUG_LOG_FILE;
 
     $handle = fopen($DEBUG_LOG_FILE, 'a');
     
-    $message = date('Y-m-d h:i:s') . " : $message" ;
-    fwrite($handle, $message . CR_LF );
+    $message = date('Y-m-d h:i:s') . " : $message"  . (isset($object) ? " : " . print_r($object, true) : "");
+    fwrite($handle, $message . CR_LF);
     fclose($handle);
 }
 

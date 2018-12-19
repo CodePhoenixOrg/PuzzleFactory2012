@@ -57,6 +57,8 @@ function create_enhanced_block_set($database, $column, $id, $lg, $colors) {
 	
 	$block_set="";
 	$sql="select bl_id, bl_type from ${db_prefix}blocks where bl_column=$column order by bl_id";
+	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+
 	//echo "$sql<br>";	
         $result=mysqli_query($cs, $sql);
 	$bl_type="";
@@ -100,7 +102,7 @@ function create_enhanced_block_set($database, $column, $id, $lg, $colors) {
 		} elseif($bl_type=="diary") {
 			global $diary_colors;
 			$date=get_variable("date");
-			$block_set.=create_diary_block($date, $id, $lg, $diary_colors);
+			//$block_set.=create_diary_block($date, $id, $lg, $diary_colors);
 		}
 		
 		$old_bl_type=$bl_type;
@@ -121,91 +123,95 @@ function create_enhanced_block_set($database, $column, $id, $lg, $colors) {
 }
 
 
-function create_block($database, $block_num, $id, $lg, $colors) {
-	global $db_prefix;
-	
-	if(empty($colors)) { 
-		global $panel_colors;
-		$color=$panel_colors;
-	}
-	
-	if(!empty($colors)) {
-		$border_color=$colors["border_color"];
-		$caption_color=$colors["caption_color"];
-		$back_color=$colors["back_color"];
-		$fore_color=$colors["fore_color"];
-	} else {
-		$border_color="black";
-		$caption_color="white";
-		$back_color="white";
-		$fore_color="black";
-	}
+function create_block($database, $block_num, $id, $lg, $colors)
+{
+    global $db_prefix;
+    
+    if (empty($colors)) {
+        global $panel_colors;
+        $color=$panel_colors;
+    }
+    
+    if (!empty($colors)) {
+        $border_color=$colors["border_color"];
+        $caption_color=$colors["caption_color"];
+        $back_color=$colors["back_color"];
+        $fore_color=$colors["fore_color"];
+    } else {
+        $border_color="black";
+        $caption_color="white";
+        $back_color="white";
+        $fore_color="black";
+    }
 
-        $cs=connection(CONNECT, $database);
-	$sql=	"select d.di_".$lg."_short ".
-		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
+    $cs=connection(CONNECT, $database);
+    $sql=	"select d.di_".$lg."_short ".
+        "from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
+        "where  b.di_id=d.di_id ".
 		"and b.bl_id=$block_num";
-	$result=mysqli_query($cs, $sql);
-	$rows=mysqli_fetch_array($result, MYSQLI_NUM);
-	$block_name=$rows[0];
+	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+		
+    $result=mysqli_query($cs, $sql);
+    $rows=mysqli_fetch_array($result, MYSQLI_NUM);
+    $block_name=$rows[0];
 
-        $sql=	"select m.me_id, m.me_level, m.bl_id, d.di_".$lg."_short, m.me_target, p.pa_filename, p.pa_id ".
+    $sql=	"select m.me_id, m.me_level, m.bl_id, d.di_".$lg."_short, m.me_target, p.pa_filename, p.pa_id ".
                 "from ${db_prefix}menus m, ${db_prefix}blocks b, ${db_prefix}pages p, ${db_prefix}dictionary d ".
                 "where m.di_name=d.di_name ".
                 "and p.pa_id=m.pa_id ".
-		"and m.bl_id=b.bl_id ". 
-		"and m.bl_id=$block_num ".
-		"order by m.me_id";
-		
-	$sub_menu="";
-	$count=0;
-	$zero=0;
-	$index=0;
-	
-        $result=mysqli_query($cs, $sql);
-        while($rows=mysqli_fetch_array($result, MYSQLI_NUM)) {
-                $index=$rows[0];
-                $level=$rows[1];
-		$block=$rows[2];
-                $caption=$rows[3];
-                $target=$rows[4];
-                $link=$rows[5];
-		$page=$rows[6];
-		//echo "$caption;$link<br>";
-		
-		$url="page.php?id=$index&lg=$lg";
-		if(substr($link, 0, 7)=="http://") {
-			$target=" target=\"_new\"";
-			$url=$link;
-		}
-		
-	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"$url\"$target><font id=\"font_$block_name$count$zero\" color=\"$fore_color\">$caption</font></a></td></tr>\n";
-		$count++;
-	}
-	
-	$table_name="block$id$index";
+        "and m.bl_id=b.bl_id ".
+        "and m.bl_id=$block_num ".
+        "order by m.me_id";
+	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+        
+    $sub_menu="";
+    $count=0;
+    $zero=0;
+    $index=0;
+    
+    $result=mysqli_query($cs, $sql);
+    while ($rows=mysqli_fetch_array($result, MYSQLI_NUM)) {
+        $index=$rows[0];
+        $level=$rows[1];
+        $block=$rows[2];
+        $caption=$rows[3];
+        $target=$rows[4];
+        $link=$rows[5];
+        $page=$rows[6];
+        //echo "$caption;$link<br>";
+        
+        $url="page.php?id=$index&lg=$lg";
+        if (substr($link, 0, 7)=="http://") {
+            $target=" target=\"_new\"";
+            $url=$link;
+        }
+        
+        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"$url\"$target><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
+        $count++;
+    }
+    
+    $table_name="block$id$index";
 
-	$block=	"<table id=\"$table_name\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"100\" bordercolor=\"$border_color\"><tr><td>\n".
-		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
-		"<tr bgcolor=\"$border_color\">\n".
-			"\t<td width=\"100%\" height=\"4\">\n".
-			"\t<font color=\"$caption_color\"><center>$block_name</center></font>\n".
-			"\t</td>\n".
-		"</tr>\n".
-		"<tr height=\"4\" valign=\"top\"> \n".
-			"\t<td width=\"100%\" bgcolor=\"$back_color\">\n".
-			"\t<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n".
-			"\t$sub_menu\n".
-			"\t</table>\n".
-			"\t</td>\n".
-		"</tr>\n".
-		"</table>\n".
-		"</td></tr></table>\n";
+    $block=	"<table id=\"$table_name\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"100\" bordercolor=\"$border_color\"><tr><td>\n".
+        "<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
+        "<tr bgcolor=\"$border_color\">\n".
+            "\t<td width=\"100%\" height=\"4\">\n".
+            "\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
+            "\t</td>\n".
+        "</tr>\n".
+        "<tr height=\"4\" valign=\"top\"> \n".
+            "\t<td width=\"100%\" bgcolor=\"$back_color\">\n".
+            "\t<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n".
+            "\t$sub_menu\n".
+            "\t</table>\n".
+            "\t</td>\n".
+        "</tr>\n".
+        "</table>\n".
+        "</td></tr></table>\n";
 
-	$block=table_shadow($table_name, $block);
+    $block=table_shadow($table_name, $block);
 
-	return $block;
+    return $block;
 }
 
 function create_collapseable_block($block_skin_name, $block_num, $colors) {
@@ -235,7 +241,7 @@ function create_collapseable_block($block_skin_name, $block_num, $colors) {
         $cs=connection("connect", $database);
 	$sql=	"select d.di_".$lg."_short, b.bl_column ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
+		"where  b.di_id=d.di_id ".
 		"and b.bl_id=$block_num";
 	$result=mysqli_query($cs, $sql);
 	$rows=mysqli_fetch_array($result);
@@ -263,7 +269,7 @@ function create_collapseable_block($block_skin_name, $block_num, $colors) {
                 $target=$rows[4];
                 $link=$rows[5];
 		$page=$rows[6];
-	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\"><font id=\"font_$block_name$count$zero\" color=\"$fore_color\">$caption</font></a></td></tr>\n";
+	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\"><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
 		$count++;
 	}
 	
@@ -278,7 +284,7 @@ function create_collapseable_block($block_skin_name, $block_num, $colors) {
 	$block=	"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td id=\"block_caption_$index\" name=\"block_caption$block_column\" width=\"100%\" height=\"4\" onClick=\"expand_block(this, '$block_skin_name');\">\n".
-			"\t<a href=\"#\"><font color=\"$caption_color\"><center>$block_name</center></font></a>\n".
+			"\t<a href=\"#\"><span color=\"$caption_color\"><center>$block_name</center></span></a>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\">\n".
@@ -293,7 +299,7 @@ function create_collapseable_block($block_skin_name, $block_num, $colors) {
 	return $block;
 }
 
-function create_members_block($database, $logout, $di_name, $id, $lg, $colors) {
+function create_members_block($database, $logout, $di_id, $id, $lg, $colors) {
 	global $PHP_SELF, $db_prefix;
 	
 	if(empty($colors)) { 
@@ -316,8 +322,8 @@ function create_members_block($database, $logout, $di_name, $id, $lg, $colors) {
         $cs=connection("connect", $database);
 	$sql=	"select d.di_".$lg."_short ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
-		"and b.di_name=\"$di_name\"";
+		"where  b.di_id=d.di_id ".
+		"and b.di_id=\"$di_id\"";
 	$result=mysqli_query($cs, $sql);
 	$rows=mysqli_fetch_array($result, MYSQLI_NUM);
 	$block_name=$rows[0];
@@ -355,7 +361,7 @@ function create_members_block($database, $logout, $di_name, $id, $lg, $colors) {
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"92\" height=\"4\">\n".
-			"\t<font color=\"$caption_color\"><center>$block_name</center></font>\n".
+			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".
@@ -510,7 +516,7 @@ function perform_members_ident($login, $pass, $submit) {
 	return $js; 
 }
 
-function create_newsletter_block($database, $di_name, $id, $lg, $colors) {
+function create_newsletter_block($database, $di_id, $id, $lg, $colors) {
 	global $PHP_SELF, $db_prefix;
 	
 	if(empty($colors)) { 
@@ -533,8 +539,8 @@ function create_newsletter_block($database, $di_name, $id, $lg, $colors) {
         $cs=connection("connect", $database);
 	$sql=	"select d.di_".$lg."_short ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
-		"and b.di_name=\"$di_name\"";
+		"where  b.di_id=d.di_id ".
+		"and b.di_id=\"$di_id\"";
 	$result=mysqli_query($cs, $sql);
 	$rows=mysqli_fetch_array($result, MYSQLI_NUM);
 	$block_name=$rows[0];
@@ -544,7 +550,7 @@ function create_newsletter_block($database, $di_name, $id, $lg, $colors) {
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"92\" height=\"4\">\n".
-			"\t<font color=\"$caption_color\"><center>$block_name</center></font>\n".
+			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".

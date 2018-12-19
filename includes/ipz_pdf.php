@@ -27,9 +27,9 @@ class pz_pdf extends FPDF {
 	var $HEADER_LEFT_TEXT="";
 	var $HEADER_CENTER_TEXT="";
 	var $HEADER_RIGHT_TEXT="";
-	var $HEADER_FONT_NAME="Arial";
-	var $HEADER_FONT_SIZE="10";
-	var $HEADER_FONT_STYLE="";
+	var $HEADER_caption_NAME="Arial";
+	var $HEADER_caption_SIZE="10";
+	var $HEADER_caption_STYLE="";
 	var $HEADER_IMAGE_PATH="";
 	var $HEADER_IMAGE_POSITION="L";
 	var $HEADER_IMAGE_WIDTH=32;
@@ -38,12 +38,12 @@ class pz_pdf extends FPDF {
 	var $FOOTER_LEFT_TEXT="";
 	var $FOOTER_CENTER_TEXT="";
 	var $FOOTER_RIGHT_TEXT="";
-	var $FOOTER_FONT_NAME="Arial";
-	var $FOOTER_FONT_SIZE="10";
-	var $FOOTER_FONT_STYLE="";
+	var $FOOTER_caption_NAME="Arial";
+	var $FOOTER_caption_SIZE="10";
+	var $FOOTER_caption_STYLE="";
 
 	//Tableau coloré avec données provenant d'une base
-	function CreateTableFromQuery($sql, $font_name, $font_size, $col_widths, $colors, $cs) {
+	function CreateTableFromQuery($sql, $caption_name, $caption_size, $col_widths, $colors, $cs) {
 	
 		$table_width=array_sum($col_widths);
 
@@ -72,7 +72,7 @@ class pz_pdf extends FPDF {
 				$this->SetTextColor(255);
 				$this->SetDrawColor(128,0,0);
 				$this->SetLineWidth(.3);
-				$this->SetFont($font_name,'B', $font_size);
+				$this->SetFont($caption_name,'B', $caption_size);
 				$this->SetX($table_offset);
 				
 				for($i=0;$i<$n;$i++) $this->Cell($col_widths[$i],7,$fieldnames[$i],1,0,'C',1);
@@ -128,7 +128,7 @@ class pz_pdf extends FPDF {
 				$this->Image($this->HEADER_IMAGE_PATH, $this->lMargin, $this->HEADER_IMAGE_HEIGHT, $this->HEADER_IMAGE_WIDTH);
 		}
 				
-		$this->SetFont($this->HEADER_FONT_NAME, $this->HEADER_FONT_STYLE, $this->HEADER_FONT_SIZE);
+		$this->SetFont($this->HEADER_caption_NAME, $this->HEADER_caption_STYLE, $this->HEADER_caption_SIZE);
 		
 		if($this->HEADER_LEFT_TEXT!="")
 			$this->Cell(0,10, $this->HEADER_LEFT_TEXT, 0,0,'L');
@@ -148,9 +148,9 @@ class pz_pdf extends FPDF {
 	{
 		$this->SetY(-10);
 		
-		$this->SetFont($this->FOOTER_FONT_NAME, $this->FOOTER_FONT_STYLE, 
+		$this->SetFont($this->FOOTER_caption_NAME, $this->FOOTER_caption_STYLE, 
 		
-		$this->FOOTER_FONT_SIZE);
+		$this->FOOTER_caption_SIZE);
 		
 		$left_text=$this->FOOTER_LEFT_TEXT;
 		$center_text=$this->FOOTER_CENTER_TEXT;
@@ -172,30 +172,30 @@ class pz_pdf extends FPDF {
 	}
 	
 	//Entête
-	function PrepareHeader($left, $center, $right, $font_name, $font_size, $font_style)
+	function PrepareHeader($left, $center, $right, $caption_name, $caption_size, $caption_style)
 	{
 		$left=trim($left);
 		$center=trim($center);
 		$right=trim($right);
-		$font_name=trim($font_name);
-		$font_style=trim($font_style);
+		$caption_name=trim($caption_name);
+		$caption_style=trim($caption_style);
 		
 		$this->HEADER_LEFT_TEXT=$left;
 		$this->HEADER_CENTER_TEXT=$center;
 		$this->HEADER_RIGHT_TEXT=$right;
-		if($font_name!="") $this->HEADER_FONT_NAME=$font_name;
-		if($font_size>0) $this->HEADER_FONT_SIZE=$font_size;
-		if($font_style!="") $this->HEADER_FONT_STYLE=$font_style;
+		if($caption_name!="") $this->HEADER_caption_NAME=$caption_name;
+		if($caption_size>0) $this->HEADER_caption_SIZE=$caption_size;
+		if($caption_style!="") $this->HEADER_caption_STYLE=$caption_style;
 		
 	}
 	
 	//Entête avec image
-	function PrepareHeaderWithImage($image_path, $image_position, $image_width, $image_height, $text, $font_name, $font_size, $font_style) {
+	function PrepareHeaderWithImage($image_path, $image_position, $image_width, $image_height, $text, $caption_name, $caption_size, $caption_style) {
 		$image_path=trim($image_path);
 		$image_position=trim($image_position);
 		$text=trim($text);
-		$font_name=trim($font_name);
-		$font_style=trim($font_style);
+		$caption_name=trim($caption_name);
+		$caption_style=trim($caption_style);
 
 		$this->HEADER_IMAGE_PATH=$image_path;
 		$this->HEADER_IMAGE_POSITION=$image_position;
@@ -208,20 +208,20 @@ class pz_pdf extends FPDF {
 			$this->HEADER_LEFT_TEXT=$text;
 		}
 						
-		if($font_name!="") $this->HEADER_FONT_NAME=$font_name;
-		if($font_size>0) $this->HEADER_FONT_SIZE=$font_size;
-		if($font_style!="") $this->HEADER_FONT_STYLE=$font_style;
+		if($caption_name!="") $this->HEADER_caption_NAME=$caption_name;
+		if($caption_size>0) $this->HEADER_caption_SIZE=$caption_size;
+		if($caption_style!="") $this->HEADER_caption_STYLE=$caption_style;
 		
 	}
 	
 	//Pied de page
-	function PrepareFooter($left, $center, $right, $font_name, $font_size, $font_style)
+	function PrepareFooter($left, $center, $right, $caption_name, $caption_size, $caption_style)
 	{
 		$left=trim($left);
 		$center=trim($center);
 		$right=trim($right);
-		$font_name=trim($font_name);
-		$font_style=trim($font_style);
+		$caption_name=trim($caption_name);
+		$caption_style=trim($caption_style);
 		
 		//if($left=="#") $left='Page '.$this->PageNo().'/{nb}';
 		//if($center=="#") $center='Page '.$this->PageNo().'/{nb}';
@@ -230,9 +230,9 @@ class pz_pdf extends FPDF {
 		$this->FOOTER_LEFT_TEXT=$left;
 		$this->FOOTER_CENTER_TEXT=$center;
 		$this->FOOTER_RIGHT_TEXT=$right;
-		if($font_name!="") $this->FOOTER_FONT_NAME=$font_name;
-		if($font_size>0) $this->FOOTER_FONT_SIZE=$font_size;
-		if($font_style!="") $this->FOOTER_FONT_STYLE=$font_style;
+		if($caption_name!="") $this->FOOTER_caption_NAME=$caption_name;
+		if($caption_size>0) $this->FOOTER_caption_SIZE=$caption_size;
+		if($caption_style!="") $this->FOOTER_caption_STYLE=$caption_style;
 		
 	}
 
@@ -376,7 +376,7 @@ class pz_pdf extends FPDF {
 	
 }
 
-function create_pdf_from_query($filename, $sql, $font_name, $font_size, $col_widths, $orientation, $header, $title, $footer, $colors, $cs) {
+function create_pdf_from_query($filename, $sql, $caption_name, $caption_size, $col_widths, $orientation, $header, $title, $footer, $colors, $cs) {
 	$pdf=new pz_pdf();
 	$pdf->Open();
 	$pdf->AliasNbPages(); 
@@ -388,23 +388,23 @@ function create_pdf_from_query($filename, $sql, $font_name, $font_size, $col_wid
 		$pdf->DefOrientation="P";
 	}
 		
-	$pdf->PrepareHeader($header, "", $footer, $font_name, $font_size, "");
+	$pdf->PrepareHeader($header, "", $footer, $caption_name, $caption_size, "");
 	$pdf->AddPage();
-	$pdf->PrepareFooter("", "#", "", $font_name, $font_size, "");
-	$pdf->SetFont($font_name,'',$font_size);
+	$pdf->PrepareFooter("", "#", "", $caption_name, $caption_size, "");
+	$pdf->SetFont($caption_name,'',$caption_size);
 	
-	$pdf->SetFont($font_name,'',$font_size+2);
+	$pdf->SetFont($caption_name,'',$caption_size+2);
 	$pdf->Cell(0,10, $title, 0,0,'C');
 	$pdf->Ln();
-	$pdf->SetFont($font_name,'',$font_size);
-	$pdf->CreateTableFromQuery($sql, $font_name, $font_size, $col_widths, $colors, $cs);
+	$pdf->SetFont($caption_name,'',$caption_size);
+	$pdf->CreateTableFromQuery($sql, $caption_name, $caption_size, $col_widths, $colors, $cs);
 	
 	if($filename!="") $pdf->Output($filename, false);
 	
 	return $pdf;
 }
 
-function create_pdf_from_query_with_image($filename, $image_path, $image_position, $image_heigth, $image_width, $sql, $font_name, $font_size, $col_widths, $orientation, $header, $title, $footer, $colors, $cs) {
+function create_pdf_from_query_with_image($filename, $image_path, $image_position, $image_heigth, $image_width, $sql, $caption_name, $caption_size, $col_widths, $orientation, $header, $title, $footer, $colors, $cs) {
 	$pdf=new pz_pdf();
 	$pdf->Open();
 	$pdf->AliasNbPages(); 
@@ -416,16 +416,16 @@ function create_pdf_from_query_with_image($filename, $image_path, $image_positio
 		$pdf->DefOrientation="P";
 	}
 		
-    $pdf->PrepareHeaderWithImage($image_path, $image_position, $image_width, $image_height, $header, $font_name, $font_size, "");
+    $pdf->PrepareHeaderWithImage($image_path, $image_position, $image_width, $image_height, $header, $caption_name, $caption_size, "");
 	$pdf->AddPage();
-	$pdf->PrepareFooter($footer, "", "#", $font_name, $font_size, "");
-	$pdf->SetFont($font_name,'',$font_size);
+	$pdf->PrepareFooter($footer, "", "#", $caption_name, $caption_size, "");
+	$pdf->SetFont($caption_name,'',$caption_size);
 	
-	$pdf->SetFont($font_name,'',$font_size+2);
+	$pdf->SetFont($caption_name,'',$caption_size+2);
 	$pdf->Cell(0,10, $title, 0,0,'C');
 	$pdf->Ln();
-	$pdf->SetFont($font_name,'',$font_size);
-	$pdf->CreateTableFromQuery($sql, $font_name, $font_size, $col_widths, $colors, $cs);
+	$pdf->SetFont($caption_name,'',$caption_size);
+	$pdf->CreateTableFromQuery($sql, $caption_name, $caption_size, $col_widths, $colors, $cs);
 	
 	if($filename!="") $pdf->Output($filename, false);
 	

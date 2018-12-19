@@ -43,16 +43,16 @@ function create_panel($name, $caption, $content, $colors, $panel_width) {
 		"<table border='0' cellspacing='0' cellpadding='1' width='$panel_width' bordercolor='$border_color'>\n".
 		"<tr bgcolor='$border_color'>\n".
 			"\t<td align='left' valign='top' width='$panel_width'>\n".
-				"\t\t<font color='$caption_color'>\n".
+				"\t\t<span color='$caption_color'>\n".
 				"\t\t$caption\n".
-				"\t\t</font>\n".
+				"\t\t</span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height='4' valign='top' bgcolor='$back_color'> \n".
 			"\t<td align='left' valign='top' width='$panel_width'>\n".
-				"\t\t<font color='$fore_color'>\n".
+				"\t\t<span color='$fore_color'>\n".
 				"\t\t$content<br>\n".
-				"\t\t</font>\n".
+				"\t\t</span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"</table>\n".
@@ -150,17 +150,17 @@ function create_panel_with_image($name, $caption, $content, $colors, $panel_widt
 		"<table border='0' cellspacing='0' cellpadding='1' width='$panel_width' bordercolor='$border_color'>\n".
 		"<tr bgcolor='$border_color'>\n".
 			"\t<td $caption_span align='left' valign='top' width='$panel_width'>\n".
-				"\t\t<font color='$caption_color'>\n".
+				"\t\t<span color='$caption_color'>\n".
 				"\t\t$caption\n".
-				"\t\t</font>\n".
+				"\t\t</span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height='4' valign='top' bgcolor='$back_color'> \n".
 			$imleft.
 			"\t<td align='left' valign='top' width='$content_width'>\n".
-				"\t\t<font color='$fore_color'>\n".
+				"\t\t<span color='$fore_color'>\n".
 				"\t\t$content<br>\n".
-				"\t\t</font>\n".
+				"\t\t</span>\n".
 			"\t</td>\n".
 			$imright.
 		"</tr>\n".
@@ -187,7 +187,7 @@ function table_shadow($name="", $html_table="", $suffix="eeeeee") {
 	if($_SESSION["ses_apply_skin"]=="N") {
 		//return $html_table;
 		
-	$shadow="  <table id=\"".$name."_shadow\" border=\"0\" bordercolor=\"".$panel_color['border_color']."\" cellspacing=\"0\" cellpadding=\"3\">\n".
+	$shadow="  <table id=\"".$name."_shadow\" border=\"0\" bordercolor=\"".$panel_colors['border_color']."\" cellspacing=\"0\" cellpadding=\"3\">\n".
 		"    <tr>\n".
 		"      <td>\n\n".
 		$html_table."\n\n".

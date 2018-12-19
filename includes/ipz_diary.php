@@ -137,13 +137,13 @@ function create_diary_control($date, $colors=array()) {
 
 	// Modified for Puzzle Project
 	$params['link_on_day']		= $PHP_SELF.'?di=diary&lg='.$lg.'&date=%%dd%%'; // Link to put on each day
-	$params['font_face']		= 'Verdana, Arial, Helvetica'; // Default font to use
-	$params['font_size']		= 8; // Font size in px
+	$params['caption_face']		= 'Verdana, Arial, Helvetica'; // Default font to use
+	$params['caption_size']		= 8; // Font size in px
 	
 	$params['use_img']		= 1; // Use gif for nav bar on the bottom
 	
 	// New parameters in old version 2.0
-	$params['font_highlight_color']= '#FF0000';
+	$params['caption_highlight_color']= '#FF0000';
 	$params['bg_highlight_color']  = '#00FF00';
 	$params['day_mode']		= 0;
 	$params['time_step']		= 30;
@@ -273,7 +273,7 @@ function create_diary_control($date, $colors=array()) {
 			if(($params['link_after_date'] == 0) && ($current_timestamp < $loop_timestamp)) {
 				$output .= '<td'.$bgstyle.'>'.$i.$txt_2_use.'</td>'."\n";
 			} else {
-				$output .= '<td'.$bgstyle.'><a href="'.str_replace('%%dd%%', $current_year.$current_month_2.$j ,$params['link_on_day']).'"><font color="'.$text_color.'">'.$i.'</font></a>'.$txt_2_use.'</td>'."\n";
+				$output .= '<td'.$bgstyle.'><a href="'.str_replace('%%dd%%', $current_year.$current_month_2.$j ,$params['link_on_day']).'"><span color="'.$text_color.'">'.$i.'</span></a>'.$txt_2_use.'</td>'."\n";
 			}
 		} else {
 			$output .= '<td>'.$i.'</td>'."\n";
@@ -400,13 +400,13 @@ function create_framed_diary_control($date, $target, $colors=array()) {
 
 	// Modified for Puzzle Project
 	$params['link_on_day']		= 'page.php?di=diary&lg='.$lg.'&date=%%dd%%'; // Link to put on each day
-	$params['font_face']		= 'Verdana, Arial, Helvetica'; // Default font to use
-	$params['font_size']		= 8; // Font size in px
+	$params['caption_face']		= 'Verdana, Arial, Helvetica'; // Default font to use
+	$params['caption_size']		= 8; // Font size in px
 	
 	$params['use_img']		= 1; // Use gif for nav bar on the bottom
 	
 	// New parameters in old version 2.0
-	$params['font_highlight_color']= '#FF0000';
+	$params['caption_highlight_color']= '#FF0000';
 	$params['bg_highlight_color']  = '#00FF00';
 	$params['day_mode']		= 0;
 	$params['time_step']		= 30;
@@ -539,7 +539,7 @@ function create_framed_diary_control($date, $target, $colors=array()) {
 				$date_dd="date=$current_year$current_month_2$j";
 				$page_link_of_day="page.php?di=diary&lg=$lg&$date_dd";
 				$menu_link_of_day="$PHP_SELF?id=$id&lg=$lg&$date_dd";
-				$output .= "<td$bgstyle><a href='$page_link_of_day' target='$target' onClick='parent.frames[\"menu\"].location.href=\"$menu_link_of_day\";'><font color='$text_color'>$i</font></a>$txt_2_use</td>\n";
+				$output .= "<td$bgstyle><a href='$page_link_of_day' target='$target' onClick='parent.frames[\"menu\"].location.href=\"$menu_link_of_day\";'><span color='$text_color'>$i</span></a>$txt_2_use</td>\n";
 			}
 		} else {
 			$output .= '<td>'.$i.'</td>'."\n";
@@ -770,10 +770,10 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 		$tag_width=" width='".$col_widths[$j]."'";
 		if($j==0) {
 			$text="&nbsp;";
-			$table1.="<td align=center><font color='$header_fore_color'><b>$text<b></font></td>\n";
+			$table1.="<td align=center><span color='$header_fore_color'><b>$text<b></span></td>\n";
 		} else {
 			$text="Journée du $dday/$mmonth/$yyear";
-			$table1.="<td align=center><font color='$header_fore_color'><b>$text<b></font></td>\n";
+			$table1.="<td align=center><span color='$header_fore_color'><b>$text<b></span></td>\n";
 		}
 	}
 	$table1.="</tr>\n";
@@ -834,7 +834,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 				if($fieldtype=="int") $tag_align=" align='right'";
 				if($fieldlen < 5) $tag_align=" align='center'";
 				$c=$j-1;
-				$table1.="<td $tag_align style=\"font-size:10;height:15\"$tag_width><font id='font_$name$r$c' color='$fore_color'>&nbsp;<br>&nbsp;</font></td>\n";
+				$table1.="<td $tag_align style=\"font-size:10;height:15\"$tag_width><span id='caption_$name$r$c' color='$fore_color'>&nbsp;<br>&nbsp;</span></td>\n";
 			}
 		}
 		$table1.="</tr>\n";

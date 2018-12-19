@@ -698,7 +698,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 			$tag_width="";
 			if($col_widths[$j]!=0) $tag_width=" width='".$col_widths[$j]."'";
 			if($fields_count>1 && $j==0) $fieldname="<img src='$img/edit.png'>";
-			$table.="<td align=center$tag_width><font color='$header_fore_color'><b>".strtoupper($fieldname[0]).substr($fieldname, 1, strlen($fieldname)-1)."<b></font></td>\n";
+			$table.="<td align=center$tag_width><span color='$header_fore_color'><b>".strtoupper($fieldname[0]).substr($fieldname, 1, strlen($fieldname)-1)."<b></span></td>\n";
 			$k++;
 		}
 	}
@@ -822,7 +822,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 					if($fieldtype=="int") $tag_align=" align='right'";
 					if($fieldlen < 5) $tag_align=" align='center'";
 					$c=$j-1;
-					$table.="<td$tag_align$tag_width>$ahref<font id='font_$name$r$c' color='$fore_color'><span$on_click>$field</span></font>$a</td>\n";
+					$table.="<td$tag_align$tag_width>$ahref<span id='caption_$name$r$c' color='$fore_color'><span$on_click>$field</span></span>$a</td>\n";
 				}
 			}
 		}
@@ -885,7 +885,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 				} else {
 					$tag_align=" align='left'";
 					$c=$j-1;
-					$table.="<td$tag_align$tag_width>$ahref<font id='font_$name$r$c' color='$fore_color'>$field</font>$a</td>\n";
+					$table.="<td$tag_align$tag_width>$ahref<span id='caption_$name$r$c' color='$fore_color'>$field</span>$a</td>\n";
 				}
 			}
 		}
@@ -1099,7 +1099,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$k=0;
 	$javascript="";	
 	$tag_width=" width='100'";
-	$table.="<td align='center'$tag_width><font color='$header_fore_color'><b>image<b></font></td>\n";
+	$table.="<td align='center'$tag_width><span color='$header_fore_color'><b>image<b></span></td>\n";
 	for($j=0; $j<$fields_count; $j++) {
 		
 		$fieldname=mysqli_field_name($result, $j);
@@ -1117,7 +1117,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 			$tag_width="";
 			if($col_widths[$j]!=0) $tag_width=" width='".$col_widths[$j]."'";
 			if($fields_count>1 && $j==0) $fieldname="<img src='$img/edit.png'>";
-			$table.="<td align=center$tag_width><font color='$header_fore_color'><b>$fieldname<b></font></td>\n";
+			$table.="<td align=center$tag_width><span color='$header_fore_color'><b>$fieldname<b></span></td>\n";
 			$k++;
 			}
 		}
@@ -1249,7 +1249,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 					if($fieldlen < 5) $tag_align=" align='center'";
 					$c=$j-1;
 					$onmouseover=" onmouseover='thmb.src=\"".get_http_root()."/$database/$lg/galerie/albums/$al_id/small/".$rows[$web_field]."\";'";
-					$table.="<td$tag_align$tag_width$onmouseover>$ahref<font id='font_$name$r$c' color='$fore_color'>$field</font>$a</td>\n";
+					$table.="<td$tag_align$tag_width$onmouseover>$ahref<span id='caption_$name$r$c' color='$fore_color'>$field</span>$a</td>\n";
 				}
 				}
 			}
@@ -1313,7 +1313,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 				} else {
 					$tag_align=" align='left'";
 					$c=$j-1;
-					$table.="<td$tag_align$tag_width>$ahref<font id='font_$name$r$c' color='$fore_color'>$field</font>$a</td>\n";
+					$table.="<td$tag_align$tag_width>$ahref<span id='caption_$name$r$c' color='$fore_color'>$field</span>$a</td>\n";
 				}
 				}
 			}
@@ -1453,7 +1453,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 			$tag_width="";
 			if($col_widths[$j]!=0) $tag_width=" width='".$col_widths[$j]."'";
 			if($j==0) $fieldname="<img src='$img/edit.png'>";
-			$table.="<td align=center$tag_width><font color='$header_fore_color'><b>$fieldname<b></font></td>\n";
+			$table.="<td align=center$tag_width><span color='$header_fore_color'><b>$fieldname<b></span></td>\n";
 		}
 	}
 	$table.="</tr>\n";
@@ -1557,7 +1557,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 					if($fieldtype=="int") $tag_align=" align='right'";
 					if($fieldlen < 5) $tag_align=" align='center'";
 					$c=$j-1;
-					$table.="<td$tag_align$tag_width>$ahref<font id='font_$name$r$c' color='$fore_color'>$field</font>$a</td>\n";
+					$table.="<td$tag_align$tag_width>$ahref<span id='caption_$name$r$c' color='$fore_color'>$field</span>$a</td>\n";
 				}
 			}
 		}
@@ -1620,7 +1620,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 				} else {
 					$tag_align=" align='left'";
 					$c=$j-1;
-					$table.="<td$tag_align$tag_width>$ahref<font id='font_$name$r$c' color='$fore_color'>$field</font>$a</td>\n";
+					$table.="<td$tag_align$tag_width>$ahref<span id='caption_$name$r$c' color='$fore_color'>$field</span>$a</td>\n";
 				}
 			}
 		}

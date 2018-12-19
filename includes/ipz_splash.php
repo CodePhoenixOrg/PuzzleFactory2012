@@ -23,7 +23,7 @@ function display_load_splash($message="", $text_color="", $back_color="", $width
 			"<table bgcolor='$back_color' border='0' cellpadding='2' cellspacing='0' width='$width'>\n".
 			"\t<tr>\n".
 			"\t\t<td align='center' valgin='middle'>\n".
-			"\t\t\t<font face='helvetica' size='4' color='$text_color'>$message</font>\n".
+			"\t\t\t<span face='helvetica' size='4' color='$text_color'>$message</span>\n".
 			"\t\t</td>\n".
 			"\t</tr>\n".
 			"</table>\n".

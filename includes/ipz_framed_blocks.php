@@ -119,7 +119,7 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
         $cs=connection("connect", $database);
 	$sql=	"select d.di_".$lg."_short ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
+		"where  b.di_id=d.di_id ".
 		"and b.bl_id=$block_num";
 	$result=mysqli_query($cs, $sql);
 	$rows=mysqli_fetch_array($result);
@@ -156,7 +156,7 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
 			//echo "$request<br>";
 		}
 		
-	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"window.status='';setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=$lg$request\" target=\"$target\"><font id=\"font_$block_name$count$zero\" color=\"$fore_color\">$caption</font></a></td></tr>\n";
+	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"window.status='';setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=$lg$request\" target=\"$target\"><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
 		$count++;
 	}
 	
@@ -166,7 +166,7 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"100%\" height=\"4\">\n".
-			"\t<font color=\"$caption_color\"><center>$block_name</center></font>\n".
+			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".
@@ -211,7 +211,7 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
         $cs=connection("connect", $database);
 	$sql=	"select d.di_".$lg."_short, b.bl_column ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
+		"where  b.di_id=d.di_id ".
 		"and b.bl_id=$block_num";
 	$result=mysqli_query($cs, $sql);
 	$rows=mysqli_fetch_array($result);
@@ -239,7 +239,7 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
                 $target=$rows[4];
                 $link=$rows[5];
 		$page=$rows[6];
-	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\" target=\"$target\"><font id=\"font_$block_name$count$zero\" color=\"$fore_color\">$caption</font></a></td></tr>\n";
+	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\" target=\"$target\"><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
 		$count++;
 	}
 	
@@ -254,7 +254,7 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
 	$block=	"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td id=\"block_caption_$index\" name=\"block_caption$block_column\" width=\"100%\" height=\"4\" onClick=\"expand_block(this, '$block_skin_name');\">\n".
-			"\t<a href=\"#\"><font color=\"$caption_color\"><center>$block_name</center></font></a>\n".
+			"\t<a href=\"#\"><span color=\"$caption_color\"><center>$block_name</center></span></a>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\">\n".
@@ -331,8 +331,8 @@ function create_framed_members_block($database, $logout, $di_name, $id, $lg, $ta
         $cs=connection("connect", $database);
 	$sql=	"select d.di_".$lg."_short ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
-		"and b.di_name=\"$di_name\"";
+		"where  b.di_id=d.di_id ".
+		"and b.di_id=\"$di_id\"";
 	$result=mysqli_query($cs, $sql);
 	$rows=mysqli_fetch_array($result);
 	$block_name=$rows[0];
@@ -370,7 +370,7 @@ function create_framed_members_block($database, $logout, $di_name, $id, $lg, $ta
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"92\" height=\"4\">\n".
-			"\t<font color=\"$caption_color\"><center>$block_name</center></font>\n".
+			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".
@@ -422,8 +422,8 @@ function create_framed_newsletter_block($database, $di_name, $id, $lg, $target, 
         $cs=connection("connect", $database);
 	$sql=	"select d.di_".$lg."_short ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where b.di_name=d.di_name ".
-		"and b.di_name=\"$di_name\"";
+		"where  b.di_id=d.di_id ".
+		"and b.di_id=\"$di_id\"";
 	$result=mysqli_query($cs, $sql);
 	$rows=mysqli_fetch_array($result);
 	$block_name=$rows[0];
@@ -433,7 +433,7 @@ function create_framed_newsletter_block($database, $di_name, $id, $lg, $target, 
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"92\" height=\"4\">\n".
-			"\t<font color=\"$caption_color\"><center>$block_name</center></font>\n".
+			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".

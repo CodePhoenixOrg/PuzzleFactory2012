@@ -80,7 +80,6 @@
 				"'$td_time', ".
 				"$mbr_id".
 			")";
-            debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
                         
 			$result = mysqli_query($cs, $sql);
 		break;

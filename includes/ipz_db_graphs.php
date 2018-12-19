@@ -73,7 +73,7 @@ function dark_color_range($number) {
 	return $colors;
 }
 
-function legend($name, $data, $data_type, $font_name, $font_size, $margin_size, $border) {
+function legend($name, $data, $data_type, $caption_name, $caption_size, $margin_size, $border) {
 
 	$legend_data="";
 	if($data_type==PERCENT) $legend_data=" %";
@@ -95,7 +95,7 @@ function legend($name, $data, $data_type, $font_name, $font_size, $margin_size, 
 	$max_width=0;
 	$max_height=0;
 
-	$font_widths=array();
+	$caption_widths=array();
 	for($i=0;$i<$j;$i++) {
 	
 		if($data_type==PERCENT) {
@@ -105,13 +105,13 @@ function legend($name, $data, $data_type, $font_name, $font_size, $margin_size, 
 			$text=$data[$i].$legend_data;
 
 		$data[$i]=$text;
-		list($llx,$lly,$lrx,$lry,$urx,$ury,$ulx,$uly)=imageTTFbbox($font_size,0,$font_name,$text); 
-		$font_width=abs($llx)+$lrx;
-		$font_height=abs($uly-$lly);
-		if($font_width>$max_width) $max_width=$font_width;
-		if($font_height>$max_height) $max_height=$font_height;
+		list($llx,$lly,$lrx,$lry,$urx,$ury,$ulx,$uly)=imageTTFbbox($caption_size,0,$caption_name,$text); 
+		$caption_width=abs($llx)+$lrx;
+		$caption_height=abs($uly-$lly);
+		if($caption_width>$max_width) $max_width=$caption_width;
+		if($caption_height>$max_height) $max_height=$caption_height;
 
-		$font_widths[$i]=$font_width;
+		$caption_widths[$i]=$caption_width;
 	}
 	
 	$ih=$j*$max_height*1.5+$margin_size;
@@ -127,9 +127,9 @@ function legend($name, $data, $data_type, $font_name, $font_size, $margin_size, 
 	
 	for($i=0;$i<$j;$i++) {
 		$left=$margin_size;
-		$top+=$font_height*1.5;
-		$right=$left+$font_size;
-		$bottom=$top+$font_size;
+		$top+=$caption_height*1.5;
+		$right=$left+$caption_size;
+		$bottom=$top+$caption_size;
 		
 		//if($data_type>STRING) {
 			$r_value=$colors[$i]["red"];
@@ -143,12 +143,12 @@ function legend($name, $data, $data_type, $font_name, $font_size, $margin_size, 
 			//imagerectangle($im, $left, $top, $right, $bottom, $black);
 		
 		if($data_type>STRING)
-		//	$left+=$margin_size*1.5+($max_width-$font_widths[$i]);
+		//	$left+=$margin_size*1.5+($max_width-$caption_widths[$i]);
 		//else if($data_type==STRING) 
 			$left+=$margin_size*1.5;
 		//}
 
-		imagettftext($im, $font_size, 0, $left, $top, $black, $font_name, $data[$i]);
+		imagettftext($im, $caption_size, 0, $left, $top, $black, $caption_name, $data[$i]);
 	}
 
 	$filename="tmp/".uniqid($name).".png";
@@ -158,7 +158,7 @@ function legend($name, $data, $data_type, $font_name, $font_size, $margin_size, 
 	return $filename;
 }
 
-function legend_table($name, $recordset, $font_size, $refs) {
+function legend_table($name, $recordset, $caption_size, $refs) {
 
 	$legend_data="";
 	if($data_type==PERCENT) $legend_data=" %";
@@ -179,7 +179,7 @@ function legend_table($name, $recordset, $font_size, $refs) {
 	$max_width=0;
 	$max_height=0;
 
-	$font_widths=array();
+	$caption_widths=array();
 	$i=0;
 	
 	if($data_type==PERCENT) {
@@ -194,15 +194,15 @@ function legend_table($name, $recordset, $font_size, $refs) {
 	
 	if($refs) {
 		for($i=0;$i<$j;$i++) {
-			$left=0; //$font_size;
-			$top+=0; //$font_size*1.5;
-			$right=$left+$font_size-1;
-			$bottom=$top+$font_size-1;
+			$left=0; //$caption_size;
+			$top+=0; //$caption_size*1.5;
+			$right=$left+$caption_size-1;
+			$bottom=$top+$caption_size-1;
 			
-			$im=imagecreate($font_size, $font_size);
+			$im=imagecreate($caption_size, $caption_size);
 			$white=imagecolorallocate($im, 255, 255, 255);
 			$black=imagecolorallocate($im, 0, 0, 0);
-			$im_size=$font_size-1;
+			$im_size=$caption_size-1;
 			if($border) imagerectangle($im, 0, 0, $im_size, $im_size, $black);
 		
 			$r_value=$colors[$i]["red"];
@@ -212,7 +212,7 @@ function legend_table($name, $recordset, $font_size, $refs) {
 			unset($color);
 			$color=imagecolorallocate($im, $r_value, $g_value, $b_value);
 		
-			imagefilledrectangle($im, 1, 1, $font_size-2, $font_size-2, $color);
+			imagefilledrectangle($im, 1, 1, $caption_size-2, $caption_size-2, $color);
 			imagerectangle($im, $left, $top, $right, $bottom, $black);
 			
 			$filenames[$i]="tmp/".uniqid($name).".png";
@@ -259,7 +259,7 @@ function legend_table($name, $recordset, $font_size, $refs) {
 	return $table;
 }
 
-function camembert($name, $series, $highlight, $data_type, $sql, $width, $height, $font_size, $font_name, $cs) {
+function camembert($name, $series, $highlight, $data_type, $sql, $width, $height, $caption_size, $caption_name, $cs) {
 	$gh=$height;
 	$gw=$width;
 	$iw=$gw;
@@ -392,7 +392,7 @@ function camembert($name, $series, $highlight, $data_type, $sql, $width, $height
 
 		$start=180;
 		$cumul=$start;
-		$percent_size=floor($font_size*0.8);
+		$percent_size=floor($caption_size*0.8);
 		for($i=0; $i<$j; $i++) {
 			$p=$data[$i]/$total*360;
 			$cumul+=$p;
@@ -409,16 +409,16 @@ function camembert($name, $series, $highlight, $data_type, $sql, $width, $height
 			
 			$text=round($data[$i]/$total*100,2);
 			
-			list($llx,$lly,$lrx,$lry,$urx,$ury,$ulx,$uly)=imageTTFbbox($percent_size,0,$font_name,$text); 
+			list($llx,$lly,$lrx,$lry,$urx,$ury,$ulx,$uly)=imageTTFbbox($percent_size,0,$caption_name,$text); 
 			
-			$font_width=abs($llx)+$lrx;
-			$font_height=abs($uly-$lly);
+			$caption_width=abs($llx)+$lrx;
+			$caption_height=abs($uly-$lly);
 			
-			$xx-=$font_width/2;
-			$yy+=$font_height/2;
+			$xx-=$caption_width/2;
+			$yy+=$caption_height/2;
 			
-			imagettftext($im, $percent_size, 0, $xx, $yy, $black, $font_name, $text);
-			//imagettftext($im, $percent_size, $average-180, $xx, $yy, $black, $font_name, $text);
+			imagettftext($im, $percent_size, 0, $xx, $yy, $black, $caption_name, $text);
+			//imagettftext($im, $percent_size, $average-180, $xx, $yy, $black, $caption_name, $text);
 
 			$start=$end;
 
@@ -426,12 +426,12 @@ function camembert($name, $series, $highlight, $data_type, $sql, $width, $height
 
 	}
 
-	$legend=legend_table($name."_legend", $rst, $font_size, true);
+	$legend=legend_table($name."_legend", $rst, $caption_size, true);
 	
 /*	if($data_field!=$ref_field)
-		$legend=legend($name."_legend", $references, STRING, $font_name, $font_size, 12, true);
+		$legend=legend($name."_legend", $references, STRING, $caption_name, $caption_size, 12, true);
 	else
-		$legend=legend($name."_legend", $data, $data_type, $font_name, $font_size, 12, true);*/
+		$legend=legend($name."_legend", $data, $data_type, $caption_name, $caption_size, 12, true);*/
 	
 	$filename="tmp/".uniqid($name).".png";
 	imagepng($im, $filename);
@@ -440,7 +440,7 @@ function camembert($name, $series, $highlight, $data_type, $sql, $width, $height
 	return array($filename, $legend);
 }
 
-function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, $height, $percent_width, $font_size, $font_name, $color, $highlight_color, $cs) {
+function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, $height, $percent_width, $caption_size, $caption_name, $color, $highlight_color, $cs) {
 	$gh=$height*0.80;
 	//$gw=$width*0.80;
 
@@ -519,22 +519,22 @@ function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, 
 	array_reverse($data);
 	$max=floor(max($data)/$unit)+1;
 
-	$font_widths=array();
+	$caption_widths=array();
 	$max_width=0;
 	$max_height=0;
-	$percent_size=floor($font_size*0.80);
+	$percent_size=floor($caption_size*0.80);
 	for($i=0; $i<$max; $i++) {
 		$text=$unit*$i;
 
-		list($llx,$lly,$lrx,$lry,$urx,$ury,$ulx,$uly)=imageTTFbbox($percent_size,0,$font_name,$text); 
+		list($llx,$lly,$lrx,$lry,$urx,$ury,$ulx,$uly)=imageTTFbbox($percent_size,0,$caption_name,$text); 
 		
-		$font_width=abs($llx)+$lrx;
-		$font_height=abs($uly-$lly);
+		$caption_width=abs($llx)+$lrx;
+		$caption_height=abs($uly-$lly);
 			
-		if($font_width>$max_width) $max_width=$font_width;
-		if($font_height>$max_height) $max_height=$font_height;
+		if($caption_width>$max_width) $max_width=$caption_width;
+		if($caption_height>$max_height) $max_height=$caption_height;
 
-		$font_widths[$i]=$font_width;
+		$caption_widths[$i]=$caption_width;
 	}
 
 	$gw_offset=$max_width*1.2;
@@ -547,8 +547,8 @@ function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, 
 		$h=$gh-$step*$i;
 		imageline($im, $gw_offset-3, $h, $gw+$gw_offset+3, $h, $grey);
 	
-		$left=($max_width-$font_widths[$i]);
-		imagettftext($im, $percent_size, 0, $left, $h+$max_height/2, $black, $font_name, $text);
+		$left=($max_width-$caption_widths[$i]);
+		imagettftext($im, $percent_size, 0, $left, $h+$max_height/2, $black, $caption_name, $text);
 	}
 	
 	if(empty($percent_width)) $percent_width=0.75;
@@ -575,22 +575,22 @@ function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, 
 		|| $data_type==PERCENT+CURRENCY_USD
 		|| $data_type==PERCENT+NUMBER) {
 			$text=round($data[$i]/$total*100,2);
-			imagettftext($im, $percent_size, 0, $left, $top-1, $black, $font_name, $text);
+			imagettftext($im, $percent_size, 0, $left, $top-1, $black, $caption_name, $text);
 		}
 	
 		$text=$data[$i];
 		if($data_field!=$ref_field) $text=$references[$i];
-		imagettftext($im, $percent_size, 315, $left, $gh+$max_height+2, $black, $font_name, $text);
+		imagettftext($im, $percent_size, 315, $left, $gh+$max_height+2, $black, $caption_name, $text);
 		
 	}
 	
 	/*	
 	if($data_field!=$ref_field)
-		$legend=legend($name."_legend", $references, STRING, $font_name, $font_size, 12, true);
+		$legend=legend($name."_legend", $references, STRING, $caption_name, $caption_size, 12, true);
 	else
-		$legend=legend($name."_legend", $data, $data_type, $font_name, $font_size, 12, true);
+		$legend=legend($name."_legend", $data, $data_type, $caption_name, $caption_size, 12, true);
 	*/
-	$legend=legend_table($name."_legend", $rst, $font_size, false);
+	$legend=legend_table($name."_legend", $rst, $caption_size, false);
 	
 	$filename="tmp/".uniqid($name).".png";
 	imagepng($im, $filename);
