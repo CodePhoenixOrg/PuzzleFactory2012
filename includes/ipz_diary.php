@@ -273,7 +273,7 @@ function create_diary_control($date, $colors=array()) {
 			if(($params['link_after_date'] == 0) && ($current_timestamp < $loop_timestamp)) {
 				$output .= '<td'.$bgstyle.'>'.$i.$txt_2_use.'</td>'."\n";
 			} else {
-				$output .= '<td'.$bgstyle.'><a href="'.str_replace('%%dd%%', $current_year.$current_month_2.$j ,$params['link_on_day']).'"><span color="'.$text_color.'">'.$i.'</span></a>'.$txt_2_use.'</td>'."\n";
+				$output .= '<td'.$bgstyle.'><a href="'.str_replace('%%dd%%', $current_year.$current_month_2.$j ,$params['link_on_day']).'"><span style="color:'.$text_color.'">'.$i.'</span></a>'.$txt_2_use.'</td>'."\n";
 			}
 		} else {
 			$output .= '<td>'.$i.'</td>'."\n";
@@ -539,7 +539,7 @@ function create_framed_diary_control($date, $target, $colors=array()) {
 				$date_dd="date=$current_year$current_month_2$j";
 				$page_link_of_day="page.php?di=diary&lg=$lg&$date_dd";
 				$menu_link_of_day="$PHP_SELF?id=$id&lg=$lg&$date_dd";
-				$output .= "<td$bgstyle><a href='$page_link_of_day' target='$target' onClick='parent.frames[\"menu\"].location.href=\"$menu_link_of_day\";'><span color='$text_color'>$i</span></a>$txt_2_use</td>\n";
+				$output .= "<td$bgstyle><a href='$page_link_of_day' target='$target' onClick='parent.frames[\"menu\"].location.href=\"$menu_link_of_day\";'><span style='color:$text_color'>$i</span></a>$txt_2_use</td>\n";
 			}
 		} else {
 			$output .= '<td>'.$i.'</td>'."\n";
@@ -770,10 +770,10 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 		$tag_width=" width='".$col_widths[$j]."'";
 		if($j==0) {
 			$text="&nbsp;";
-			$table1.="<td align=center><span color='$header_fore_color'><b>$text<b></span></td>\n";
+			$table1.="<td align=center><span style='color:$header_fore_color'><b>$text<b></span></td>\n";
 		} else {
 			$text="Journée du $dday/$mmonth/$yyear";
-			$table1.="<td align=center><span color='$header_fore_color'><b>$text<b></span></td>\n";
+			$table1.="<td align=center><span style='color:$header_fore_color'><b>$text<b></span></td>\n";
 		}
 	}
 	$table1.="</tr>\n";
@@ -834,7 +834,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 				if($fieldtype=="int") $tag_align=" align='right'";
 				if($fieldlen < 5) $tag_align=" align='center'";
 				$c=$j-1;
-				$table1.="<td $tag_align style=\"font-size:10;height:15\"$tag_width><span id='caption_$name$r$c' color='$fore_color'>&nbsp;<br>&nbsp;</span></td>\n";
+				$table1.="<td $tag_align style=\"font-size:10;height:15\"$tag_width><span id='caption_$name$r$c'style='color:$fore_color'>&nbsp;<br>&nbsp;</span></td>\n";
 			}
 		}
 		$table1.="</tr>\n";

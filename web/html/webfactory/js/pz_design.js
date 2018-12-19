@@ -25,8 +25,8 @@ function setRowColor(thisRow, hlBackColor, hlTextColor) {
 	if(hlBackColor=="") hlBackColor=PZ_DEF_HL_BACK_COLOR;
 	if(hlTextColor=="") hlTextColor=PZ_DEF_HL_TEXT_COLOR;
 	PZ_CUR_ROW_COLOR=thisRow.cells[0].style.backgroundColor;
-	font=eval(document.getElementById("font_"+id+"0"));
-	if(font) PZ_CUR_TEXT_COLOR=font.color;
+	var font=eval(document.getElementById("font_"+id+"0"));
+	if(font !== undefined) PZ_CUR_TEXT_COLOR=font.style.color;
 	CellCount=thisRow.cells.length;
 	for(i=0; i<CellCount; i++) {
 		thisRow.cells[i].style.backgroundColor=hlBackColor;
@@ -51,7 +51,7 @@ function display_tab(thisTab, tabCaptions) {
 	var myTab;
 	var curTab;
 	if(!eval(thisTab)) return false;
-	//alert("Onglet à rendre visible par défaut : "+thisTab.id);
+	//alert("Onglet ï¿½ rendre visible par dï¿½faut : "+thisTab.id);
 
 	for(i=0; i<tabCaptions.length; i++) {
 		curTab=eval(document.getElementById("tab_"+tabCaptions[i]));
@@ -149,7 +149,7 @@ function checkValue(myObjectName, myObjectLabel) {
 		if(!eval(myObject)) return false;
 	}
 
-	alert("j'arrive là 2");
+	alert("j'arrive lï¿½ 2");
 	var strValue=myObject.value;
 	
 	if(strValue=="") {
@@ -157,6 +157,6 @@ function checkValue(myObjectName, myObjectLabel) {
 		return false;
 	}
 	
-	alert("j'arrive là 3");
+	alert("j'arrive lï¿½ 3");
 	return true;
 }

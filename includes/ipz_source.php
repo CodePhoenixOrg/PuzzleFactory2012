@@ -73,7 +73,7 @@ function highlight_php_with_css($code, $return = FALSE)
 		array(
 			'&nbsp;',
 			'<br />',
-			'<span color="',
+			'<span style="color:',
 			'</span>',
 			"\n ",
 			'  '

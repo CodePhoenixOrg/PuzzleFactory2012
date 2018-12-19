@@ -43,14 +43,14 @@ function create_panel($name, $caption, $content, $colors, $panel_width) {
 		"<table border='0' cellspacing='0' cellpadding='1' width='$panel_width' bordercolor='$border_color'>\n".
 		"<tr bgcolor='$border_color'>\n".
 			"\t<td align='left' valign='top' width='$panel_width'>\n".
-				"\t\t<span color='$caption_color'>\n".
+				"\t\t<span style='color:$caption_color'>\n".
 				"\t\t$caption\n".
 				"\t\t</span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height='4' valign='top' bgcolor='$back_color'> \n".
 			"\t<td align='left' valign='top' width='$panel_width'>\n".
-				"\t\t<span color='$fore_color'>\n".
+				"\t\t<span style='color:$fore_color'>\n".
 				"\t\t$content<br>\n".
 				"\t\t</span>\n".
 			"\t</td>\n".
@@ -150,7 +150,7 @@ function create_panel_with_image($name, $caption, $content, $colors, $panel_widt
 		"<table border='0' cellspacing='0' cellpadding='1' width='$panel_width' bordercolor='$border_color'>\n".
 		"<tr bgcolor='$border_color'>\n".
 			"\t<td $caption_span align='left' valign='top' width='$panel_width'>\n".
-				"\t\t<span color='$caption_color'>\n".
+				"\t\t<span style='color:$caption_color'>\n".
 				"\t\t$caption\n".
 				"\t\t</span>\n".
 			"\t</td>\n".
@@ -158,7 +158,7 @@ function create_panel_with_image($name, $caption, $content, $colors, $panel_widt
 		"<tr height='4' valign='top' bgcolor='$back_color'> \n".
 			$imleft.
 			"\t<td align='left' valign='top' width='$content_width'>\n".
-				"\t\t<span color='$fore_color'>\n".
+				"\t\t<span style='color:$fore_color'>\n".
 				"\t\t$content<br>\n".
 				"\t\t</span>\n".
 			"\t</td>\n".

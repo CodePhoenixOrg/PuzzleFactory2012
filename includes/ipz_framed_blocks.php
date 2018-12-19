@@ -156,7 +156,7 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
 			//echo "$request<br>";
 		}
 		
-	        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"window.status='';setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=$lg$request\" target=\"$target\"><span id=\"caption_$index$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
+	        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"window.status='';setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=$lg$request\" target=\"$target\"><span id=\"caption_$index$count$zero\" style=\"color:$fore_color\">$caption</span></a></td></tr>\n";
 		$count++;
 	}
 	
@@ -166,7 +166,7 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"100%\" height=\"4\">\n".
-			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
+			"\t<span style=\"color:$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".
@@ -239,7 +239,7 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
                 $target=$rows[4];
                 $link=$rows[5];
 		$page=$rows[6];
-	        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\" target=\"$target\"><span id=\"caption_$index$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
+	        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\" target=\"$target\"><span id=\"caption_$index$count$zero\" style=\"color:$fore_color\">$caption</span></a></td></tr>\n";
 		$count++;
 	}
 	
@@ -254,7 +254,7 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
 	$block=	"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td id=\"block_caption_$index\" name=\"block_caption$block_column\" width=\"100%\" height=\"4\" onClick=\"expand_block(this, '$block_skin_name');\">\n".
-			"\t<a href=\"#\"><span color=\"$caption_color\"><center>$block_name</center></span></a>\n".
+			"\t<a href=\"#\"><span style=\"color:$caption_color\"><center>$block_name</center></span></a>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\">\n".
@@ -370,7 +370,7 @@ function create_framed_members_block($database, $logout, $di_name, $id, $lg, $ta
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"92\" height=\"4\">\n".
-			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
+			"\t<span style=\"color:$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".
@@ -433,7 +433,7 @@ function create_framed_newsletter_block($database, $di_name, $id, $lg, $target, 
 		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
 		"<tr bgcolor=\"$border_color\">\n".
 			"\t<td width=\"92\" height=\"4\">\n".
-			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
+			"\t<span style=\"color:$caption_color\"><center>$block_name</center></span>\n".
 			"\t</td>\n".
 		"</tr>\n".
 		"<tr height=\"4\" valign=\"top\"> \n".

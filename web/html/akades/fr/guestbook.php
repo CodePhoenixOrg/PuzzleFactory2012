@@ -73,9 +73,9 @@
 	$result = mysqli_query($query, $mysql);
 	$number = mysqli_num_rows($result);
 ?>
-				<center><font face="ARIAL, HELVETICA, SANS-SERIF" SIZE="3" COLOR="#000000">
+				<center><font face="ARIAL, HELVETICA, SANS-SERIF" SIZE="3" style="color:#000000">
 				<B><?php  echo $number ?></B></font>&nbsp;
-				<font face="ARIAL, HELVETICA, SANS-SERIF" SIZE="3" COLOR="#86DEF6">
+				<font face="ARIAL, HELVETICA, SANS-SERIF" SIZE="3" style="color:#86DEF6">
 				<B>messages</B></font></center>
 <?
 	$cpt=0;

@@ -17,28 +17,30 @@ function pz_shadow(thisName) {
 }
 
 function setRowColor(thisRow, hlBackColor, hlTextColor) {
-	id=thisRow.id;
+	var id=thisRow.id;
 	if(hlBackColor=="") hlBackColor=PZ_DEF_HL_BACK_COLOR;
 	if(hlTextColor=="") hlTextColor=PZ_DEF_HL_TEXT_COLOR;
 	PZ_CUR_ROW_COLOR=thisRow.cells[0].style.backgroundColor;
-	font=eval(document.getElementById("caption_"+id+"0"));
-	if(font) PZ_CUR_TEXT_COLOR=font.color;
+	// var font=document.getElementById("caption_"+id+"0");
+	var font=document.querySelector("span[id='caption_"+id+"0']");
+
+	if(font !== null) PZ_CUR_TEXT_COLOR=font.style.color;
 	CellCount=thisRow.cells.length;
 	for(i=0; i<CellCount; i++) {
 		thisRow.cells[i].style.backgroundColor=hlBackColor;
-		thisRow.cells[i].style.fontColor=hlTextColor;
-		//font=eval(document.getElementById("caption_"+id+i));
-		//if(font) font.color=hlTextColor;
+		// thisRow.cells[i].style.color=hlTextColor;
+		var font=document.querySelector("span[id='caption_"+id+i+"']");
+		if(font !== null) font.style.color=hlTextColor;
 	}
 }
 
 function setBackRowColor(thisRow) {
-	id=thisRow.id;
+	var id=thisRow.id;
 	CellCount=thisRow.cells.length;
 	for(i=0; i<CellCount; i++) {
 		thisRow.cells[i].style.backgroundColor=PZ_CUR_ROW_COLOR;
 		//thisRow.cells[i].style.fontColor=PZ_CUR_TEXT_COLOR;
-		font=eval(document.getElementById("font_"+id+i));
-		if(font) font.color=PZ_CUR_TEXT_COLOR;
+		var font=document.querySelector("span[id='caption_"+id+i+"']");
+		if(font !== null) font.style.color=PZ_CUR_TEXT_COLOR;
 	}
 }

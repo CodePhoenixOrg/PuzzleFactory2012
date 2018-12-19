@@ -344,8 +344,8 @@ function create_main_menu($database="", $level=0)
         //$target=$rows[3];
         //$link=$rows[4];
         
-        #$main_menu=$main_menu . "<td bgcolor='black'><a href='page.php?id=$index&lg=" . $lg . "'><span color='#ffffff'><b>$caption</b></span></a><span color='#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
-        $main_menu=$main_menu . "<td><a href='page.php?id=$index&lg=" . $lg . "'><span color='#ffffff'><b>$caption</b></span></a><span color='#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
+        #$main_menu=$main_menu . "<td bgcolor='black'><a href='page.php?id=$index&lg=" . $lg . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
+        $main_menu=$main_menu . "<td><a href='page.php?id=$index&lg=" . $lg . "'><span style='color:#ffffff'><b>$caption</b></span></a><span style='color:#ffffff'><b>&nbsp;|&nbsp;</b></span></td>";
         
         if ($count==0) {
             $default_id=$index;
@@ -425,14 +425,14 @@ function create_sub_menu($database="", $id=0, $lg="", $orientation)
         if ($orientation==SUB_MENU_HORIZONTAL) {
             switch ($level) {
             case "2":
-                            $sub_menu.="<a href='page.php?id=$index&lg=" . $lg . "'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            $sub_menu.="<a href='page.php?id=$index&lg=" . $lg . "'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                 break;
             case "3":
-                            $sub_menu.="<a href='$target?id=$index&lg=" . $lg . "'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            $sub_menu.="<a href='$target?id=$index&lg=" . $lg . "'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                 break;
             case "4":
-                            $sub_menu.="<a href='page.php?id=$page&lg=" . $lg . "#$target'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
-                            //$sub_menu.="<a href='$PHP_SELF#$target'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            $sub_menu.="<a href='page.php?id=$page&lg=" . $lg . "#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            //$sub_menu.="<a href='$PHP_SELF#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                 break;
                     }
         } elseif ($orientation==SUB_MENU_VERTICAL) {
@@ -522,17 +522,17 @@ function create_menu_tree($database="", $id=0, $lg="", $orientation)
         if ($orientation==SUB_MENU_HORIZONTAL) {
             switch ($level) {
             case "1":
-                            $sub_menu.="<a href='page.php?id=$index&lg=" . $lg . "'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            $sub_menu.="<a href='page.php?id=$index&lg=" . $lg . "'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                 break;
             case "2":
-                            $sub_menu.="<a href='page.php?id=$index&lg=" . $lg . "'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            $sub_menu.="<a href='page.php?id=$index&lg=" . $lg . "'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                 break;
             case "3":
-                            $sub_menu.="<a href='$target?id=$index&lg=" . $lg . "'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            $sub_menu.="<a href='$target?id=$index&lg=" . $lg . "'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                 break;
             case "4":
-                            $sub_menu.="<a href='page.php?id=$page&lg=" . $lg . "#$target'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
-                            //$sub_menu.="<a href='$PHP_SELF#$target'><span color='#FFFFFF'>$caption</span></a><span color='#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            $sub_menu.="<a href='page.php?id=$page&lg=" . $lg . "#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
+                            //$sub_menu.="<a href='$PHP_SELF#$target'><span style='color:#FFFFFF'>$caption</span></a><span style='color:#FFFFFF'>&nbsp;|&nbsp;</span>";
                 break;
                     }
         } elseif ($orientation==SUB_MENU_VERTICAL) {

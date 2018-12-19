@@ -37,15 +37,15 @@
 	$default_id=$main_menu["index"];
 
 	$id=(isset($_GET["id"])) ? $_GET["id"] : 1;
-	//$di=(isset($_GET["di"])) ? $_GET["di"] : $id;
+	$di=(isset($_GET["di"])) ? $_GET["di"] : '';
 
-	if(!empty($id)) {
-		$title_page = retrieve_page_by_menu_id($database, $id, $lg);
-		$di=$title_page["index"];
-	} elseif(!empty($di)) {
+	if($di !== '') {
 		$title_page = retrieve_page_by_dictionary_id($database, $di, $lg);
 		$id=$title_page["index"];
-	} 
+	} else {
+		$title_page = retrieve_page_by_menu_id($database, $id, $lg);
+		$di=$title_page["index"];
+	}
 	//echo "id='$id'; di='$di';<br>";
 	
 	debugLog("TITLE PAGE", $title_page);

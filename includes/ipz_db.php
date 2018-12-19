@@ -764,7 +764,7 @@ function tableau_sql(
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
-			echo "<td align=center$tag_width'><span color='#000000'><b>$fieldname<b></span></td>";
+			echo "<td align=center$tag_width'><span style='color:#000000'><b>$fieldname<b></span></td>";
 		}
 		echo "</tr>";
 		$r=0;
@@ -870,7 +870,7 @@ function tableau_sql_scroll(
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
-			echo "<td align=center$tag_width'><span color='#000000'><b>$fieldname<b></span></td>";
+			echo "<td align=center$tag_width'><span style='color:#000000'><b>$fieldname<b></span></td>";
 		}
 		echo "</tr>";
 		$r=0;
@@ -979,7 +979,7 @@ function tableau_sql_supp(
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
-			echo "<td align=center$tag_width'><span color='#000000'><b>$fieldname<b></span></td>";
+			echo "<td align=center$tag_width'><span style='color:#000000'><b>$fieldname<b></span></td>";
 		}
 		echo "</tr>";
 		$r=0;
@@ -1092,7 +1092,7 @@ function tableau_sql_vue(
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
-			echo "<td align=center$tag_width'><span color='#000000'><b>$fieldname<b></span></td>";
+			echo "<td align=center$tag_width'><span style='color:#000000'><b>$fieldname<b></span></td>";
 		}
 		echo "</tr>";
 		$r=0;
@@ -1214,7 +1214,7 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
-			echo "<td align=center$tag_width'><span color='#000000'><b>$fieldname<b></span></td>";
+			echo "<td align=center$tag_width'><span style='color:#000000'><b>$fieldname<b></span></td>";
 		}
 		echo "<td><input type=checkbox name=checkall value=top onClick='return CheckAll(document.$name);'></td>";
 		echo "</tr>";
@@ -1350,7 +1350,7 @@ function tableau_sql_check_2(
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
-			echo "<td align=center$tag_width'><span color='#000000'><b>$fieldname<b></span></td>";
+			echo "<td align=center$tag_width'><span style='color:#000000'><b>$fieldname<b></span></td>";
 		}
 		echo "<td><input type=checkbox name=checkall value=top onClick='return CheckAll(document.$name);'></td>";
 		echo "</tr>";
@@ -1846,7 +1846,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
-			echo "<td align=center$tag_width'><span color='#000000'><b>$fieldname<b></span></td>";
+			echo "<td align=center$tag_width'><span style='color:#000000'><b>$fieldname<b></span></td>";
 		}
 		echo "</tr>";
 		$r=0;
