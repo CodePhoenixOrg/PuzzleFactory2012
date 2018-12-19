@@ -156,7 +156,7 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
 			//echo "$request<br>";
 		}
 		
-	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"window.status='';setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=$lg$request\" target=\"$target\"><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
+	        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"window.status='';setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=$lg$request\" target=\"$target\"><span id=\"caption_$index$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
 		$count++;
 	}
 	
@@ -239,7 +239,7 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
                 $target=$rows[4];
                 $link=$rows[5];
 		$page=$rows[6];
-	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\" target=\"$target\"><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
+	        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\" target=\"$target\"><span id=\"caption_$index$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
 		$count++;
 	}
 	

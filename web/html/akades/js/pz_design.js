@@ -21,14 +21,14 @@ function setRowColor(thisRow, hlBackColor, hlTextColor) {
 	if(hlBackColor=="") hlBackColor=PZ_DEF_HL_BACK_COLOR;
 	if(hlTextColor=="") hlTextColor=PZ_DEF_HL_TEXT_COLOR;
 	PZ_CUR_ROW_COLOR=thisRow.cells[0].style.backgroundColor;
-	font=eval(document.getElementById("font_"+id+"0"));
+	font=eval(document.getElementById("caption_"+id+"0"));
 	if(font) PZ_CUR_TEXT_COLOR=font.color;
 	CellCount=thisRow.cells.length;
 	for(i=0; i<CellCount; i++) {
 		thisRow.cells[i].style.backgroundColor=hlBackColor;
-		//thisRow.cells[i].style.fontColor=hlTextColor;
-		font=eval(document.getElementById("font_"+id+i));
-		if(font) font.color=hlTextColor;
+		thisRow.cells[i].style.fontColor=hlTextColor;
+		//font=eval(document.getElementById("caption_"+id+i));
+		//if(font) font.color=hlTextColor;
 	}
 }
 

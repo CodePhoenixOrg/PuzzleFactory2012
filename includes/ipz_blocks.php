@@ -186,7 +186,7 @@ function create_block($database, $block_num, $id, $lg, $colors)
             $url=$link;
         }
         
-        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"$url\"$target><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
+        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"$url\"$target><span id=\"caption_$index$count$zero\" style=\"color:$fore_color\">$caption</span></a></td></tr>\n";
         $count++;
     }
     
@@ -196,7 +196,7 @@ function create_block($database, $block_num, $id, $lg, $colors)
         "<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
         "<tr bgcolor=\"$border_color\">\n".
             "\t<td width=\"100%\" height=\"4\">\n".
-            "\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
+            "\t<span style=\"color:$caption_color\"><center>$block_name</center></span>\n".
             "\t</td>\n".
         "</tr>\n".
         "<tr height=\"4\" valign=\"top\"> \n".
@@ -214,180 +214,186 @@ function create_block($database, $block_num, $id, $lg, $colors)
     return $block;
 }
 
-function create_collapseable_block($block_skin_name, $block_num, $colors) {
-	global $db_prefix;
+function create_collapseable_block($block_skin_name, $block_num, $colors)
+{
+    global $db_prefix;
 
-	if(empty($colors)) { 
-		global $panel_colors;
-		$color=$panel_colors;
-	}
-	
-	if(!empty($colors)) {
-		$border_color=$colors["border_color"];
-		$caption_color=$colors["caption_color"];
-		$back_color=$colors["back_color"];
-		$fore_color=$colors["fore_color"];
-	} else {
-		$border_color="black";
-		$caption_color="white";
-		$back_color="white";
-		$fore_color="black";
-	}
+    if (empty($colors)) {
+        global $panel_colors;
+        $color=$panel_colors;
+    }
+    
+    if (!empty($colors)) {
+        $border_color=$colors["border_color"];
+        $caption_color=$colors["caption_color"];
+        $back_color=$colors["back_color"];
+        $fore_color=$colors["fore_color"];
+    } else {
+        $border_color="black";
+        $caption_color="white";
+        $back_color="white";
+        $fore_color="black";
+    }
 
-	$id=get_variable("id");
-	$lg=get_variable("lg");
-	$database=get_variable("database");
+    $id=get_variable("id");
+    $lg=get_variable("lg");
+    $database=get_variable("database");
 
-        $cs=connection("connect", $database);
-	$sql=	"select d.di_".$lg."_short, b.bl_column ".
-		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where  b.di_id=d.di_id ".
-		"and b.bl_id=$block_num";
-	$result=mysqli_query($cs, $sql);
-	$rows=mysqli_fetch_array($result);
-	$block_name=$rows[0];
-	$block_column=$rows[1];
+    $cs=connection("connect", $database);
+    $sql=	"select d.di_".$lg."_short, b.bl_column ".
+        "from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
+        "where  b.di_id=d.di_id ".
+        "and b.bl_id=$block_num";
+    $result=mysqli_query($cs, $sql);
+    $rows=mysqli_fetch_array($result);
+    $block_name=$rows[0];
+    $block_column=$rows[1];
 
-        $sql=	"select m.me_id, m.me_level, m.bl_id, d.di_" . $lg . "_short, m.me_target, p.pa_filename, p.pa_id " .
+    $sql=	"select m.me_id, m.me_level, m.bl_id, d.di_" . $lg . "_short, m.me_target, p.pa_filename, p.pa_id " .
                 "from ${db_prefix}menus m, ${db_prefix}blocks b, ${db_prefix}pages p, ${db_prefix}dictionary d ".
                 "where m.di_name=d.di_name ".
                 "and p.pa_id=m.pa_id ".
-		"and m.bl_id=b.bl_id ". 
-		"and m.bl_id=$block_num ".
-		"order by m.me_id";
-		
-	$sub_menu="";
-	$count=0;
-	$zero=0;
-	
-        $result=mysqli_query($cs, $sql);
-        while($rows=mysqli_fetch_array($result)) {
-                $index=$rows[0];
-                $level=$rows[1];
-		$block=$rows[2];
-                $caption=$rows[3];
-                $target=$rows[4];
-                $link=$rows[5];
-		$page=$rows[6];
-	        $sub_menu.="<tr id=\"$block_name$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\"><span id=\"caption_$block_name$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
-		$count++;
-	}
-	
-	$table_name="block$block_column$id$index";
+        "and m.bl_id=b.bl_id ".
+        "and m.bl_id=$block_num ".
+        "order by m.me_id";
+        
+    $sub_menu="";
+    $count=0;
+    $zero=0;
+    
+    $result=mysqli_query($cs, $sql);
+    while ($rows=mysqli_fetch_array($result)) {
+        $index=$rows[0];
+        $level=$rows[1];
+        $block=$rows[2];
+        $caption=$rows[3];
+        $target=$rows[4];
+        $link=$rows[5];
+        $page=$rows[6];
+        $sub_menu.="<tr id=\"$index$count\" onMouseOver=\"setRowColor(this, hlBackColor, hlTextColor);\" onMouseOut=\"setBackRowColor(this);\"><td><a href=\"page.php?id=$index&lg=" . $lg . "\"><span id=\"caption_$index$count$zero\" color=\"$fore_color\">$caption</span></a></td></tr>\n";
+        $count++;
+    }
+    
+    $table_name="block$block_column$id$index";
 
-	/*
-	$js="\tif(PZ_CURRENT_EXPANDED_BLOCK==null) {\n\t\tvar block=eval(document.getElementById(\"block_caption$index\"));\n\t\texpand_block(block, \"$block_skin_name\");\n\t}\n";
-	$_SESSION["javascript"].=$js;
-	*/
-	
-			//"\t<td id=\"block_caption_$index\" name=\"block_caption$block_column\" width=\"100%\" height=\"4\" onClick=\"PZ_CURRENT_BLOCK_SKIN='$block_skin_name'; expand_block(this);\">\n".
-	$block=	"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
-		"<tr bgcolor=\"$border_color\">\n".
-			"\t<td id=\"block_caption_$index\" name=\"block_caption$block_column\" width=\"100%\" height=\"4\" onClick=\"expand_block(this, '$block_skin_name');\">\n".
-			"\t<a href=\"#\"><span color=\"$caption_color\"><center>$block_name</center></span></a>\n".
-			"\t</td>\n".
-		"</tr>\n".
-		"<tr height=\"4\" valign=\"top\">\n".
-			"\t<td width=\"100%\" bgcolor=\"$back_color\">\n".
-			"\t<table id=\"block_table_$index\" name=\"block_table$block_column\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"display: none; visibilty: visible;\">\n".
-			"\t$sub_menu\n".
-			"\t</table>\n".
-			"\t</td>\n".
-		"</tr>\n".
-		"</table>\n";
+    /*
+    $js="\tif(PZ_CURRENT_EXPANDED_BLOCK==null) {\n\t\tvar block=eval(document.getElementById(\"block_caption$index\"));\n\t\texpand_block(block, \"$block_skin_name\");\n\t}\n";
+    $_SESSION["javascript"].=$js;
+    */
+    
+    //"\t<td id=\"block_caption_$index\" name=\"block_caption$block_column\" width=\"100%\" height=\"4\" onClick=\"PZ_CURRENT_BLOCK_SKIN='$block_skin_name'; expand_block(this);\">\n".
+    $block=	"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
+        "<tr bgcolor=\"$border_color\">\n".
+            "\t<td id=\"block_caption_$index\" name=\"block_caption$block_column\" width=\"100%\" height=\"4\" onClick=\"expand_block(this, '$block_skin_name');\">\n".
+            "\t<a href=\"#\"><span color=\"$caption_color\"><center>$block_name</center></span></a>\n".
+            "\t</td>\n".
+        "</tr>\n".
+        "<tr height=\"4\" valign=\"top\">\n".
+            "\t<td width=\"100%\" bgcolor=\"$back_color\">\n".
+            "\t<table id=\"block_table_$index\" name=\"block_table$block_column\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"display: none; visibilty: visible;\">\n".
+            "\t$sub_menu\n".
+            "\t</table>\n".
+            "\t</td>\n".
+        "</tr>\n".
+        "</table>\n";
 
-	return $block;
+    return $block;
 }
 
-function create_members_block($database, $logout, $di_id, $id, $lg, $colors) {
-	global $PHP_SELF, $db_prefix;
-	
-	if(empty($colors)) { 
-		global $panel_colors;
-		$color=$panel_colors;
-	}
-	
-	if(!empty($colors)) {
-		$border_color=$colors["border_color"];
-		$caption_color=$colors["caption_color"];
-		$back_color=$colors["back_color"];
-		$fore_color=$colors["fore_color"];
-	} else {
-		$border_color="black";
-		$caption_color="white";
-		$back_color="white";
-		$fore_color="black";
-	}
+function create_members_block($database, $logout, $di_id, $id, $lg, $colors)
+{
+    global $PHP_SELF, $db_prefix;
+    
+    if (empty($colors)) {
+        global $panel_colors;
+        $color=$panel_colors;
+    }
+    
+    if (!empty($colors)) {
+        $border_color=$colors["border_color"];
+        $caption_color=$colors["caption_color"];
+        $back_color=$colors["back_color"];
+        $fore_color=$colors["fore_color"];
+    } else {
+        $border_color="black";
+        $caption_color="white";
+        $back_color="white";
+        $fore_color="black";
+    }
 
-        $cs=connection("connect", $database);
-	$sql=	"select d.di_".$lg."_short ".
-		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
-		"where  b.di_id=d.di_id ".
-		"and b.di_id=\"$di_id\"";
-	$result=mysqli_query($cs, $sql);
-	$rows=mysqli_fetch_array($result, MYSQLI_NUM);
-	$block_name=$rows[0];
-	
-	$table_name="members";
+    $cs=connection("connect", $database);
+    $sql=	"select d.di_".$lg."_short ".
+        "from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
+        "where  b.di_id=d.di_id ".
+        "and b.di_id=\"$di_id\"";
+    $result=mysqli_query($cs, $sql);
+    $rows=mysqli_fetch_array($result, MYSQLI_NUM);
+    $block_name=$rows[0];
+    
+    $table_name="members";
 
-	if(!isset($_SESSION["ses_status"]))
-		$status=MEMBER_LOGGED_OUT;
-	else
-		$status=$_SESSION["ses_status"];
-	if(!isset($_SESSION["ses_apps_login"]))
-		$apps_login="";
-	else
-		$apps_login=$_SESSION["ses_apps_login"];
+    if (!isset($_SESSION["ses_status"])) {
+        $status=MEMBER_LOGGED_OUT;
+    } else {
+        $status=$_SESSION["ses_status"];
+    }
+    if (!isset($_SESSION["ses_apps_login"])) {
+        $apps_login="";
+    } else {
+        $apps_login=$_SESSION["ses_apps_login"];
+    }
 
-	if($status==MEMBER_LOGGED_OUT)
-		$connection_link="\t<a href=\"page.php?di=ed_membe&lg=$lg&action=Ajouter\">Devenir membre >></a>\n";
-	else if($status==MEMBER_LOGGED_IN)
-		$connection_link="\t<a href=\"page.php?id=$id&lg=$lg&logout=1\">Déconnexion</a>\n";
+    if ($status==MEMBER_LOGGED_OUT) {
+        $connection_link="\t<a href=\"page.php?di=ed_membe&lg=$lg&action=Ajouter\">Devenir membre >></a>\n";
+    } elseif ($status==MEMBER_LOGGED_IN) {
+        $connection_link="\t<a href=\"page.php?id=$id&lg=$lg&logout=1\">Déconnexion</a>\n";
+    }
 
-	if($apps_login)
-		$connection_link="";
-		
-	if($logout) {
-		session_destroy();
-		$js=	"<script language=JavaScript>".
-			"window.location.href='page.php?id=1&lg=$lg';".
-			"</script>\n";
-		echo $js;
-	}
+    if ($apps_login) {
+        $connection_link="";
+    }
+        
+    if ($logout) {
+        session_destroy();
+        $js=	"<script language=JavaScript>".
+            "window.location.href='page.php?id=1&lg=$lg';".
+            "</script>\n";
+        echo $js;
+    }
 
-	//session_destroy();
-	//"\t<input type=\"hidden\" name=\"event\" value=\"onRun\">".
-	$block=	"<table id=\"$table_name\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"100\" bordercolor=\"$border_color\"><tr><td>\n".
-		"<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
-		"<tr bgcolor=\"$border_color\">\n".
-			"\t<td width=\"92\" height=\"4\">\n".
-			"\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
-			"\t</td>\n".
-		"</tr>\n".
-		"<tr height=\"4\" valign=\"top\"> \n".
-			"\t<form method=\"POST\" name=\"membersForm\" action=\"$PHP_SELF\">\n".
-			"\t<td width=\"96\" bgcolor=\"$back_color\" align=\"center\">\n".
-			"\t<input type=\"hidden\" name=\"mbr_valider\" value=\"\">".
-			"\tLogin<br>\n".
-			"\t<input type=\"text\" name=\"mbr_login\" size=\"10\"><br>\n".
-			"\tMot de passe<br>\n".
-			"\t<input type=\"password\" name=\"mbr_pass\" size=\"10\"><br>\n".
-			"\t<input type=\"button\" name=\"mbr_ok\" value=\"OK\" ".
-			"onClick=\"document.membersForm.mbr_valider.value='OK';document.membersForm.submit();\">\n".
-			"\t</td>\n".
-			"\t</form>\n".
-		"</tr>\n".
-		"<tr height=\"4\" valign=\"top\"> \n".
-			"\t<td width=\"96\" bgcolor=\"$back_color\" align=\"center\" style=\"font-size: 10;\">\n".
-			$connection_link.
-			"\t</td>\n".
-		"</tr>\n".
-		"</table>\n".
-		"</td></tr></table>\n";
+    //session_destroy();
+    //"\t<input type=\"hidden\" name=\"event\" value=\"onRun\">".
+    $block=	"<table id=\"$table_name\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\" width=\"100\" bordercolor=\"$border_color\"><tr><td>\n".
+        "<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\" width=\"100\" bordercolor=\"$border_color\">\n".
+        "<tr bgcolor=\"$border_color\">\n".
+            "\t<td width=\"92\" height=\"4\">\n".
+            "\t<span color=\"$caption_color\"><center>$block_name</center></span>\n".
+            "\t</td>\n".
+        "</tr>\n".
+        "<tr height=\"4\" valign=\"top\"> \n".
+            "\t<form method=\"POST\" name=\"membersForm\" action=\"$PHP_SELF\">\n".
+            "\t<td width=\"96\" bgcolor=\"$back_color\" align=\"center\">\n".
+            "\t<input type=\"hidden\" name=\"mbr_valider\" value=\"\">".
+            "\tLogin<br>\n".
+            "\t<input type=\"text\" name=\"mbr_login\" size=\"10\"><br>\n".
+            "\tMot de passe<br>\n".
+            "\t<input type=\"password\" name=\"mbr_pass\" size=\"10\"><br>\n".
+            "\t<input type=\"button\" name=\"mbr_ok\" value=\"OK\" ".
+            "onClick=\"document.membersForm.mbr_valider.value='OK';document.membersForm.submit();\">\n".
+            "\t</td>\n".
+            "\t</form>\n".
+        "</tr>\n".
+        "<tr height=\"4\" valign=\"top\"> \n".
+            "\t<td width=\"96\" bgcolor=\"$back_color\" align=\"center\" style=\"font-size: 10;\">\n".
+            $connection_link.
+            "\t</td>\n".
+        "</tr>\n".
+        "</table>\n".
+        "</td></tr></table>\n";
 
-	$block=table_shadow($table_name, $block);
-	
-	return $block;
+    $block=table_shadow($table_name, $block);
+    
+    return $block;
 }
 
 function get_authentication($login) {
@@ -447,6 +453,7 @@ function get_authentication($login) {
 
 	return $authenticate;
 }
+
 
 function perform_members_ident($login, $pass, $submit) {
 	global $database, $db_prefix;
