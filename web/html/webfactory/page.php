@@ -30,25 +30,13 @@
 	$toplinks=$main_menu["menu"];
 	$default_id=$main_menu["index"];
 	
-	$id=$_GET["id"];
-	$di=$_GET["di"];
-	
-	/*if(isset($default_id) && $default_id==10) {
-		$id=$default_id;
-		unset($di);
-	}*/	
+	$id=(isset($_GET["id"])) ? $_GET["id"] : 1;
+	$di=(isset($_GET["di"])) ? $_GET["di"] : '';
 
-	if(isset($di) && !isset($id)) {
+	if($di !== '') {
 		$title_page = retrieve_page_by_dictionary_id($database, $di, $lg);
 		$id=$title_page["index"];
-		if($id=="") $id=$default_id;	
-	}
-	if(isset($id) && !isset($di)) {
-		$title_page = retrieve_page_by_menu_id($database, $id, $lg);
-		$di=$title_page["index"];
-	}
-	if(!isset($id) && !isset($di)) {
-		$id=$default_id;
+	} else {
 		$title_page = retrieve_page_by_menu_id($database, $id, $lg);
 		$di=$title_page["index"];
 	}

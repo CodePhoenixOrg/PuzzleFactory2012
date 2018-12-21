@@ -12,7 +12,10 @@ function checkValues() {
 </script>
 <center>
 <?php   
-	if(empty($userdb)) $userdb="webfactory";
+	include_once 'puzzle/ipz_controls.php';
+	$userdb=(isset($_POST["srvdir"])) ? $_POST["userdb"] : 'webfactory';
+	$basedir=(isset($_POST["srvdir"])) ? $_POST["srvdir"] : '';
+
 	if(!isset($query)) $query="MENU";
 	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 	$tmp_filename="tmp.php";
@@ -31,9 +34,8 @@ function checkValues() {
 	
 	if($basedir=="") $basedir= get_current_dir() . "/fr";
 
-	$on_change="document.myForm.basedir.value=\"\";";
-	$on_change_table="document.myForm.pa_filename.value=this.value;";
-	//$on_change="document.myForm.submit();";
+	$on_change="";
+	$on_change_table="";
 	$srvdir=create_server_directory_selector("srvdir", "myForm", $basedir, $on_change);
 	$srvfiles=create_server_file_selector("srvfiles", "myForm", $basedir, "php", 5, "srvdir", $on_change);
 	$database_list=create_options_from_query("show databases", 0, 0, array(), $userdb, false, $cs);

@@ -81,11 +81,12 @@ function on_change_tab($tab_ctrl_name="", $tab_id=0) {
 
 function create_server_file_selector($name="", $formname="", $basedir="", $filter="", $size=0, $dir_selector="", $onChange="") {
 	global $_SESSION;
-	if(substr($basedir, strlen($basedir)-1, 1)!="/") $basedir.="/";
-	if(substr($basedir, strlen($basedir)-3, 3)=="../") {
-		$basedir=substr($basedir, 0, strlen($basedir)-4);
-		$p=strrpos($basedir, "/");
-		$basedir=substr($basedir, 0, $p)."/";
+	if(substr($basedir, -2) == "/.") $basedir = substr($basedir, 0, -1) ;
+	if(substr($basedir, -1) != "/") $basedir.="/";
+	if(substr($basedir, -3) == "../") {
+		$basedir = substr($basedir, 0, -4);
+		$p = strrpos($basedir, "/");
+		$basedir = substr($basedir, 0, $p)."/";
 	}
 
 	if($dir_selector!="") {
@@ -153,11 +154,12 @@ function create_server_file_selector($name="", $formname="", $basedir="", $filte
 }
 
 function create_server_directory_selector($name="", $formname="", $basedir="", $onChange="") {
-	if(substr($basedir, strlen($basedir)-1, 1)!="/") $basedir.="/";
-	if(substr($basedir, strlen($basedir)-3, 3)=="../") {
-		$basedir=substr($basedir, 0, strlen($basedir)-4);
-		$p=strrpos($basedir, "/");
-		$basedir=substr($basedir, 0, $p)."/";
+	if(substr($basedir, -2) == "/.") $basedir = substr($basedir, 0, -1) ;
+	if(substr($basedir, -1) != "/") $basedir.="/";
+	if(substr($basedir, -3) == "../") {
+		$basedir = substr($basedir, 0, -4);
+		$p = strrpos($basedir, "/");
+		$basedir = substr($basedir, 0, $p)."/";
 	}
 
 	echo "basedir='".get_www_root().$basedir."'<br>";
@@ -165,9 +167,10 @@ function create_server_directory_selector($name="", $formname="", $basedir="", $
 	chdir(get_www_root().$basedir);
 	
 	$handle=opendir(get_www_root().$basedir);
+	//document.$formname.basedir.value=this.value
 
 	$result="";
-	$result.="<select id='$name' name='$name' maxlength='15' onChange='".$onChange."document.$formname.basedir.value=this.value;document.$formname.submit()'>\n";
+	$result.="<select id='$name' name='$name' maxlength='15' onChange='".$onChange."document.$formname.submit()'>\n";
 	$dirs=array();
 	$i=0;
 	while ($dir = readdir($handle)) {
