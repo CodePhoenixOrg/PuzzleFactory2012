@@ -1,18 +1,22 @@
 <center>
 <?php   
 	//if(empty($userdb)) $userdb="webfactory";
-	$userdb=$_POST["userdb"];
-	$usertable=$_POST["usertable"];
-	$dbgrid=$_POST["dbgrid"];
-	$menu=$_POST["menu"];
-	$filter=$_POST["filter"];
-	$addoption=$_POST["addoption"];
-	$me_id=$_POST["me_id"];
-	$me_level=$_POST["me_level"];
-	$bl_id=$_POST["bl_id"];
-	$pa_filename=$_POST["pa_filename"];
-	$extension=$_POST["extension"];
-	$basedir=$_POST["basedir"];
+	$userdb = get_variable("userdb");
+	$usertable = get_variable("usertable");
+	$dbgrid = get_variable("dbgrid");
+	$menu = get_variable("menu");
+	$filter = get_variable("filter");
+	$addoption = get_variable("addoption");
+	$me_id = get_variable("me_id");
+	$me_level = get_variable("me_level");
+	$bl_id = get_variable("bl_id");
+	$di_long = get_variable("di_long");
+	$di_short = get_variable("di_short");
+	$di_name = get_variable("di_name");
+	$autogen = get_variable("autogen");
+	$pa_filename = get_variable("pa_filename");
+	$extension = get_variable("extension");
+	$basedir = get_variable("basedir");
 	
 	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 	$tmp_filename="tmp.php";
@@ -44,6 +48,10 @@
 	$hidden.="<input type='hidden' name='pa_filename' value='$pa_filename'>\n";
 	$hidden.="<input type='hidden' name='extension' value='$extension'>\n";
 	$hidden.="<input type='hidden' name='basedir' value='$basedir'>\n";
+	$hidden.="<input type='hidden' name='di_name' value='$di_name'>\n";
+	$hidden.="<input type='hidden' name='di_long' value='$di_long'>\n";
+	$hidden.="<input type='hidden' name='di_short' value='$di_short'>\n";
+	$hidden.="<input type='hidden' name='autogen' value='$autogen'>\n";
 	$hidden.="<input type='hidden' name='pz_current_tab' value=''>\n";
 	
 	$mk_fields="

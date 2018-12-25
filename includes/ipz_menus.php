@@ -89,12 +89,12 @@ function menu_exists($database="", $pa_filename="")
 
 function get_menu_id($database="", $pa_filename)
 {
-    $cs=connection(CONNECT, $database);
-    $sql="SELECT me_id from menus inner join pages on menus.pa_id = pages.pa_id where pages.pa_filename = '$pa_filename'";
-    //echo "sql: '$sql';<br>";
-    $result=mysqli_query($cs, $sql);
-    $rows=mysqli_fetch_array($result);
-    $menu_id=$rows[0];
+    $cs = connection(CONNECT, $database);
+    $sql = "select me_id from menus inner join pages on menus.pa_id = pages.pa_id where pages.pa_filename = '$pa_filename'";
+	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+    $result = mysqli_query($cs, $sql);
+    $rows = mysqli_fetch_array($result);
+    $menu_id = isset($rows[0]) ? (int)$rows[0] : 0;
 
     return $menu_id;
 }
@@ -139,47 +139,61 @@ function get_page_filename($database="", $id=0)
 		
 function add_menu(
 	$database="",
-	$me_id=0, $di_name="", $me_level="", $me_target="", 
-	$pa_id=0, $new_pa_id=0, $pa_filename="", 
+	$di_name="", $me_level="", $me_target="", $pa_filename="", 
 	$di_fr_short="", $di_fr_long="", $di_en_short="", $di_en_long=""
 ) {
     if (!menu_exists($pa_filename)) {
         $cs=connection("connect", $database);
         $wwwroot=get_www_root();
         
-        if (empty($me_id)) {
-            $sql="select max(me_id) from menus";
-            $result=mysqli_query($cs, $sql);
-            $rows=mysqli_fetch_array($result);
-            $me_id=$rows[0]+1;
-        }
+        // if (empty($me_id)) {
+        //     $sql="select max(me_id) from menus";
+        //     $result=mysqli_query($cs, $sql);
+        //     $rows=mysqli_fetch_array($result);
+        //     $me_id=$rows[0]+1;
+        // }
         
         //if(empty($me_level)) $me_level="1";
         if (empty($me_target)) {
             $me_target="page";
         }
-        if (empty($pa_id)) {
-            $pa_id=$me_id;
-        }
+        // if (empty($pa_id)) {
+        //     $pa_id=$me_id;
+        // }
 
-        if (empty($new_pa_id)) {
-            $sql="select max(pa_id) from pages";
-            $result=mysqli_query($cs, $sql);
-            $rows=mysqli_fetch_array($result);
-            $new_pa_id=$rows[0]+1;
-        }
+        // if (empty($new_pa_id)) {
+        //     $sql="select max(pa_id) from pages";
+        //     $result=mysqli_query($cs, $sql);
+        //     $rows=mysqli_fetch_array($result);
+        //     $new_pa_id=$rows[0]+1;
+        // }
         
-        $sql=   "insert into menus (me_id, di_name, me_level, me_target, pa_id) " .
-            "values($me_id, '$di_name', '$me_level', '$me_target', $pa_id)";
-        $result=mysqli_query($cs, $sql);
-        
-        $sql=   "insert into pages (pa_id, di_name, pa_filename) " .
-            "values($new_pa_id, '$di_name', '$pa_filename')" ;
-        $result=mysqli_query($cs, $sql);
-        
-        $sql=   "insert into dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long) " .
-            "values('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')";
-        $result=mysqli_query($cs, $sql);
+        mysqli_begin_transaction($cs, MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+        $sql = <<<INSERT
+    insert into dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
+    values('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
+INSERT;
+        $result = mysqli_query($cs, $sql);
+        $di_id = mysqli_insert_id($cs);
+        debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+
+        $sql = <<<INSERT
+    insert into pages (di_name, pa_filename)
+    values('$di_name', '$pa_filename')
+INSERT;
+        $result = mysqli_query($cs, $sql);
+        $pa_id = mysqli_insert_id($cs);
+        debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+    
+        $sql = <<<INSERT
+    insert into menus (di_name, me_level, me_target, pa_id)
+    values('$di_name', '$me_level', '$me_target', $pa_id)
+INSERT;
+        $result = mysqli_query($cs, $sql);
+        $me_id = mysqli_insert_id($cs);
+        debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+
+        mysqli_commit($cs);
 
         //copy("$wwwroot/$database/includes/fichier_vide.php", "fr/$pa_filename");
         //copy("$wwwroot/$database/includes/fichier_vide.php", "en/$pa_filename");
@@ -189,8 +203,7 @@ function add_menu(
 
 function update_menu(
 	$database,
-	$me_id, $di_name, $me_level, $me_target, 
-	$pa_id, $new_pa_id, $pa_filename, 
+	$di_name, $me_level, $me_target, $pa_filename, 
 	$di_fr_short, $di_fr_long, $di_en_short, $di_en_long
  ) {
     $cs=connection("connect", $database);
@@ -579,7 +592,7 @@ function retrieve_page_by_menu_id($database="", $id=0, $lg="")
                 "where m.di_name=d.di_name " .
                 "and p.di_name=m.di_name " .
                 "and m.me_id=$id";
-    debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+    // debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
 //        echo $sql . "<br>";
     //"and p.pa_id=m.me_id " .
@@ -626,7 +639,7 @@ function retrieve_page_by_dictionary_id($database="", $di="", $lg="")
                 "and p.di_name=m.di_name ".
                 "and d.di_name='$di'";
     echo $sql . "<br>";
-    debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+    // debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
     $cs=connection("connect", $database);
     $result=mysqli_query($cs, $sql);

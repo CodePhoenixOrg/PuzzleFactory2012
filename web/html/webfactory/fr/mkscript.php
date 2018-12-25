@@ -13,10 +13,13 @@ function checkValues() {
 <center>
 <?php   
 	include_once 'puzzle/ipz_controls.php';
-	$userdb=(isset($_POST["srvdir"])) ? $_POST["userdb"] : 'webfactory';
-	$basedir=(isset($_POST["srvdir"])) ? $_POST["srvdir"] : '';
+	$userdb = get_variable('userdb', 'webfactory');
+	$basedir = get_variable('srvdir');
+	$usertable = get_variable('usertable');
+	$pa_filename = get_variable('pa_filename', $usertable);
+	$query = get_variable('query', 'MENU');
+	$bl_id = get_variable('bl_id', 0);
 
-	if(!isset($query)) $query="MENU";
 	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 	$tmp_filename="tmp.php";
 	//$wwwroot=get_www_root();
@@ -26,8 +29,6 @@ function checkValues() {
 	$filepath="$wwwroot/$lg/$pa_filename";
 	$filedir="$wwwroot/$lg/";
 	
-	$usertable=$_POST["usertable"];
-	if(!isset($pa_filename)) $pa_filename = $usertable;
 	echo "<br>";
 		
 	$tab_ides=get_tab_ides();
@@ -43,28 +44,28 @@ function checkValues() {
 	$sql='select b.bl_id, d.di_fr_short from blocks b, dictionary d where b.di_name=d.di_name order by d.di_fr_short';
 	$block_list=create_options_from_query($sql, 0, 1, array(), $bl_id, false, $cs);
 	
-	//Options de départ
-	$rad_choice=(array) null;
-	if(!isset($choice)) $choice=0;
-	$rad_choice[$choice]=" checked"; 
-	
 	//Options de menu
-	$rad_menu=(array) null;
-	if(!isset($menu)) $menu=0;
+	$rad_menu = ['', ''];
+	$menu = get_variable('menu', 0);
 	$rad_menu[$menu]=" checked"; 
 	
 	//Options de script
-	$rad_dbgrid=(array) null;
-	if(!isset($dbgrid)) $dbgrid=0;
+	$rad_dbgrid = ['', ''];
+	$dbgrid = get_variable('dbgrid', 0);
 	$rad_dbgrid[$dbgrid]=" checked"; 
 	
 	//Option de filtre
-	$chk_filter=""; 
+	$chk_filter = '';
+	$filter = get_variable('filter');
 	if($filter=="1") $chk_filter=" checked"; 
 	
 	//Option d'ajout
-	$chk_addoption=""; 
-	if($addoption=="1") $chk_addoption=" checked"; 
+	$chk_addoption = '';
+	$addoption = get_variable('addoption');
+	if($addoption=="1") $chk_addoption=" checked";
+
+	$me_id = get_variable('me_id');
+
 	
 	$hidden="<input type='hidden' name='query' value=''>\n";
 	$hidden.="<input type='hidden' name='basedir' value='$basedir'>\n";
@@ -72,9 +73,9 @@ function checkValues() {
 	$hidden.="<input type='hidden' name='filename' value=''>\n";
 	$hidden.="<input type='hidden' name='pz_current_tab' value=''>\n";
 	
-	$di_name=(strlen($usertable)>8) ? substr($usertable, 0, 8): $usertable;
-	$di_short=$usertable;
-	$di_long="Liste des ".$usertable;
+	$di_name = (strlen($usertable)>8) ? substr($usertable, 0, 8): $usertable;
+	$di_short = $usertable;
+	$di_long = "Liste des ".$usertable;
 	
 	//Onglet 'Scripts'
 	$tab_mk_script="
@@ -121,8 +122,7 @@ function checkValues() {
 	</select>
 	</td></tr>
 	<tr><td>
-	<label><input type='radio'".$rad_menu[1]." name='menu' value='1'>Index choisi</label>&nbsp;
-	<input type='text' name='me_id' value='$me_id' size='3'>
+	<label><input type='checkbox' name='autogen' checked='checked' value='1'>Entrée auto-générée</label>&nbsp;
 	</td><td>Bloc 
 	<select name='bl_id'>".
 	$block_list["list"].

@@ -57,10 +57,10 @@ function create_enhanced_block_set($database, $column, $id, $lg, $colors) {
 	
 	$block_set="";
 	$sql="select bl_id, bl_type from ${db_prefix}blocks where bl_column=$column order by bl_id";
-	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+	// debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
 	//echo "$sql<br>";	
-        $result=mysqli_query($cs, $sql);
+    $result=mysqli_query($cs, $sql);
 	$bl_type="";
 	$old_bl_type="";
 	$first_block=true;

@@ -200,18 +200,20 @@ function get_variable_set($var) {
 	return array_merge($_POST, $_GET);
 }
 
-function get_variable($var) {
-	//Global $HTTP_GET_VARS, $HTTP_POST_VARS;
-	
-	if (isset($_GET[$var])) {
-		return $_GET[$var];
-	}
-	elseif (isset($_POST[$var])) {
-		return $_POST[$var];
-	}
-	else {
-		return "";
-	}	
+function get_variable($var, $default = '')
+{
+    $result = '';
+
+    if (isset($_GET[$var])) {
+        $result = $_GET[$var];
+    } elseif (isset($_POST[$var])) {
+        $result = $_POST[$var];
+    }
+    
+    if ($result === '') {
+        $result = $default;
+    }
+    return $result;
 }
 
 function get_http_root() {
@@ -354,5 +356,3 @@ function msg_box($message, $action, $on_click) {
 }
 
 define("PZ_DEFAULTS", get_current_www_root()."/pz_defaults.php");
-
-?>

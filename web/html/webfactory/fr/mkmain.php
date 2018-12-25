@@ -4,8 +4,8 @@
 		
 	$tab_ctrl_name="myTab";
 	//Options de départ
-	$rad_choice=(array) null;
-	if(!isset($choice)) $choice=0;
+	$rad_choice = ['', '', ''];
+	$choice = get_variable('choice', 0);
 	$rad_choice[$choice]=" checked"; 
 	
 	$tab_ides=get_tab_ides();

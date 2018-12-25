@@ -127,9 +127,9 @@ function create_server_file_selector($name="", $formname="", $basedir="", $filte
 	while ($file = readdir($handle)) {
 		if($filter!="" && !is_dir($file) && $file[0]!=".") {
 			$file_extension=array();
-			$file_extension[]=substr($file, strlen($file)-4, 4);
+			$file_extension[]=substr($file, 0, -4);
 			$ext=array_intersect($file_extension, $extensions);
-			if($ext[0]!="") {
+			if(isset($ext[0])) {
 				$files[]=$file;
 				$i++;
 			}

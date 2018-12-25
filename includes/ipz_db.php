@@ -62,6 +62,24 @@ $mysqli_types[252] = "BLOB";
 $mysqli_types[253] = "VARCHAR";
 $mysqli_types[254] = "CHAR";
 
+$mysqli_php_types["TINYINT"] = "int";
+$mysqli_php_types["SMALLINT"] = "int";
+$mysqli_php_types["INT"] = "int";
+$mysqli_php_types["FLOAT"] = "float";
+$mysqli_php_types["DOUBLE"] = "float";
+$mysqli_php_types["TIMESTAMP"] = "int";
+$mysqli_php_types["BIGINT"] = "int";
+$mysqli_php_types["MEDIUMINT"] = "int";
+$mysqli_php_types["DATE"] = "date";
+$mysqli_php_types["TIME"] = "time";
+$mysqli_php_types["DATETIME"] = "datetime";
+$mysqli_php_types["YEAR"] = "year";
+$mysqli_php_types["BIT"] = "int";
+$mysqli_php_types["DECIMAL"] = "float";
+$mysqli_php_types["BLOB"] = "blob";
+$mysqli_php_types["VARCHAR"] = "string";
+$mysqli_php_types["CHAR"] = "char";
+
 $mysqli_html_types[1] = "int";
 $mysqli_html_types[2] = "int";
 $mysqli_html_types[3] = "int";
@@ -78,12 +96,19 @@ $mysqli_html_types[16] = "int";
 $mysqli_html_types[246] = "float";
 $mysqli_html_types[252] = "blob";
 $mysqli_html_types[253] = "string";
-$mysqli_html_types[254] = "string";
+$mysqli_html_types[254] = "char";
+
 
 function mysqli_to_string($type) {
 	global $mysqli_types;
 
 	return $mysqli_types[$type];
+}
+
+function mysqli_to_php($type) {
+	global $mysqli_php_types;
+
+	return $mysqli_php_types[$type];
 }
 
 function mysqli_to_html($type) {

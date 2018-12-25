@@ -1,38 +1,47 @@
 <center>
 <?php   
 	include_once 'puzzle/ipz_source.php';
-        include_once 'puzzle/ipz_analyser.php';
+    include_once 'puzzle/ipz_analyser.php';
 
-	$userdb=$_POST["userdb"];
-	$usertable=$_POST["usertable"];
-	$dbgrid=$_POST["dbgrid"];
-	$menu=$_POST["menu"];
-	$filter=$_POST["filter"];
-	$addoption=$_POST["addoption"];
-	$me_id=$_POST["me_id"];
-	$me_level=$_POST["me_level"];
-	$bl_id=$_POST["bl_id"];
-	$pa_filename=$_POST["pa_filename"];
-	$extension=$_POST["extension"];
-	$basedir=$_POST["basedir"];
-	$save=$_POST["save"];
-	
+	$userdb = get_variable("userdb");
+	$usertable = get_variable("usertable");
+	$dbgrid = get_variable("dbgrid");
+	$menu = get_variable("menu");
+	$filter = get_variable("filter");
+	$addoption = get_variable("addoption");
+	$me_id = get_variable("me_id");
+	$me_level = get_variable("me_level", "1");
+	$bl_id = get_variable("bl_id");
+	$pa_filename = get_variable("pa_filename");
+	$extension = get_variable("extension");
+	$basedir = get_variable("basedir");
+	$save = get_variable("save");
+	$autogen = get_variable("autogen");
+	$catalog = get_variable("catalog", 0);
+	$query = get_variable("query");
+	$di_long = get_variable("di_long");
+	$di_short = get_variable("di_short");
+	$di_name = get_variable("di_name");
+		
 	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
 	$tmp_filename='tmp_'.$pa_filename;
 	$wwwroot=get_www_root();
         
-      	$relations=relations($userdb,$usertable,$cs);
+    $relations=relations($userdb,$usertable,$cs);
 	$A_fieldDefs=$relations["field_defs"];
-
 	
 	echo "<br>";
 		
+	$catalog_pa_filename=$pa_filename.$extension;
+
+	$script_exists = file_exists("$wwwroot$basedir/$catalog_pa_filename");
+	$script_exists_tostring = $script_exists ? "Oui" : "Non";
 	$http_root=get_http_root();
 
 	if($save=="Oui") {
 		
 		//$pa_filename.=$extension;
-		$catalog_pa_filename=$pa_filename;
+		$catalog_pa_filename=$pa_filename.$extension;
 		$pa_filename=$wwwroot.$basedir.'/'.$pa_filename;
 	
 		if($pa_filename!="") {
@@ -47,18 +56,18 @@
 //			copy('tmp_delete.php', $pa_filename.'_delete'.$extension);
 			
 		}
-		if(!isset($me_level)) $me_level="1";
+		// if(!isset($me_level)) $me_level="1";
 		$new_pa_id="";
-		$di_name=$usertable;
-		$di_fr_short=strtoupper(substr($usertable,0,1)).substr($usertable, 1, strlen($usertable)-1);
-		$di_fr_long="Liste des $usertable";
+		// $di_name=$usertable;
+		// $di_fr_short=strtoupper(substr($usertable,0,1)).substr($usertable, 1, strlen($usertable)-1);
+		// $di_fr_long="Liste des $usertable";
 
 		if($catalog==0 && $autogen==1) {
-			$catalog=add_menu(
+			$me_id = add_menu(
 				$userdb,
-				$me_id, $di_name, $me_level, $me_target,
-				$pa_id, $new_pa_id, $catalog_pa_filename,
-				$di_fr_short, $di_fr_long, $di_en_short, $di_en_long
+				$di_name, $me_level, $me_target,
+				$catalog_pa_filename,
+				$di_short, $di_long, '', ''
 			);
 		}
 		
@@ -79,36 +88,32 @@
 		$indexfield=$A_sqlFields[0];
 		$secondfield=$A_sqlFields[1];
 		
-		$catalog_pa_filename=$pa_filename.$extension;
-		$catalog=get_menu_id($userdb, $catalog_pa_filename);
+		$catalog = get_menu_id($userdb, $catalog_pa_filename);
 		
 		echo "Catalog file name: $catalog_pa_filename<br>";
-		
-		if($catalog==0) $catalog=get_next_menu_id($userdb);
-		
-		$script_exists=file_exists("$basedir/$catalog_pa_filename");
 
-		if($script_exists) {
-			echo "<font color='red'><p>Le script $catalog_pa_filename existe déjà sous l'index de menu $catalog.'</p></font>";
+		if($catalog !== 0) {
+			echo "<p style='color:red'>Le script $catalog_pa_filename existe déjà sous l'index de menu $catalog.</p>";
+		// } else {
+			// $catalog = sget_next_menu_id($userdb);
 		}
 		
-		$cur_pa_filename="$wwwroot$basedir/$pa_filename$extension";
 		//echo "$cur_pa_filename<br>";
-		if(file_exists($cur_pa_filename)) {
-			$message = "<font color='red'><p>Attention ! Un fichier portant ce nom existe déjà.<br>" .
-				"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p></font>\n";
+		if($script_exists) {
+			$message = "<p style='color:red'>Attention ! Un fichier portant ce nom existe déjà.<br>" .
+				"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p>\n";
 		} else
 			$message = "<p>Voulez-vous enregistrer le script ?</p>\n";
 		
-		$script=make_code($userdb, $usertable, $pa_filename, $catalog, $indexfield, $secondfield, $A_fieldDefs, $cs, NO_FRAME);
+		$script = make_code($userdb, $usertable, $pa_filename, $catalog, $indexfield, $secondfield, $A_fieldDefs, $cs, NO_FRAME);
 
-		$file=fopen('tmp_code.php', "w");
+		$file = fopen('tmp_code.php', "w");
 		fwrite($file, $script);
 		fclose($file);
 		
-		$script=make_page($userdb, $usertable, $pa_filename, $catalog, $indexfield, $secondfield, $A_sqlFields, $cs, NO_FRAME);
+		$script = make_page($userdb, $usertable, $pa_filename, $catalog, $indexfield, $secondfield, $A_sqlFields, $cs, NO_FRAME);
 
-		$file=fopen('tmp_page.php', "w");
+		$file = fopen('tmp_page.php', "w");
 		fwrite($file, $script);
 		fclose($file);
 		
@@ -165,6 +170,9 @@
 		$hidden.="<input type='hidden' name='query' value='$query'>\n";
 		$hidden.="<input type='hidden' name='indexfield' value='$indexfield'>\n";
 		$hidden.="<input type='hidden' name='secondfield' value='$secondfield'>\n";
+		$hidden.="<input type='hidden' name='di_name' value='$di_name'>\n";
+		$hidden.="<input type='hidden' name='di_long' value='$di_long'>\n";
+		$hidden.="<input type='hidden' name='di_short' value='$di_short'>\n";
 		//$hidden.="<input type='hidden' name='pz_current_tab' value=''>\n";
 		
 		echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
@@ -258,14 +266,13 @@
 		<tr><td><b>Propriétés du script : </b></td><td>$props</td></tr>\n
 		<tr><td><b>Répertoire : </b></td><td>$wwwroot$basedir</td></tr>\n
 		<tr><td><b>Nom du fichier : </b></td><td>$catalog_pa_filename</td></tr>\n
-		<tr><td><b>Index du menu : </b></td><td>$mindex</td></tr>\n
+		<tr><td><b>Index du menu : </b></td><td>$me_id</td></tr>\n
 		<tr><td><b>Niveau du menu : </b></td><td>$me_level</td></tr>\n
 		<tr><td><b>Bloc du menu : </b></td><td>$bl_id</td></tr>\n
 		<tr><td><b>Index de dictionaire : </b></td><td>$di_name</td></tr>\n
-		<tr><td><b>Libellé court : </b></td><td>$di_fr_short</td></tr>\n
-		<tr><td><b>Libellé long : </b></td><td>$di_fr_long</td></tr>\n
-		<tr><td><b>L'index existait déjà : </b></td><td>$istatus</td></tr>\n
-		<tr><td><b>Le script existait déjà : </b></td><td>$wstatus</td></tr>\n
+		<tr><td><b>Libellé court : </b></td><td>$di_short</td></tr>\n
+		<tr><td><b>Libellé long : </b></td><td>$di_long</td></tr>\n
+		<tr><td><b>Le script existait déjà : </b></td><td>$script_exists_tostring</td></tr>\n
 		<tr><td><b>Etat du script : </b></td><td>$sstatus</td></tr>\n
 		</table>\n
 		</td></tr>\n

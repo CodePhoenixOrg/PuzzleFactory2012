@@ -98,7 +98,7 @@ function make_code(
     for ($i=0;$i<sizeof($A_sqlFields);$i++) {
         $defs=explode(',', $A_sqlFields[$i]);
         $fieldname=$defs[0];
-		$fieldtype=mysqli_to_html($defs[2]);
+		$fieldtype=mysqli_to_php($defs[2]);
         $insertFields[$i]="\t\t\t\t\"$fieldname";
         if ($fieldtype=='string') {
             $replaces[]="\t\t\t\$$fieldname=escapeChars(\$$fieldname)";
@@ -112,7 +112,7 @@ function make_code(
     for ($i=0;$i<sizeof($A_sqlFields);$i++) {
         $defs=explode(',', $A_sqlFields[$i]);
         $fieldname=$defs[0];
-		$fieldtype=mysqli_to_html($defs[2]);
+		$fieldtype=mysqli_to_php($defs[2]);
         if ($fieldtype=='string') {
             $replaces[]="\t\t\t\$$fieldname=escapeChars(\$$fieldname)";
             $insertValues[$i]="\t\t\t\t\"'\$$fieldname'";
@@ -139,7 +139,7 @@ function make_code(
     for ($i=0;$i<sizeof($A_sqlFields);$i++) {
         $defs=explode(',', $A_sqlFields[$i]);
         $fieldname=$defs[0];
-		$fieldtype=mysqli_to_html($defs[2]);
+		$fieldtype=mysqli_to_php($defs[2]);
 		
         if ($fieldtype=='string') {
             $replaces[]="\t\t\t\$$fieldname=escapeChars(\$$fieldname)";

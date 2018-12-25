@@ -2,8 +2,8 @@
 <?php 
 	include_once("puzzle/ipz_mysqlconn.php");
 	$cs=connection(CONNECT,$database);
-	if(!isset($event)) $event="onLoad";
-	if(!isset($action)) $action="Modifier";
+	$event = (isset($_GET['event'])) ? $_GET['event'] : "onLoad";
+	$action = (isset($_GET['action'])) ? $_GET['action'] : "Modifier";
 
 	$status=$_SESSION["ses_status"];
 	$mbr_id=$_SESSION["ses_id"];
