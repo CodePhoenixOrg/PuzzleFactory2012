@@ -2,15 +2,12 @@
 	include_once("puzzle/ipz_mysqlconn.php");
 	include_once("puzzle/ipz_db_controls.php");
 	$cs=connection(CONNECT,$database);
-	$query = get_variable("query");
-	$event = get_variable("event");
-	$action = get_variable("action");
+	$query = get_variable("query", "SELECT");
+	$event = get_variable("event", "onLoad");
+	$action = get_variable("action", "Ajouter");
+	$id = get_variable("id");
+	$di = get_variable("di");
 	$im_id = get_variable("im_id");
-	if(empty($query)) $query="SELECT";
-	if(empty($event)) $event="onLoad";
-	if(empty($action)) $action="Ajouter";
-	if(isset($pc)) $curl_pager="&pc=$pc";
-	if(isset($sr)) $curl_pager.="&sr=$sr";
 	if($event=="onLoad" && $query=="ACTION") {
 		switch ($action) {
 		case "Ajouter":
@@ -60,6 +57,8 @@
 				"$im_site".
 			")";
 			$result = mysqli_query($cs, $sql);
+			debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+
 		break;
 		case "Modifier":
 			$im_id = $_POST["im_id"];
@@ -78,6 +77,8 @@
 				"im_site='$im_site' ".
 			"where im_id='$im_id'";
 			$result = mysqli_query($cs, $sql);
+			debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+
 		break;
 		case "Supprimer":
 			$sql="delete from images where im_id='$im_id'";
@@ -87,6 +88,6 @@
 		$query="SELECT";
 	} else if($event=="onUnload" && $query=="ACTION") {
 		$cs=connection(DISCONNECT,$database);
-		echo "<script language='JavaScript'>window.location.href='page.php?id=0&lg=fr'</script>";
+		echo "<script language='JavaScript'>window.location.href='page.php?id=46&lg=fr'</script>";
 	}
 ?>

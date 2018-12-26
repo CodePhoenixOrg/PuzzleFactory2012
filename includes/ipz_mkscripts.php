@@ -25,9 +25,8 @@ define("FRAME", true);
 define("NO_FRAME", false);
 
 function make_code(
-	$database="", 
+	$database, 
 	$table="", 
-	$pa_filename="", 
 	$page_id=0, 
 	$indexfield=0, 
 	$secondfield="",
@@ -41,17 +40,14 @@ function make_code(
     $script.="\tinclude_once(\"puzzle/ipz_mysqlconn.php\");\n";
     $script.="\tinclude_once(\"puzzle/ipz_db_controls.php\");\n";
     $script.="\t\$cs=connection(CONNECT,\$database);\n";
-    $script.="\t\$query = get_variable(\"query\");\n";
-    $script.="\t\$event = get_variable(\"event\");\n";
-    $script.="\t\$action = get_variable(\"action\");\n";
+    $script.="\t\$query = get_variable(\"query\", \"SELECT\");\n";
+    $script.="\t\$event = get_variable(\"event\", \"onLoad\");\n";
+    $script.="\t\$action = get_variable(\"action\", \"Ajouter\");\n";
+    $script.="\t\$id = get_variable(\"id\");\n";
+    $script.="\t\$di = get_variable(\"di\");\n";
     $defs=explode(',', $A_sqlFields[0]);
     $fieldname=$defs[0];
     $script.="\t$$fieldname = get_variable(\"$fieldname\");\n";
-    $script.="\tif(empty(\$query)) \$query=\"SELECT\";\n";
-    $script.="\tif(empty(\$event)) \$event=\"onLoad\";\n";
-    $script.="\tif(empty(\$action)) \$action=\"Ajouter\";\n";
-    $script.="\tif(isset(\$pc)) \$curl_pager=\"&pc=\$pc\";\n";
-    $script.="\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
     $script.="\tif(\$event==\"onLoad\" && \$query==\"ACTION\") {\n";
     $script.="\t\tswitch (\$action) {\n";
     $script.="\t\tcase \"Ajouter\":\n\n";
@@ -179,7 +175,7 @@ function make_code(
 }
 
 function make_page(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -198,11 +194,15 @@ function make_page(
 	$script="<center>\n";
 	$script.="<?php   \n";
 	$script.="\tinclude(\"".$pa_filename."_code.php\");\n";
+    $script.="\t\$pc = get_variable(\"pc\");\n";
+    $script.="\t\$sr = get_variable(\"sr\");\n";
+    $script.="\t\$curl_pager = \"\";\n";
+    $script.="\t\$dialog = \"\";\n";
+    $script.="\tif(isset(\$pc)) \$curl_pager=\"&pc=\$pc\";\n";
+    $script.="\tif(isset(\$sr)) \$curl_pager.=\"&sr=\$sr\";\n";
 	$script.="\tif(\$query==\"SELECT\") {\n";
 	$script.="\t\t\t\$sql=\"select $indexfield, $secondfield from $table order by $indexfield\";\n";
-
 	$script.="\t\t\t\$dbgrid=create_pager_db_grid(\"$table\", \$sql, \$id, \"page.php\", \"&query=ACTION\$curl_pager\", \"\", true, true, \$dialog, array(0, 400), 15, \$grid_colors, \$cs);\n";
-  
 	$script.="\t\t\t//\$dbgrid=table_shadow(\"$table\", \$dbgrid);\n";
 	$script.="\t\t\techo \"<br>\".\$dbgrid;\n";
 	$script.="\t} elseif(\$query==\"ACTION\") {\n";
@@ -254,7 +254,7 @@ function make_page(
 }
 
 function make_single_script(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -424,7 +424,7 @@ function make_single_script(
     return $script;
 }
 
-function script_header($database="") {
+function script_header($database) {
 	$script="";
 	$script.="<?php   \n";
 	$script.="\tglobal \$img;\n";
@@ -457,7 +457,7 @@ function script_footer() {
 }
 
 function script_browse(
-	$database="",
+	$database,
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -486,7 +486,7 @@ function script_browse(
 }
 
 function script_form(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -540,7 +540,7 @@ function script_form(
 }
 
 function make_browse_script(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -565,7 +565,7 @@ function make_browse_script(
 }
 
 function make_form_script(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -593,7 +593,7 @@ function make_form_script(
 }
 
 function make_insert_script(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -655,7 +655,7 @@ function make_insert_script(
 }
 
 function make_update_script(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 
@@ -705,7 +705,7 @@ function make_update_script(
 }
 
 function make_delete_script(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$page_id=0, 

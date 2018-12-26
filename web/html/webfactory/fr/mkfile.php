@@ -3,13 +3,15 @@
 	include_once 'puzzle/ipz_source.php';
     include_once 'puzzle/ipz_analyser.php';
 
+	define('YES', 'Oui');
+	define('NO', 'Non');
+
 	$userdb = get_variable("userdb");
 	$usertable = get_variable("usertable");
 	$dbgrid = get_variable("dbgrid");
 	$menu = get_variable("menu");
 	$filter = get_variable("filter");
 	$addoption = get_variable("addoption");
-	$me_id = get_variable("me_id");
 	$me_level = get_variable("me_level", "1");
 	$bl_id = get_variable("bl_id");
 	$pa_filename = get_variable("pa_filename");
@@ -23,100 +25,80 @@
 	$di_short = get_variable("di_short");
 	$di_name = get_variable("di_name");
 		
-	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
-	$tmp_filename='tmp_'.$pa_filename;
-	$wwwroot=get_www_root();
+	$cs = connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
+	$tmp_filename = 'tmp_'.$pa_filename;
+	$wwwroot = get_www_root();
         
-    $relations=relations($userdb,$usertable,$cs);
-	$A_fieldDefs=$relations["field_defs"];
+    $relations = relations($userdb,$usertable,$cs);
+	$A_fieldDefs = $relations["field_defs"];
 	
 	echo "<br>";
 		
-	$catalog_pa_filename=$pa_filename.$extension;
+	$rel_page_filename = $pa_filename.$extension;
 
-	$script_exists = file_exists("$wwwroot$basedir/$catalog_pa_filename");
-	$script_exists_tostring = $script_exists ? "Oui" : "Non";
-	$http_root=get_http_root();
+	$root_code_filename = $wwwroot.$basedir.DIRECTORY_SEPARATOR.$pa_filename.'_code'.$extension;
+	$root_page_filename = $wwwroot.$basedir.DIRECTORY_SEPARATOR.$pa_filename.$extension;
 
-	if($save=="Oui") {
-		
-		//$pa_filename.=$extension;
-		$catalog_pa_filename=$pa_filename.$extension;
-		$pa_filename=$wwwroot.$basedir.'/'.$pa_filename;
-	
-		if($pa_filename!="") {
-			//copy('tmp_single.php', $pa_filename.$extension);
-			//copy('tmp_page.php', $pa_filename.$extension);
-			copy('tmp_code.php', $pa_filename.'_code'.$extension);
-			
-//			copy('tmp_browse.php', $pa_filename.'_browse'.$extension);
-//			copy('tmp_form.php', $pa_filename.'_form'.$extension);
-//			copy('tmp_insert.php', $pa_filename.'_insert'.$extension);
-//			copy('tmp_update.php', $pa_filename.'_update'.$extension);
-//			copy('tmp_delete.php', $pa_filename.'_delete'.$extension);
-			
-		}
-		// if(!isset($me_level)) $me_level="1";
-		$new_pa_id="";
-		// $di_name=$usertable;
-		// $di_fr_short=strtoupper(substr($usertable,0,1)).substr($usertable, 1, strlen($usertable)-1);
-		// $di_fr_long="Liste des $usertable";
+	$script_exists = file_exists($rel_page_filename);
+	$script_exists_tostring = $script_exists ? YES : NO;
+	$http_root = get_http_root();
 
-		if($catalog==0 && $autogen==1) {
-			$me_id = add_menu(
-				$userdb,
-				$di_name, $me_level, $me_target,
-				$catalog_pa_filename,
-				$di_short, $di_long, '', ''
-			);
-		}
-		
-	} elseif($save=="") {
+	if($save=="") {
  
-		$formname="fiche_$usertable";
-		$sql="show fields from $usertable;";
+		$formname = "fiche_$usertable";
+		$sql = "show fields from $usertable;";
 
-		$L_sqlFields="";
-		$A_sqlFields=Array();
+		$L_sqlFields = "";
+		$A_sqlFields = [];
 		
 		$result = mysqli_query($cs, $sql) or die("SQL='$sql'<br>");
-		while($rows=mysqli_fetch_array($result)) {
-			$L_sqlFields.=$rows[0].",";
+		while($rows = mysqli_fetch_array($result)) {
+			$L_sqlFields .= $rows[0].",";
 		}
-		$L_sqlFields=substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
-		$A_sqlFields=explode(",", $L_sqlFields);
-		$indexfield=$A_sqlFields[0];
-		$secondfield=$A_sqlFields[1];
-		
-		$catalog = get_menu_id($userdb, $catalog_pa_filename);
-		
-		echo "Catalog file name: $catalog_pa_filename<br>";
 
-		if($catalog !== 0) {
-			echo "<p style='color:red'>Le script $catalog_pa_filename existe déjà sous l'index de menu $catalog.</p>";
-		// } else {
-			// $catalog = sget_next_menu_id($userdb);
+		$L_sqlFields = substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
+		$A_sqlFields = explode(",", $L_sqlFields);
+		$indexfield = $A_sqlFields[0];
+		$secondfield = $A_sqlFields[1];
+		
+		list($me_id, $pa_id) = get_menu_and_page($userdb, $rel_page_filename);
+		
+		echo "Catalog file name: $rel_page_filename<br>";
+
+		if($me_id !== 0) {
+			echo "<p style='color:red'>Le script $rel_page_filename existe déjà sous l'id de menu $me_id.</p>";
+		}
+		if($pa_id !== 0) {
+			echo "<p style='color:red'>Le script $rel_page_filename existe déjà sous l'id de page $pa_id.</p>";
 		}
 		
+		if (($me_id == 0 || $pa_id == 0) && $autogen == 1) {
+			list($me_id, $pa_id) = add_menu_and_page(
+			$userdb,
+			$di_name,
+			$me_level,
+			'page',
+			$rel_page_filename,
+			$di_short,
+			$di_long);
+
+			echo "<p style='color:red'>Le script $rel_page_filename a été ajouté au triplet dictionnaire-page-menu sous l'id de page $pa_id et l'id de menu $me_id.</p>";
+
+		}
+
 		//echo "$cur_pa_filename<br>";
+		$message = "<p>Voulez-vous conserver le script ?</p>\n";
 		if($script_exists) {
 			$message = "<p style='color:red'>Attention ! Un fichier portant ce nom existe déjà.<br>" .
 				"Voulez-vous écraser le script actuel sachant que toutes les modifications effectuées seront perdues ?</p>\n";
-		} else
-			$message = "<p>Voulez-vous enregistrer le script ?</p>\n";
+		}
 		
-		$script = make_code($userdb, $usertable, $pa_filename, $catalog, $indexfield, $secondfield, $A_fieldDefs, $cs, NO_FRAME);
+		$script = make_code($userdb, $usertable, $pa_id, $indexfield, $secondfield, $A_fieldDefs, $cs, NO_FRAME);
+		file_put_contents('tmp_code.php', $script);
+		
+		$script = make_page($userdb, $usertable, $pa_filename, $pa_id, $indexfield, $secondfield, $A_sqlFields, $cs, NO_FRAME);
+		file_put_contents('tmp_page.php', $script);
 
-		$file = fopen('tmp_code.php', "w");
-		fwrite($file, $script);
-		fclose($file);
-		
-		$script = make_page($userdb, $usertable, $pa_filename, $catalog, $indexfield, $secondfield, $A_sqlFields, $cs, NO_FRAME);
-
-		$file = fopen('tmp_page.php', "w");
-		fwrite($file, $script);
-		fclose($file);
-		
 //		$script=make_single_script($userdb, $usertable, $pa_filename, $catalog, $indexfield, $secondfield, $A_sqlFields, $cs, NO_FRAME);
 //
 //		$file=fopen('tmp_single.php', "w");
@@ -162,6 +144,7 @@
 		$hidden.="<input type='hidden' name='filter' value='$filter'>\n";
 		$hidden.="<input type='hidden' name='addoption' value='$addoption'>\n";
 		$hidden.="<input type='hidden' name='me_id' value='$me_id'>\n";
+		$hidden.="<input type='hidden' name='pa_id' value='$pa_id'>\n";
 		$hidden.="<input type='hidden' name='me_level' value='$me_level'>\n";
 		$hidden.="<input type='hidden' name='bl_id' value='$bl_id'>\n";
 		$hidden.="<input type='hidden' name='pa_filename' value='$pa_filename'>\n";
@@ -227,35 +210,85 @@
 		//echo "<div style='text-align:left;width:680px;height:500px;background:white;overflow:scroll'>$source</div><br>\n";
 		
 		echo "<input type='button' name='previous' value='<< Précédent' onClick='document.myForm.action=\"page.php?id=32&lg=$lg\";document.myForm.submit();'>\n";
-		echo "<input type='submit' name='save' value='Oui'>\n";
-		echo "<input type='submit' name='save' value='Non'>\n";
+		echo "<input type='submit' name='save' value='" . YES . "'>\n";
+		echo "<input type='submit' name='save' value='" . NO . "'>\n";
 		echo "</form>\n";
 	}
 	
-	if($save!="") {
-		if($dbgrid=="0")
-			$props="Grille";
-		else
-			$props="Grille + Fiche";
-		if($filter=="1") $props.=" + Filtre";
-		if($addoption=="1") $props.=" + Bouton Ajouter";
-
-		if($me_id=="")
-			$mindex="Auto-incrémenté";
-		else
-			$mindex=$me_id;
-			
-		if($save=="Oui") {
-			$sstatus="Enregistré";
-			copy('tmp_code.php', $wwwroot.$basedir . DIRECTORY_SEPARATOR . $catalog_pa_filename . '_code.php');
-			unlink('tmp_code.php');
-			copy('tmp_page.php', $wwwroot.$basedir . DIRECTORY_SEPARATOR . $catalog_pa_filename . '.php');
-			unlink('tmp_page.php');
-		} elseif($save=="Non") {
-			$sstatus="Non-enregistré";
-		}
+    if ($save!=="") {
+		$indexfield = get_variable("indexfield");
+		$secondfield = get_variable("secondfield");
+		$pa_id = get_variable("pa_id");
+		$me_id = get_variable("me_id");
 	
-		$mk_file="
+        if ($dbgrid=="0") {
+            $props="Grille";
+        } else {
+            $props="Grille + Fiche";
+        }
+        if ($filter=="1") {
+            $props.=" + Filtre";
+        }
+        if ($addoption=="1") {
+            $props.=" + Bouton Ajouter";
+        }
+
+        if ($me_id=="") {
+            $mindex="Auto-incrémenté";
+        } else {
+            $mindex=$me_id;
+        }
+            
+        if ($save=="Oui") {
+            // if (($me_id == 0 || $pa_id == 0) && $autogen == 1) {
+            //     list($me_id, $pa_id) = add_menu_and_page(
+            //     $userdb,
+            //     $di_name,
+            //     $me_level,
+            //     'page',
+            //     $rel_page_filename,
+            //     $di_short,
+            //     $di_long);
+            // }
+
+            //$pa_filename.=$extension;
+            // $pa_filename=$wwwroot.$basedir.'/'.$pa_filename;
+    
+            // copy('tmp_single.php', $pa_filename.$extension);
+            // copy('tmp_page.php', $pa_filename.$extension);
+            // copy('tmp_code.php', $pa_filename.'_code'.$extension);
+
+            copy('tmp_code.php', $root_code_filename);
+            copy('tmp_page.php', $root_page_filename);
+
+            // copy('tmp_browse.php', $pa_filename.'_browse'.$extension);
+            // copy('tmp_form.php', $pa_filename.'_form'.$extension);
+            // copy('tmp_insert.php', $pa_filename.'_insert'.$extension);
+            // copy('tmp_update.php', $pa_filename.'_update'.$extension);
+            // copy('tmp_delete.php', $pa_filename.'_delete'.$extension);
+            // if(!isset($me_level)) $me_level="1";
+            // $di_name=$usertable;
+            // $di_fr_short=strtoupper(substr($usertable,0,1)).substr($usertable, 1, strlen($usertable)-1);
+            // $di_fr_long="Liste des $usertable";
+
+
+            $sstatus="Page enregistré";
+
+        } elseif ($save=="Non") {
+			$sstatus="Page non-enregistré";
+			delete_menu($userdb, $di_name);
+
+			if(file_exists($root_code_filename)) {
+				unlink($root_code_filename);
+			}
+			if(file_exists($root_page_filename)) {
+				unlink($root_page_filename);
+			}
+        }
+		unlink('tmp_code.php');
+		unlink('tmp_page.php');
+
+        $mk_file="
 		<fieldset style='width:450px;'>\n
 		<legend>Récapitulatif des opérations</legend>
 		<table border='0' bordercolor='0' width='85%' valign='top' style='display:hidden;'>\n
@@ -265,8 +298,9 @@
 		<tr><td><b>Table : </b></td><td>$usertable</td></tr>\n
 		<tr><td><b>Propriétés du script : </b></td><td>$props</td></tr>\n
 		<tr><td><b>Répertoire : </b></td><td>$wwwroot$basedir</td></tr>\n
-		<tr><td><b>Nom du fichier : </b></td><td>$catalog_pa_filename</td></tr>\n
+		<tr><td><b>Nom du fichier : </b></td><td>$rel_page_filename</td></tr>\n
 		<tr><td><b>Index du menu : </b></td><td>$me_id</td></tr>\n
+		<tr><td><b>Index de page : </b></td><td>$pa_id</td></tr>\n
 		<tr><td><b>Niveau du menu : </b></td><td>$me_level</td></tr>\n
 		<tr><td><b>Bloc du menu : </b></td><td>$bl_id</td></tr>\n
 		<tr><td><b>Index de dictionaire : </b></td><td>$di_name</td></tr>\n
@@ -282,11 +316,10 @@
 		</table>\n
 		</fieldset>\n
 		";
-		
-		echo "<form name='myForm' method='POST' action='page.php?id=17&lg=$lg'>\n";
-		echo $mk_file;
-		echo "</form>\n";
-		
-	}
+        
+        echo "<form name='myForm' method='POST' action='page.php?id=17&lg=$lg'>\n";
+        echo $mk_file;
+        echo "</form>\n";
+    }
 ?>
 </center>

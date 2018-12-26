@@ -1,6 +1,11 @@
 <center>
 <?php   
 	include("images_code.php");
+	$pc = get_variable("pc");
+	$sr = get_variable("sr");
+	$curl_pager = "";
+	if(isset($pc)) $curl_pager="&pc=$pc";
+	if(isset($sr)) $curl_pager.="&sr=$sr";
 	if($query=="SELECT") {
 			$sql="select im_id, im_name from images order by im_id";
 			$dbgrid=create_pager_db_grid("images", $sql, $id, "page.php", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
@@ -8,7 +13,7 @@
 			echo "<br>".$dbgrid;
 	} elseif($query=="ACTION") {
 ?>
-<form method='POST' name='imagesForm' action='page.php?id=0&lg=fr'>
+<form method='POST' name='imagesForm' action='page.php?id=46&lg=fr'>
 	<input type='hidden' name='query' value='ACTION'>
 	<input type='hidden' name='event' value='onRun'>
 	<input type='hidden' name='pc' value='<?php echo $pc?>'>

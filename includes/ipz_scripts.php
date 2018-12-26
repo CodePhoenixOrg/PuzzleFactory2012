@@ -24,7 +24,7 @@ define("FRAME", true);
 define("NO_FRAME", false);
 
 function make_catalog(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$catalog=0, 
@@ -91,7 +91,7 @@ function make_catalog(
 }
 
 function make_editor(
-	$database="", 
+	$database, 
 	$table="", 
 	$pa_filename="", 
 	$catalog=0, 

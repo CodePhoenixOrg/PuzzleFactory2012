@@ -14,13 +14,11 @@
 	//$default_include_path = ini_get("include_path");
 	//ini_set("include_path","$default_include_path:/usr/share/php/ipuzzle.inc/");
 
-	$cs=connection(CONNECT, "webfactory");
-	$index = get_menu_id_ac($cs, "mkmain.php");
+	// $cs=connection(CONNECT, "webfactory");
+	$index = get_page_id("webfactory", "mkmain.php");
 	if(empty($lg)) $lg="fr";
 
-	$fh=fopen("VERSION", 'r');
-	$version=fgets($fh);
-	fclose($fh);
+	$version = file_get_contents("VERSION");
 
 	$img="images";
 ?>

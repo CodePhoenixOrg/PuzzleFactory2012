@@ -37,7 +37,8 @@
 		$title_page = retrieve_page_by_dictionary_id($database, $di, $lg);
 		$id=$title_page["index"];
 	} else {
-		$title_page = retrieve_page_by_menu_id($database, $id, $lg);
+		// $title_page = retrieve_page_by_menu_id($database, $id, $lg);
+		$title_page = retrieve_page_by_id($database, $id, $lg);
 		$di=$title_page["index"];
 	}
 
