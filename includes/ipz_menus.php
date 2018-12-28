@@ -232,7 +232,7 @@ function update_menu(
     $result=$cs->query($sql);
     $affected_rows += $cs->affected_rows;
 
-    $cs->commit($cs);
+    $cs->commit();
 
     return $affected_rows;
 }
@@ -257,7 +257,7 @@ function delete_menu($userdb, $di_name)
     $result = $cs->query($sql);
     $affected_rows += $cs->affected_rows;
 
-    $cs->commit($cs);
+    $cs->commit();
 
     return $affected_rows;
 }
