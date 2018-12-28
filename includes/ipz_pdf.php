@@ -53,10 +53,10 @@ class pz_pdf extends FPDF {
 			$table_offset=$this->GetLeftMargin()+round(($this->GetWorkSpaceWidth()-$table_width)/2);
 		//$this->SetX($table_offset);
 	
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		
 		//Récupération des noms de champs
-		$n=mysqli_num_fields($result);
+		$n=$result->num_fields;
 		$fieldnames=array();
 		for($i=0;$i<$n;$i++) $fieldnames[]=$field->name;
 		
@@ -64,7 +64,7 @@ class pz_pdf extends FPDF {
 		$fill=0;
 		$begin_page=true;
 		$end_page=false;
-		while($rows=mysqli_fetch_array($result)) {
+		while($rows=$result->fetch_array()) {
 		
 			if($begin_page) {
 				//Ecriture de l'entête de tableau en début de page

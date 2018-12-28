@@ -31,11 +31,13 @@ function relations($database, $table, $cs)
     
     $i=0;
     $sql="select * from $table limit 0,1;";
-    $result = mysqli_query($cs, $sql);
+    $result = $cs->query($sql);
     
-    // $rows=mysqli_fetch_array($result);
+    // $rows=$result->fetch_array();
     // $k=sizeof($rows)/2;
-    $k=mysqli_num_fields($result);
+    $fields = $result->fetch_fields();
+    $k = count($fields);
+    
     while ($i<$k) {
         $fieldname=mysqli_field_name($result, $i);
         $fieldtype=mysqli_field_type($result, $i);
@@ -64,14 +66,14 @@ function relations($database, $table, $cs)
             while (!$fieldFound && !$EOL) {
                 $sql="show tables from $database;";
                 //echo "SQL: $sql<br>";
-                $tab_res=mysqli_query($cs, $sql);
+                $tab_res=$cs->query($sql);
                 $fieldTable="";
-                while (($tables=mysqli_fetch_array($tab_res)) && ($fieldTable=="")) {
+                while (($tables=$result->fetch_array($tab_res)) && ($fieldTable=="")) {
                     $currentTable=$tables[0];
                     $sql="show fields from $currentTable;";
                     //echo "\tSQL: $sql<br>";
-                    $fld_res=mysqli_query($cs, $sql);
-                    $fields=mysqli_fetch_array($fld_res);
+                    $fld_res=$cs->query($sql);
+                    $fields=$result->fetch_array($fld_res);
                     //echo "\t\tField: ".$fields[0]."==$fieldname=";
                     if ($fieldname==$fields[0]) {
                         $fieldTable=$currentTable;
@@ -85,9 +87,9 @@ function relations($database, $table, $cs)
             if ($fieldFound) {
                 $sql="show fields from $fieldTable";
                 //echo "SQL: $sql<br>";
-                $fld_res=mysqli_query($cs, $sql);
+                $fld_res=$cs->query($sql);
                 $j=0;
-                while (($fields=mysqli_fetch_array($fld_res)) && $j<2) {
+                while (($fields=$result->fetch_array($fld_res)) && $j<2) {
                     if ($j==0) {
                         $frn_idfield=$fields[0];
                     }

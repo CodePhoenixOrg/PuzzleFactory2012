@@ -115,8 +115,8 @@ function make_editor(
 		if ($i==0) {
 			$indexfield=$fieldname;
 			$script.="\t\t\t\$sql=\"select max($fieldname) from $table;\";\n";
-			$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
-			$script.="\t\t\t\$rows = mysqli_fetch_array(\$result);\n";
+			$script.="\t\t\t\$result = $cs->query(\$sql, \$cs);\n";
+			$script.="\t\t\t\$rows = $result->fetch_array(\$result);\n";
 			$script.="\t\t\t\$$fieldname=\$rows[0]+1;\n";
 		} else
 			$script.="\t\t\t\$$fieldname=\"\";\n";
@@ -127,8 +127,8 @@ function make_editor(
 		$fieldname=$A_sqlFields[$i];
 		if ($i==0) {
 			$script.="\t\t\t\$sql=\"select * from $table where $fieldname=$$fieldname;\";\n";
-			$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
-			$script.="\t\t\t\$rows = mysqli_fetch_array(\$result);\n";
+			$script.="\t\t\t\$result = $cs->query(\$sql, \$cs);\n";
+			$script.="\t\t\t\$rows = $result->fetch_array(\$result);\n";
 			$script.="\t\t\t\$$fieldname=\$rows[\"$fieldname\"];\n";
 		} else
 			$script.="\t\t\t\$$fieldname=\$rows[\"$fieldname\"];\n";
@@ -153,7 +153,7 @@ function make_editor(
 	}
 	$script.=implode($insert, ", \".\n") . "\".\n";
 	$script.="\t\t\t\")\";\n";
-	$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
+	$script.="\t\t\t\$result = $cs->query(\$sql, \$cs);\n";
 	$script.="\t\tbreak;\n";
 	$script.="\t\tcase \"Modifier\":\n";
 	$script.="\t\t\t\$sql=\"update $table set \".\n";
@@ -164,11 +164,11 @@ function make_editor(
 	}
 	$script.=implode($update, ", \".\n") . " \".\n";
 	$script.="\t\t\t\"where $indexfield='\$$indexfield'\";\n";
-	$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
+	$script.="\t\t\t\$result = $cs->query(\$sql, \$cs);\n";
 	$script.="\t\tbreak;\n";
 	$script.="\t\tcase \"Supprimer\":\n";
 	$script.="\t\t\t\$sql=\"delete from $table where $indexfield='\$$indexfield'\";\n";
-	$script.="\t\t\t\$result = mysqli_query(\$sql, \$cs);\n";
+	$script.="\t\t\t\$result = $cs->query(\$sql, \$cs);\n";
 	$script.="\t\tbreak;\n";
 	$script.="\t\t}\n";
 	if($with_frames)

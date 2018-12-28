@@ -40,8 +40,8 @@ function get_admin_url($userdb)
     $adm_url="";
     $cs=connection(CONNECT, $userdb);
     $sql="select app_link from ${db_prefix}applications where di_name='modadmin'";
-    $result=mysqli_query($cs, $sql);
-    if ($rows=mysqli_fetch_array($result)) {
+    $result=$cs->query($sql);
+    if ($rows=$result->fetch_array()) {
         $adm_url=$rows["app_link"];
     }
     
@@ -55,7 +55,7 @@ function show_menu($userdb)
     $cs=connection(CONNECT, $userdb);
     
     $sql = 'delete from ${db_prefix}v_menus;';
-    mysqli_query($cs, $sql);
+    $cs->query($sql);
 
     $sql=   "insert into ${db_prefix}v_menus (me_id, pa_id, me_level, di_name, me_target, pa_filename, di_fr_short, di_fr_long, di_en_short, di_en_long)".
         "select m.me_id, m.pa_id, m.me_level, m.di_name, m.me_target, p.pa_filename, d.di_fr_short, d.di_fr_long, d.di_en_short, d.di_en_long " .
@@ -64,7 +64,7 @@ function show_menu($userdb)
                 "and p.di_name = d.di_name " .
                 "order by m.me_id";
     //echo $sql;
-    mysqli_query($cs, $sql);
+    $cs->query($sql);
 
     $sql=   "select me_id as Menu, pa_id as Page, me_level as Niveau, di_name as Dictionnaire, me_target as Cible, pa_filename as Fichier, di_fr_short as 'Francais court', di_fr_long as 'Francais long', di_en_short as 'Anglais court', di_en_long as 'Anglais long' from ${db_prefix}v_menus";
     
@@ -87,8 +87,8 @@ function menu_exists($database, $pa_filename="")
         "and p.pa_filename = '$pa_filename' " .
                 "order by m.me_id";
     
-    $result=mysqli_query($cs, $sql);
-    $exists=mysqli_num_rows($result)>0;
+    $result=$cs->query($sql);
+    $exists=$result->num_rows>0;
     
     return $exists;
 }
@@ -101,8 +101,8 @@ function get_page_id($userdb, $pa_filename)
     $cs = connection(CONNECT, $userdb);
     $sql = "select pa_id from ${db_prefix}pages where pa_filename = '$pa_filename'";
 	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
-    $result = mysqli_query($cs, $sql);
-    $rows = mysqli_fetch_array($result);
+    $result = $cs->query($sql);
+    $rows = $result->fetch_array();
     $pa_id = isset($rows[0]) ? (int)$rows[0] : 0;
 
     return $pa_id;
@@ -115,8 +115,8 @@ function get_menu_id($database, $pa_filename)
     $cs = connection(CONNECT, $database);
     $sql = "select m.me_id, p.pa_id from ${db_prefix}menus m left outer join ${db_prefix}pages p on m.pa_id = p.pa_id where p.pa_filename = '$pa_filename'";
 	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
-    $result = mysqli_query($cs, $sql);
-    $rows = mysqli_fetch_array($result);
+    $result = $cs->query($sql);
+    $rows = $result->fetch_array();
     $me_id = isset($rows[0]) ? (int)$rows[0] : 0;
 
     return $me_id;
@@ -129,8 +129,8 @@ function get_menu_and_page($userdb, $pa_filename)
     $cs = connection(CONNECT, $userdb);
     $sql = "select m.me_id, p.pa_id from ${db_prefix}menus m left outer join ${db_prefix}pages p on m.pa_id = p.pa_id where p.pa_filename = '$pa_filename'";
 	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
-    $result = mysqli_query($cs, $sql);
-    $rows = mysqli_fetch_array($result);
+    $result = $cs->query($sql);
+    $rows = $result->fetch_array();
     $me_id = isset($rows[0]) ? (int)$rows[0] : 0;
     $pa_id = isset($rows[1]) ? (int)$rows[1] : 0;
 
@@ -147,8 +147,8 @@ function get_page_filename($database, $id=0)
                 "and p.pa_id=m.pa_id " .
                 "and m.me_id=" . $id;
     $cs=connection(CONNECT, $database);
-    $result=mysqli_query($cs, $sql);
-    $rows=mysqli_fetch_array($result);
+    $result=$cs->query($sql);
+    $rows=$result->fetch_array();
     $page = $rows[0];
         
     return $page;
@@ -170,14 +170,14 @@ function add_menu_and_page(
             $me_target="page";
         }
         
-        mysqli_begin_transaction($cs, MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+        $cs->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
         $sql = <<<INSERT
     insert into ${db_prefix}dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
     values('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
 INSERT;
-        $result = mysqli_query($cs, $sql);
-        $di_id = mysqli_insert_id($cs);
-        $affected_rows = mysqli_affected_rows($cs);
+        $result = $cs->query($sql);
+        $di_id = $cs->insert_id;
+        $affected_rows = $cs->affected_rows;
 
         debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
@@ -185,9 +185,9 @@ INSERT;
     insert into ${db_prefix}pages (di_name, pa_filename)
     values('$di_name', '$pa_filename')
 INSERT;
-        $result = mysqli_query($cs, $sql);
-        $pa_id = mysqli_insert_id($cs);
-        $affected_rows += mysqli_affected_rows($cs);
+        $result = $cs->query($sql);
+        $pa_id = $cs->insert_id;
+        $affected_rows += $cs->affected_rows;
 
         debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
     
@@ -195,13 +195,13 @@ INSERT;
     insert into ${db_prefix}menus (di_name, me_level, me_target, pa_id)
     values('$di_name', '$me_level', '$me_target', $pa_id)
 INSERT;
-        $result = mysqli_query($cs, $sql);
-        $me_id = mysqli_insert_id($cs);
-        $affected_rows += mysqli_affected_rows($cs);
+        $result = $cs->query($sql);
+        $me_id = $cs->insert_id;
+        $affected_rows += $cs->affected_rows;
 
         debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
-        mysqli_commit($cs);
+        $cs->commit();
 
     }
     return [$me_id, $pa_id, $affected_rows];
@@ -216,23 +216,23 @@ function update_menu(
 
     $cs=connection(CONNECT, $userdb);
 
-    mysqli_begin_transaction($cs, MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    $cs->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
 
     $sql=   "update ${db_prefix}menus set di_name='$di_name', me_level='$me_level', me_target='$me_target', pa_id=$pa_id ".
         "where me_id=$me_id";
-    $result=mysqli_query($cs, $sql);
-    $affected_rows = mysqli_affected_rows($cs);
+    $result=$cs->query($sql);
+    $affected_rows = $cs->affected_rows;
 
     $sql=   "update ${db_prefix}pages set di_name='$di_name', pa_filename='$pa_filename'".
         "where pa_id=$pa_id";
-    $result=mysqli_query($cs, $sql);
-    $affected_rows += mysqli_affected_rows($cs);
+    $result=$cs->query($sql);
+    $affected_rows += $cs->affected_rows;
 
     $sql=   "update ${db_prefix}menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long' where di_name=$di_name";
-    $result=mysqli_query($cs, $sql);
-    $affected_rows += mysqli_affected_rows($cs);
+    $result=$cs->query($sql);
+    $affected_rows += $cs->affected_rows;
 
-    mysqli_commit($cs);
+    $cs->commit($cs);
 
     return $affected_rows;
 }
@@ -243,21 +243,21 @@ function delete_menu($userdb, $di_name)
 
     $cs=connection(CONNECT, $userdb);
 
-    mysqli_begin_transaction($cs, MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    $cs->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
 
     $sql="delete from ${db_prefix}menus where di_name='$di_name'";
-    $result = mysqli_query($cs, $sql);
-    $affected_rows = mysqli_affected_rows($cs);
+    $result = $cs->query($sql);
+    $affected_rows = $cs->affected_rows;
 
     $sql="delete from ${db_prefix}pages where di_name='$di_name'";
-    $result = mysqli_query($cs, $sql);
-    $affected_rows += mysqli_affected_rows($cs);
+    $result = $cs->query($sql);
+    $affected_rows += $cs->affected_rows;
 
     $sql="delete from ${db_prefix}dictionary where di_name='$di_name'";
-    $result = mysqli_query($cs, $sql);
-    $affected_rows += mysqli_affected_rows($cs);
+    $result = $cs->query($sql);
+    $affected_rows += $cs->affected_rows;
 
-    mysqli_commit($cs);
+    $cs->commit($cs);
 
     return $affected_rows;
 }
@@ -382,9 +382,9 @@ function create_main_menu($database, $level=0)
     debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
         
     $cs=connection("connect", $database);
-    $result=mysqli_query($cs, $sql);
+    $result=$cs->query($sql);
     $count=0;
-    while ($rows=mysqli_fetch_array($result, MYSQLI_NUM)) {
+    while ($rows=$result->fetch_array(MYSQLI_NUM)) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -402,7 +402,7 @@ function create_main_menu($database, $level=0)
     $main_menu=substr($main_menu, 0, strlen($main_menu)-23);
     $main_menu.="</tr></table>";
     
-    mysqli_free_result($result);
+    $result->free();
 
     return array("index"=>$default_id, "menu"=>$main_menu);
 }
@@ -420,8 +420,8 @@ function create_framed_main_menu($userdb, $color, $text_color, $over_color, $wid
                 "and m.di_name=d.di_name " .
                 "order by m.me_id";
     $cs=connection(CONNECT, $userdb);
-    $result=mysqli_query($cs, $sql);
-    while ($rows=mysqli_fetch_array($result)) {
+    $result=$cs->query($sql);
+    while ($rows=$result->fetch_array()) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -437,7 +437,7 @@ function create_framed_main_menu($userdb, $color, $text_color, $over_color, $wid
         $main_menu.="\t<param name=\"url\" valuetype=\"ref\" value=\"$lg/$link?lg=$lg\">\n";
         $main_menu.="</applet>\n\n";
     }
-    mysqli_free_result($result);
+    $result->free();
     return $main_menu;
 }
 
@@ -461,8 +461,8 @@ function create_sub_menu($database, $id=0, $lg="", $orientation)
     //and m.me_id<>m.pa_id
 
     $cs=connection("connect", $database);
-    $result=mysqli_query($cs, $sql);
-    while ($rows=mysqli_fetch_array($result)) {
+    $result=$cs->query($sql);
+    while ($rows=$result->fetch_array()) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -507,7 +507,7 @@ function create_sub_menu($database, $id=0, $lg="", $orientation)
     } elseif ($orientation==SUB_MENU_VERTICAL) {
         $sub_menu.="</table>";
     }
-    mysqli_free_result($result);
+    $result->free();
     return $sub_menu;
 }
 
@@ -532,8 +532,8 @@ function create_menu_tree($database, $id=0, $lg="", $orientation)
     //echo "$sql<br>";
 
     $cs=connection("connect", $database);
-    $result=mysqli_query($cs, $sql);
-    while ($rows=mysqli_fetch_array($result)) {
+    $result=$cs->query($sql);
+    while ($rows=$result->fetch_array()) {
         $page=$rows[5];
     }
     if (!empty($page)) {
@@ -558,8 +558,8 @@ function create_menu_tree($database, $id=0, $lg="", $orientation)
         
     //echo "$sql<br>";
 
-    $result=mysqli_query($cs, $sql);
-    while ($rows=mysqli_fetch_array($result)) {
+    $result=$cs->query($sql);
+    while ($rows=$result->fetch_array()) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -610,7 +610,7 @@ function create_menu_tree($database, $id=0, $lg="", $orientation)
     } elseif ($orientation==SUB_MENU_VERTICAL) {
         $sub_menu.="</table>";
     }
-    mysqli_free_result($result);
+    $result->free();
     return $sub_menu;
 }
 
@@ -626,13 +626,13 @@ function retrieve_page_by_id($database, $id=0, $lg="")
                 "where m.di_name=d.di_name " .
                 "and p.di_name=m.di_name " .
                 "and p.pa_id=$id";
-    // debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
+    debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
     //echo $sql . "<br>";
     //"and p.pa_id=m.me_id " .
-    $cs=connection("connect", $database);
-    $result=mysqli_query($cs, $sql);
-    $rows=mysqli_fetch_array($result);
+    $cs=connection(CONNECT, $database);
+    $result=$cs->query($sql);
+    $rows=$result->fetch_assoc();
     $index = $rows["di_name"];
     $page = $rows["pa_filename"];
     $title = $rows["di_".$lg."_long"];
@@ -640,6 +640,7 @@ function retrieve_page_by_id($database, $id=0, $lg="")
     if ($title=="") {
         $title = $rows["di_".$lg."_short"];
     }
+    debugLog(__FILE__ . ':' . __LINE__, $rows);
     
     $request="";
     $p=strpos($page, "?", 0);
@@ -677,8 +678,8 @@ function retrieve_page_by_menu_id($database, $id=0, $lg="")
 //        echo $sql . "<br>";
     //"and p.pa_id=m.me_id " .
     $cs=connection("connect", $database);
-    $result=mysqli_query($cs, $sql);
-    $rows=mysqli_fetch_array($result);
+    $result=$cs->query($sql);
+    $rows=$result->fetch_assoc();
     $index = $rows["di_name"];
     $page = $rows["pa_filename"];
     $title = $rows["di_".$lg."_long"];
@@ -722,8 +723,8 @@ function retrieve_page_by_dictionary_id($database, $di="", $lg="")
     // debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
     $cs=connection("connect", $database);
-    $result=mysqli_query($cs, $sql);
-    $rows=mysqli_fetch_array($result);
+    $result=$cs->query($sql);
+    $rows=$result->fetch_assoc();
     $index = $rows["me_id"];
     $page = $rows["pa_filename"];
     $charset = $rows["me_charset"];

@@ -488,15 +488,15 @@ function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, 
 		
 /*	unset($ref_list);
 	unset($data_list);
-	$result=mysqli_query($cs, $sql);
+	$result=$cs->query($sql);
 	
-	$j=mysqli_num_fields($result);*/
+	$j=$result->num_fields;*/
 	
 	$column_names=array();
 	$column_names[0]="Colonne : ".$names[0];
 	$column_names[1]="Ligne : ".$names[1];
 		
-/*	while($rows=mysqli_fetch_array($result)) {
+/*	while($rows=$result->fetch_array()) {
 		$data_list.=$rows[$data_field].",";
 		if($data_field!=$ref_field)
 			$ref_list.=$rows[$ref_field].",";

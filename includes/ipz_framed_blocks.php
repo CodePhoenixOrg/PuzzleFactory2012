@@ -34,13 +34,13 @@ function create_enhanced_framed_block_set($database, $column, $target, $id, $lg,
 	$block_set="";
 	$sql="select bl_id, bl_type from ${db_prefix}blocks where bl_column=$column order by bl_id";
 	//echo "$sql<br>";	
-        $result=mysqli_query($cs, $sql);
+        $result=$cs->query($sql);
 	$bl_type="";
 	$old_bl_type="";
 	$first_block=true;
 	$dbs_id=0;
 	$js="<script language='text/javascript'>alert(\" ferme le tableau des block dynamiques !\");</script>";
-        while($rows=mysqli_fetch_array($result)) {
+        while($rows=$result->fetch_array()) {
                 $index=$rows[0];
                 $bl_type=$rows[1];
 
@@ -121,8 +121,8 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
 		"where  b.di_id=d.di_id ".
 		"and b.bl_id=$block_num";
-	$result=mysqli_query($cs, $sql);
-	$rows=mysqli_fetch_array($result);
+	$result=$cs->query($sql);
+	$rows=$result->fetch_array();
 	$block_name=$rows[0];
 
         $sql=	"select m.me_id, m.me_level, m.bl_id, d.di_".$lg."_short, m.me_target, p.pa_filename, p.pa_id ".
@@ -138,8 +138,8 @@ function create_framed_block($database, $block_num, $target, $id, $lg, $colors) 
 	$count=0;
 	$zero=0;
 	
-        $result=mysqli_query($cs, $sql);
-        while($rows=mysqli_fetch_array($result)) {
+        $result=$cs->query($sql);
+        while($rows=$result->fetch_array()) {
                 $index=$rows[0];
                 $level=$rows[1];
 		$block=$rows[2];
@@ -213,8 +213,8 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
 		"where  b.di_id=d.di_id ".
 		"and b.bl_id=$block_num";
-	$result=mysqli_query($cs, $sql);
-	$rows=mysqli_fetch_array($result);
+	$result=$cs->query($sql);
+	$rows=$result->fetch_array();
 	$block_name=$rows[0];
 	$block_column=$rows[1];
 
@@ -230,8 +230,8 @@ function create_framed_collapseable_block($block_skin_name, $block_num, $target,
 	$count=0;
 	$zero=0;
 	
-        $result=mysqli_query($cs, $sql);
-        while($rows=mysqli_fetch_array($result)) {
+        $result=$cs->query($sql);
+        while($rows=$result->fetch_array()) {
                 $index=$rows[0];
                 $level=$rows[1];
 		$block=$rows[2];
@@ -333,8 +333,8 @@ function create_framed_members_block($database, $logout, $di_name, $id, $lg, $ta
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
 		"where  b.di_id=d.di_id ".
 		"and b.di_id=\"$di_id\"";
-	$result=mysqli_query($cs, $sql);
-	$rows=mysqli_fetch_array($result);
+	$result=$cs->query($sql);
+	$rows=$result->fetch_array();
 	$block_name=$rows[0];
 	
 	$table_name="members";
@@ -424,8 +424,8 @@ function create_framed_newsletter_block($database, $di_name, $id, $lg, $target, 
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
 		"where  b.di_id=d.di_id ".
 		"and b.di_id=\"$di_id\"";
-	$result=mysqli_query($cs, $sql);
-	$rows=mysqli_fetch_array($result);
+	$result=$cs->query($sql);
+	$rows=$result->fetch_array();
 	$block_name=$rows[0];
 
 	$table_name="newsltr";

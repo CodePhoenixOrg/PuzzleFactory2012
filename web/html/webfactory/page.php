@@ -30,8 +30,8 @@
 	$toplinks=$main_menu["menu"];
 	$default_id=$main_menu["index"];
 	
-	$id=(isset($_GET["id"])) ? $_GET["id"] : 1;
-	$di=(isset($_GET["di"])) ? $_GET["di"] : '';
+	$id = get_variable("id", 1);
+	$di = get_variable("di");
 
 	if($di !== '') {
 		$title_page = retrieve_page_by_dictionary_id($database, $di, $lg);

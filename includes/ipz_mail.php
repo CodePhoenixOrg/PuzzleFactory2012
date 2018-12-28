@@ -55,12 +55,12 @@ function send_mail_from_table($sender, $subject="", $body="", $action="SEND", $s
 		
 		//$sql="select * from subscribers";
 		$sql="select * from subscribers where sub_id not in (select sb.sub_id from newsltr_history as nh, subscribers as sb where nh.sub_id<>sb.sub_id and nh.nl_id=$nl_id)";
-		$result=mysqli_query($cs, $sql);
-		while($rows=mysqli_fetch_array($result)) {
+		$result=$cs->query($sql);
+		while($rows=$result->fetch_array()) {
 			$to=$rows["sub_email"];
 			$sub_id=$rows["sub_id"];
 			$sql="insert into newsltr_history (nl_id, sub_id) values($nl_id, $sub_id)";
-			$result2=mysqli_query($cs, $sql);
+			$result2=$cs->query($sql);
 			mail($to, $subject, $message, $headers);
 		}
 	}

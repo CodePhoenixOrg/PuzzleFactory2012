@@ -2,19 +2,24 @@
 define("CONNECT", "connect");
 define("DISCONNECT", "disconnect");
 
-function connection($c, $d)
+function connection($c, $d, $cs = null)
 {
     $host="mysql";
     $user="root";
     $passwd="demo";
     $dbname=$d;
 
-    $myconn=mysqli_connect($host, $user, $passwd) or die("Connection failed");
-    if ($c == CONNECT) {
-        mysqli_select_db($myconn, $dbname);
-		mysqli_set_charset($myconn,"utf8");
-    } elseif ($c == DISCONNECT) {
-        mysqli_close($myconn);
+    try {
+        if ($c == CONNECT) {
+            $cs = new mysqli($host, $user, $passwd, $dbname);
+            $cs->set_charset("utf8");
+        } elseif ($c == DISCONNECT && $cs !== null) {
+            $cs->close();
+        }   
+            
     }
-    return $myconn;
+    catch(\Exception $ex) {
+        die("Connection failed");
+    }
+    return $cs;
 }

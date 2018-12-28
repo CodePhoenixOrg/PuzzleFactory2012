@@ -29,12 +29,12 @@ include_once("ipz_controls.php");
 function get_js_array_from_query($name, $sql, $cs) {
 	$js_array="<script language='JavaScript'>\n";
 
-	$result=mysqli_query($cs, $sql);
-	$n=mysqli_num_rows($result);
+	$result=$cs->query($sql);
+	$n=$result->num_rows;
 	$i=0;
 	$js_array.="\tvar $name=new Array($n);\n";
 	$js_array.="\t$name"."[$i]=new Array(\"0\", \"\");"."\n";
-	while($rows=mysqli_fetch_array($result)) {
+	while($rows=$result->fetch_array()) {
 		$i++;
 		$js_array.="\t$name"."[$i]=new Array(\"".implode("\",\"", array_unique($rows))."\");"."\n";
 	}
@@ -235,18 +235,18 @@ function get_recordset($sql, $cs) {
 	$types=(array) null;
 	$values=(array) null;
 
-	$result=mysqli_query($cs, $sql) or die($sql);
-	$nfields=mysqli_num_fields($result);
-	//$nrows=mysqli_num_rows($result);
+	$result=$cs->query($sql)  or die($sql);
+	$nfields=$result->num_fields;
+	//$nrows=$result->num_rows;
 	
 	for($i=0;$i<$nfields;$i++) {
-		$field_info = mysqli_fetch_field_direct($result, $i);
+		$field_info = $result->fetch_field_direct($i);
 		$names[$i] = $field_info->name;
 		$types[$i] = $field_info->type;
 	}
 	
 	$i=0;
-	while(($rows=mysqli_fetch_array($result)) && ($i<256)) {
+	while(($rows=$result->fetch_array()) && ($i<256)) {
 		$values[$i]=array_unique($rows);
 		$i++;
 	}
@@ -292,10 +292,10 @@ function create_pager_control($userdb="", $page_link="", $sql_query="", $id="", 
 		
 		//echo "SQL='$sql'<br>";
 		//echo "Database='$userdb'<br>";
-		$result=mysqli_query($cs, $sql) or die(mysqli_error());
-		//$rows=mysqli_fetch_array($result);
+		$result=$cs->query($sql)  or die(mysqli_error());
+		//$rows=$result->fetch_array();
 		//$pc=$rows[0];
-		$pc=mysqli_num_rows($result);
+		$pc=$result->num_rows;
 		//echo "Count='$pc'<br>";
 	}
 	$min_sr=0;
@@ -398,10 +398,10 @@ function create_enhanced_pager_control($page_link="", $sql_query="", $id="", $lg
 		//echo "SQL='$sql'<br>";
 		//echo "UserDB='$userdb'<br>";
 		//echo "Database='$database'<br>";
-		$result=mysqli_query($cs, $sql) or die(mysqli_error());
-		//$rows=mysqli_fetch_array($result);
+		$result=$cs->query($sql)  or die(mysqli_error());
+		//$rows=$result->fetch_array();
 		//$pc=$rows[0];
-		$pc=mysqli_num_rows($result);
+		$pc=$result->num_rows;
 		//echo "Count='$pc'<br>";
 	}
 	$min_sr=0;
@@ -645,8 +645,8 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$pager=$pager_ctrl["pager_ctrl"];
 
 	//echo "sql='$sql'<br>";
-	$result=mysqli_query($cs, $sql) or die("Il y a peut-être une erreur dans la requête :<br>$sql<br>");
-	$num=mysqli_num_rows($result);
+	$result=$cs->query($sql)  or die("Il y a peut-être une erreur dans la requête :<br>$sql<br>");
+	$num=$result->num_rows;
 	
 	//if($num) {
 
@@ -654,7 +654,8 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	//Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
 	$width_count=count($col_widths);
 
-	$fields_count=mysqli_num_fields($result);
+	$fields = $result->fetch_fields();
+	$fields_count = count($fields);
 	$cols=$fields_count;
 	if($width_count<$fields_count) {
 		
@@ -716,7 +717,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</tr>\n";
 	$r=0;
 	$i=$fields_count;
-	while($rows=mysqli_fetch_array($result)) {
+	while($rows=$result->fetch_array()) {
 		$on_mouse_over="";
 		$on_mouse_out="";
 	
@@ -833,7 +834,11 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$rows=array();
 		$rows[0]="0";
 		$rows[1]="($add)";
-		for($i=2; $i<mysqli_num_fields($result); $i++) {
+
+		$fields = $result->fetch_fields();
+		$fields_count = count($fields);
+	
+		for($i=2; $i<$fields_count; $i++) {
 			$rows[$i]="...";
 		}
 		
@@ -913,7 +918,7 @@ function create_pager_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</table>\n";
 	if($javascript) $_SESSION["javascript"].=$javascript;
 
-	mysqli_free_result($result);
+	$result->free();
 
 	return $table;
 }
@@ -1065,15 +1070,15 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$pager=$pager_ctrl["pager_ctrl"];
 
 	//echo "sql='$sql'<br>";
-	$result=mysqli_query($cs, $sql) or die(mysqli_error());
-	$num=mysqli_num_rows($result);
+	$result=$cs->query($sql)  or die(mysqli_error());
+	$num=$result->num_rows;
 	
 	//if($num) {
 
 	//Les colonnes auront la largeur définie par ordre d'indexation dans le tableau $col_width.
 	//Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
 	$width_count=count($col_widths);
-	$fields_count=mysqli_num_fields($result);
+	$fields_count=$result->num_fields;
 	$cols=$fields_count;
 	if($width_count<$fields_count) {
 		
@@ -1137,7 +1142,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</tr>\n";
 	$r=0;
 	$i=$fields_count;
-	while($rows=mysqli_fetch_array($result)) {
+	while($rows=$result->fetch_array()) {
 		$on_mouse_over="";
 		$on_mouse_out="";
 		$al_id=$rows["al_id"];
@@ -1261,7 +1266,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 		$rows=array();
 		$rows[0]="0";
 		$rows[1]="($add)";
-		for($i=2; $i<mysqli_num_fields($result); $i++) {
+		for($i=2; $i<$result->num_fields; $i++) {
 			$rows[$i]="...";
 		}
 		
@@ -1344,7 +1349,7 @@ function create_image_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $cu
 	$table.="</table>\n";
 	if($javascript) $_SESSION["javascript"].=$javascript;
 
-	mysqli_free_result($result);
+	$result->free();
 
 	return $table;
 }
@@ -1426,14 +1431,14 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 	}
 
 	//echo "SQL='$sql'<br>";
-	$result = mysqli_query($cs, $sql) or die(mysqli_error());
-	$num=mysqli_num_rows($result);
+	$result = $cs->query($sql)  or die(mysqli_error());
+	$num=$result->num_rows;
 	//if($num) {
 
 	//Les colonnes auront la largeur définie par ordre d'indexation dans le tableau $col_width.
 	//Si le nombre de largeurs définies est inférieur on aggrandi le tableau avec des valeurs à 0.
 	$width_count=count($col_widths);
-	$i=mysqli_num_fields($result);
+	$i=$result->num_fields;
 	if($width_count<$i) {
 		
 		$j=$i-$width_count;
@@ -1458,7 +1463,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 	}
 	$table.="</tr>\n";
 	$r=0;
-	while($rows=mysqli_fetch_array($result)) {
+	while($rows=$result->fetch_array()) {
 		$on_mouse_over="";
 		$on_mouse_out="";
 	
@@ -1568,7 +1573,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 		$rows=array();
 		$rows[0]="0";
 		$rows[1]="($add)";
-		for($i=2; $i<mysqli_num_fields($result); $i++) {
+		for($i=2; $i<$result->num_fields; $i++) {
 			$rows[$i]="...";
 		}
 		
@@ -1645,7 +1650,7 @@ function create_db_grid($name="", $sql="", $rows_id=0, $page_link="",  $curl_row
 	
 	$table.="</table>\n";
 
-	mysqli_free_result($result);
+	$result->free();
 
 	return $table;
 }
@@ -1666,8 +1671,8 @@ function create_options_from_table($index_field="", $option_field="", $table="",
 	if(!$only_default) {
 		$sql="select $index_field, $option_field from $table$where_field_like$order_by_field";
 		//echo "sql='$sql'<br>";
-		$result = mysqli_query($cs, $sql);
-		while ($rows=mysqli_fetch_array($result)) {
+		$result = $cs->query($sql);
+		while ($rows=$result->fetch_array()) {
 			$value=$rows[$index_field];
 			$option=$rows[$option_field];
 			//$option=strtoupper($option);
@@ -1685,8 +1690,8 @@ function create_options_from_table($index_field="", $option_field="", $table="",
 		$sql="select $index_field, $option_field from $table$where_field_like$order_by_field";
 		//echo "$sql<br>";
 		
-		$result = mysqli_query($cs, $sql);
-		while ($rows=mysqli_fetch_array($result)) {
+		$result = $cs->query($sql);
+		while ($rows=$result->fetch_array()) {
 			$value=$rows[$index_field];
 			$option=$rows[$option_field];
 			$list.="<OPTION SELECTED VALUE=\"$value\" LABEL=\"$option\">$option</OPTION>\n";
@@ -1714,8 +1719,8 @@ function create_options_from_query($sql="", $value_col=0, $option_col=0, $select
 	*/
 	if(!$only_default) {
 		$list.="<OPTION SELECTED VALUE=\"0\">".$PZ_ZERO_SELECT."</OPTION>\n";
-		$result = mysqli_query($cs, $sql);
-		while ($rows=mysqli_fetch_array($result)) {
+		$result = $cs->query($sql);
+		while ($rows=$result->fetch_array()) {
 			$value=$rows[$value_col];
 			$option=$rows[$option_col];
 			if(!empty($selected)) {
@@ -1733,8 +1738,8 @@ function create_options_from_query($sql="", $value_col=0, $option_col=0, $select
 		$value_field=$fields[$value_col];
 		$sql=insert_test($sql, $value_field, $default, "=", true);
 		
-		$result = mysqli_query($cs, $sql);
-		while ($rows=mysqli_fetch_array($result)) {
+		$result = $cs->query($sql);
+		while ($rows=$result->fetch_array()) {
 			$value=$rows[$value_col];
 			$option=$rows[$option_col];
 			$list.="<OPTION SELECTED VALUE=\"$value\">$option</OPTION>\n";

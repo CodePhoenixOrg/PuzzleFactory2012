@@ -1,54 +1,44 @@
 <center>
 <?php   
-	include("images_code.php");
+	include("zipcode_code.php");
 	$pc = get_variable("pc");
 	$sr = get_variable("sr");
 	$curl_pager = "";
+	$dialog = "";
 	if(isset($pc)) $curl_pager="&pc=$pc";
 	if(isset($sr)) $curl_pager.="&sr=$sr";
 	if($query=="SELECT") {
-			$sql="select im_id, im_name from images order by im_id";
-			$dbgrid=create_pager_db_grid("images", $sql, $id, "page.php", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
-			//$dbgrid=table_shadow("images", $dbgrid);
+			$sql="select zc_id, zc_code from pz_zip_code order by zc_id";
+			$dbgrid=create_pager_db_grid("pz_zip_code", $sql, $id, "page.php", "&query=ACTION$curl_pager", "", true, true, $dialog, array(0, 400), 15, $grid_colors, $cs);
+			//$dbgrid=table_shadow("pz_zip_code", $dbgrid);
 			echo "<br>".$dbgrid;
 	} elseif($query=="ACTION") {
 ?>
-<form method='POST' name='imagesForm' action='page.php?id=46&lg=fr'>
+<form method='POST' name='pz_zip_codeForm' action='page.php?id=0&lg=fr'>
 	<input type='hidden' name='query' value='ACTION'>
 	<input type='hidden' name='event' value='onRun'>
 	<input type='hidden' name='pc' value='<?php echo $pc?>'>
 	<input type='hidden' name='sr' value='<?php echo $sr?>'>
-	<input type='hidden' name='im_id' value='<?php echo $im_id?>'>
+	<input type='hidden' name='zc_id' value='<?php echo $zc_id?>'>
 	<table border='1' bordercolor='<?php echo $panel_colors["border_color"]?>' cellpadding='0' cellspacing='0' witdh='100%' height='1'>
 		<tr>
 			<td align='center' valign='top' bgcolor='<?php echo $panel_colors["back_color"]?>'>
 				<table>
 				<tr>
-					<td>im_id</td>
+					<td>zc_id</td>
 					<td>
-						<?php echo $im_id?>
+						<?php echo $zc_id?>
 					</td>
 				</tr>
-					<td>im_name</td>
+					<td>zc_code</td>
 					<td>
-						<input type='text' name='im_name' size='45' value='<?php echo $im_name?>'>
-					</td>
-				</tr>
-				<tr>
-					<td>im_dir</td>
-					<td>
-						<textarea name='im_dir' cols='80' rows='8'><?php echo $im_dir?></textarea>
+						<input type='text' name='zc_code' size='15' value='<?php echo $zc_code?>'>
 					</td>
 				</tr>
 				<tr>
-					<td>im_url</td>
+					<td>zc_city</td>
 					<td>
-						<textarea name='im_url' cols='80' rows='8'><?php echo $im_url?></textarea>
-					</td>
-				</tr>
-					<td>im_site</td>
-					<td>
-						<input type='text' name='im_site' size='11' value='<?php echo $im_site?>'>
+						<textarea name='zc_city' cols='80' rows='2'><?php echo $zc_city?></textarea>
 					</td>
 				</tr>
 					<tr>

@@ -259,7 +259,3 @@ function create_dialog_window($url, $height, $width) {
 		")";
 	return $dialog;
 }
-
-
-
-?> 
