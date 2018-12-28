@@ -43,7 +43,7 @@
 				<HR COLOR=#0 WIDTH=100% ALIGN=CENTER>
 <?php 
 	require "include/connection.php";
-	mysqli_select_db($dbname);
+	$cs->select_db($dbname);
 	//alimentation du livre
 	if ($action=="fill"){
 		$action = "         ";
@@ -55,10 +55,10 @@
 				$link= " ";
 			}
 			$query = "SELECT * FROM guestbook where nickname = \"$nickname\" and dday = \"$dday\" and msg = \"$msg\"";
-			$result = mysqli_query($query, $mysql);
-			$number = mysqli_num_rows($result);
+			$result = $cs->query($query, $mysql);
+			$number = $result->num_rows();
 			if ($number == 0){
-				$sqlresult=mysqli_db_query("insert into guestbook values(\"$nickname\",\"$city\",\"$email\",\"$msg\",\"$dday\",\"$link\",\"$hhour\")", $mysql);
+				$sqlresult=$cs->db_query("insert into guestbook values(\"$nickname\",\"$city\",\"$email\",\"$msg\",\"$dday\",\"$link\",\"$hhour\")", $mysql);
 			}
 			$nickname =  "          " ;
 			$city = "           ";
@@ -70,8 +70,8 @@
 	}
 	// affichage des message
 	$query = "SELECT * FROM guestbook order by dday desc, hhour desc";
-	$result = mysqli_query($query, $mysql);
-	$number = mysqli_num_rows($result);
+	$result = $cs->query($query, $mysql);
+	$number = $result->num_rows();
 ?>
 				<center><font face="ARIAL, HELVETICA, SANS-SERIF" SIZE="3" style="color:#000000">
 				<B><?php  echo $number ?></B></font>&nbsp;
@@ -99,13 +99,13 @@
 		if ($number == 0) {
 			print "<CENTER><P>Aucun message!</CENTER>";
 		} elseif ($number > 0) {
-			$nickname = mysqli_result($result, $i, "nickname");
-			$city = mysqli_result($result, $i, "city");
-			$email = mysqli_result($result, $i, "email");
-			$msg = mysqli_result($result, $i, "msg");
-			$dday = mysqli_result($result, $i, "dday");
-			$link = mysqli_result($result, $i, "link");
-			$hhour = mysqli_result($result, $i, "hhour");
+			$nickname = $result->result($i, "nickname");
+			$city = $result->result($i, "city");
+			$email = $result->result($i, "email");
+			$msg = $result->result($i, "msg");
+			$dday = $result->result($i, "dday");
+			$link = $result->result($i, "link");
+			$hhour = $result->result($i, "hhour");
 			if ($link == "http://") {$link= " ";}
 ?>
 				<CENTER><BR>

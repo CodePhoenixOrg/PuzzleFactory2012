@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(fr_id) from forums;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$fr_id=$rows[0]+1;
 			$fr_title="";
 			$fr_description="";
@@ -27,8 +27,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from forums where fr_id='$fr_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$fr_id=$rows["fr_id"];
 			$fr_title=$rows["fr_title"];
 			$fr_description=$rows["fr_description"];
@@ -63,7 +63,7 @@
 				"'$fr_table_name', ".
 				"$me_id".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$fr_id = $_POST["fr_id"];
@@ -82,11 +82,11 @@
 				"fr_table_name='$fr_table_name', ".
 				"me_id=$me_id ".
 			"where fr_id='$fr_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from forums where fr_id='$fr_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

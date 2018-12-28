@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(me_id) from menus;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$me_id=$rows[0]+1;
 			$me_level="";
 			$me_target="";
@@ -29,8 +29,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from menus where me_id='$me_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$me_id=$rows["me_id"];
 			$me_level=$rows["me_level"];
 			$me_target=$rows["me_target"];
@@ -63,7 +63,7 @@
 				"'$grp_group', ".
 				"'$me_charset'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$me_id = $_POST["me_id"];
@@ -84,11 +84,11 @@
 				"grp_group='$grp_group', ".
 				"me_charset='$me_charset' ".
 			"where me_id='$me_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from menus where me_id='$me_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

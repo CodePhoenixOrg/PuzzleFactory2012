@@ -2,11 +2,11 @@
 <?php 
 	require "openconn.php";
 	dbconnection("connect");
-	mysqli_select_db($d);
+	$cs->select_db($d);
  	$sql=urldecode($q);
-	$result=mysqli_query($sql);
+	$result=$cs->query($sql);
 	if($result) {
-		$i=mysqli_num_fields($result);
+		$i=$result->num_fields();
 		$k=0;
 
 		// Get recordset field names
@@ -30,7 +30,7 @@
 		echo $line . "\n";
 
 		// Get recordset data rows
-		while($rows=mysqli_fetch_array($result))
+		while($rows=$result->fetch_array())
 		{
 			echo $k . "=";
 			$line="";
@@ -45,7 +45,7 @@
 			echo $line . "\n";
 			$k++;
 		}
-		mysqli_free_result($result);
+		$result->free_result();
 	}
 ?>
 </pre></body></html>

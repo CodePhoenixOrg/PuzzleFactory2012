@@ -3,8 +3,8 @@
 	//include("puzzle/ipz_mysqlconn.php");
 	$sql="select * from ${db_prefix}books where la_country='$lg' order by bo_id";
 	$cs=connection("connect", "leela");
-	$result=mysqli_query($cs, $sql);
-	while($rows=mysqli_fetch_array($result))
+	$result=$cs->query($sql);
+	while($rows=$result->fetch_array())
 	{
 		$title=$rows["bo_title"];
 		$author=$rows["bo_author"];
@@ -41,6 +41,6 @@
 		<br>
 		<?php 
 	}
-	mysqli_free_result($result);
+	$result->free_result();
 ?>
 </center>

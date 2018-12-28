@@ -4,7 +4,7 @@ function dbconnection($a="") {
 	$user="akades";
 	$passwd="25643152";
 	if($a=="connect") {
-		$myconn=mysqli_pconnect($host, $user, $passwd);
+		$myconn=$cs->pconnect($host, $user, $passwd);
 		if($myconn) {
 			echo "succeeded\n";
 		}
@@ -12,8 +12,8 @@ function dbconnection($a="") {
 			echo "failed\n";
 	}
 	else if($a=="disconnect") {
-		$myconn=mysqli_pconnect($host, $user, $passwd);
-		mysqli_close($myconn);
+		$myconn=$cs->pconnect($host, $user, $passwd);
+		$cs->close($myconn);
 	}
 }
 ?>

@@ -12,8 +12,8 @@
 		case "Ajouter":
 
 			$sql="select max(dy_id) from diary;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$dy_id=$rows[0]+1;
 			$dy_date="";
 			$dy_time="";
@@ -26,8 +26,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from diary where dy_id='$dy_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$dy_id=$rows["dy_id"];
 			$dy_date=$rows["dy_date"];
 			$dy_time=$rows["dy_time"];
@@ -63,7 +63,7 @@
 				"'$dy_document', ".
 				"'$mbr_id'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$sql="update diary set ".
@@ -77,11 +77,11 @@
 				"dy_document='$dy_document', ".
 				"mbr_id='$mbr_id' ".
 			"where dy_id='$dy_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from diary where dy_id='$dy_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

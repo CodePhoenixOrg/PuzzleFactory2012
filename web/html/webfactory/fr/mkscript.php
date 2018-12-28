@@ -20,7 +20,7 @@ function checkValues() {
 	$query = get_variable('query', 'MENU');
 	$bl_id = get_variable('bl_id', 0);
 
-	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
+	$cs=connection(CONNECT, $userdb);
 	$tmp_filename="tmp.php";
 	//$wwwroot=get_www_root();
 	$wwwroot=get_current_http_root();

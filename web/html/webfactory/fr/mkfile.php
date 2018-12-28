@@ -51,8 +51,8 @@
 		$L_sqlFields = "";
 		$A_sqlFields = [];
 		
-		$result = mysqli_query($cs, $sql) or die("SQL='$sql'<br>");
-		while($rows = mysqli_fetch_array($result)) {
+		$result = $cs->query($sql) or die("SQL='$sql'<br>");
+		while($rows = $result->fetch_array()) {
 			$L_sqlFields .= $rows[0].",";
 		}
 

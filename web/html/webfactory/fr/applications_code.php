@@ -16,16 +16,16 @@
 		case "Ajouter":
 
 			$sql="select max(app_id) from applications;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$app_id=$rows[0]+1;
 			$app_link="";
 			$di_name="";
 		break;
 		case "Modifier":
 			$sql="select * from applications where app_id='$app_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$app_id=$rows["app_id"];
 			$app_link=$rows["app_link"];
 			$di_name=$rows["di_name"];
@@ -43,7 +43,7 @@
 				"'$app_link', ".
 				"'$di_name'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$app_id = $_POST["app_id"];
@@ -54,11 +54,11 @@
 				"app_link='$app_link', ".
 				"di_name='$di_name' ".
 			"where app_id='$app_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from applications where app_id='$app_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

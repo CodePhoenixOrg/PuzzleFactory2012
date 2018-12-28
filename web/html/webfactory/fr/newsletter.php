@@ -12,8 +12,8 @@
 		case "Ajouter":
 
 			$sql="select max(nl_id) from newsletter;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$nl_id=$rows[0]+1;
 			$nl_title="";
 			$nl_author="";
@@ -28,8 +28,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from newsletter where nl_id='$nl_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$nl_id=$rows["nl_id"];
 			$nl_title=$rows["nl_title"];
 			$nl_author=$rows["nl_author"];
@@ -71,7 +71,7 @@
 				"'$nl_file', ".
 				"'$nl_date'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$sql="update newsletter set ".
@@ -87,11 +87,11 @@
 				"nl_file='$nl_file', ".
 				"nl_date='$nl_date' ".
 			"where nl_id='$nl_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from newsletter where nl_id='$nl_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

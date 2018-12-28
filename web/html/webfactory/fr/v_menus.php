@@ -12,8 +12,8 @@
 		case "Ajouter":
 
 			$sql="select max(me_id) from v_menus;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$me_id=$rows[0]+1;
 			$pa_id="";
 			$me_target="";
@@ -27,8 +27,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from v_menus where me_id='$me_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$me_id=$rows["me_id"];
 			$pa_id=$rows["pa_id"];
 			$me_target=$rows["me_target"];
@@ -67,7 +67,7 @@
 				"'$di_en_short', ".
 				"'$di_en_long'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$sql="update v_menus set ".
@@ -82,11 +82,11 @@
 				"di_en_short='$di_en_short', ".
 				"di_en_long='$di_en_long' ".
 			"where me_id='$me_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from v_menus where me_id='$me_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

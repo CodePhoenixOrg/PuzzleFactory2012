@@ -2,7 +2,7 @@
 <?php   
 	if(empty($userdb)) $userdb="webfactory";
 	if(empty($query)) $query="MENU";
-	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
+	$cs=connection(CONNECT, $userdb);
 	$tmp_filename="tmp.php";
 	$wwwroot=get_www_root();
 	$filepath="$wwwroot/../$userdb/fr/$pa_filename";
@@ -205,8 +205,8 @@
 			$L_sqlFields="";
 			$A_sqlFields=Array();
 			
-			$result = mysqli_query($cs, $sql) or die("SQL='$sql'<br>");
-			while($rows=mysqli_fetch_array($result)) {
+			$result = $cs->query($sql);
+			while($rows=$result->fetch_array()) {
 				$L_sqlFields.=$rows[0].",";
 			}
 			$L_sqlFields=substr($L_sqlFields, 0, strlen($L_sqlFields)-1);

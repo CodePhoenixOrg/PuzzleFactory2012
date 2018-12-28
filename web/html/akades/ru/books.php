@@ -1,8 +1,8 @@
 <!-- PUT THE TEXT HERE -->
 <!-- BEGIN -->
 <?php 
-	$result=mysqli_db_query($dbname, "select * from books where la_country='$lang' order by bo_index");
-	while($rows=mysqli_fetch_array($result))
+	$result=$cs->db_query($dbname, "select * from books where la_country='$lang' order by bo_index");
+	while($rows=$result->fetch_array())
 	{
 		$title=$rows["bo_title"];
 		$author=$rows["bo_author"];
@@ -39,7 +39,7 @@
 		<br>
 		<?php 
 	}
-	mysqli_free_result($result);
+	$result->free_result();
 ?>
 </center>
 <!-- END -->

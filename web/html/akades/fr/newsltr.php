@@ -11,11 +11,11 @@
 			") values (".
 				"'$nlr_email'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from newsletter where nlr_email='$nlr_email'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		echo "<script language='JavaScript'>window.location.href='page.php?id=&lg=fr'</script>";

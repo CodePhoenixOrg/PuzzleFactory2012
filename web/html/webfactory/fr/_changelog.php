@@ -17,8 +17,8 @@
 		case "Ajouter":
 
 			$sql="select max(cl_id) from changelog;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$cl_id=$rows[0]+1;
 			$cl_title="";
 			$cl_text="";
@@ -29,8 +29,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from changelog where cl_id='$cl_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$cl_id=$rows["cl_id"];
 			$cl_title=$rows["cl_title"];
 			$cl_text=$rows["cl_text"];
@@ -60,7 +60,7 @@
 				"'$fr_id', ".
 				"'$mbr_id'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$cl_id = $_POST["cl_id"];
@@ -79,11 +79,11 @@
 				"fr_id='$fr_id', ".
 				"mbr_id='$mbr_id' ".
 			"where cl_id='$cl_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from changelog where cl_id='$cl_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

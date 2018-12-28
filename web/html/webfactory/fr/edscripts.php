@@ -14,13 +14,13 @@ if(empty($valider)) {
 	switch($action) {
 	case "Ajouter":
 		$sql="select max(me_id) from menus";
-		$result=mysqli_query($cs, $sql);
-		$rows=mysqli_fetch_array($result);
+		$result=$cs->query($sql);
+		$rows=$result->fetch_array();
 		$me_id=$rows[0]+1;
 
 		$sql="select max(pa_id) from pages";
-		$result=mysqli_query($cs, $sql);
-		$rows=mysqli_fetch_array($result);
+		$result=$cs->query($sql);
+		$rows=$result->fetch_array();
 		$new_pa_id=$rows[0]+1;
 		
 		$pa_id=0;
@@ -35,8 +35,8 @@ if(empty($valider)) {
 	break;
 	case "Modifier":
 		$sql="select * from v_menus where me_id=$me_id";
-		$result=mysqli_query($cs, $sql);
-		$rows=mysqli_fetch_array($result);
+		$result=$cs->query($sql);
+		$rows=$result->fetch_array();
 		$me_id=$rows[0];
 		$pa_id=$rows[1];
 		$me_target=$rows[2];
@@ -55,17 +55,17 @@ if(empty($valider)) {
 		$sql=   "insert into menus " .
 			"values($me_id, '$di_name', '$me_level', '$me_target', $pa_id)" ;
 		echo "$sql<br>";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		
 		$sql=   "insert into pages " .
 			"values($new_pa_id, '$di_name', '$pa_filename')" ;
 		echo "$sql<br>";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		
 		$sql=   "insert into dictionary " .
 			"values('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')" ;
 		echo "$sql<br>";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 
 		copy("includes/fichier_vide.php", "fr/$pa_filename");
 		copy("includes/fichier_vide.php", "en/$pa_filename");
@@ -74,21 +74,21 @@ if(empty($valider)) {
 	case "Modifier":
 		$sql=   "update menus set di_name='$di_name', me_level='$me_level', me_target='$me_target', pa_id=$pa_id ".
 			"where me_id=$me_id";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		$sql=   "update pages set di_name='$di_name', pa_filename='$pa_filename'".
 			"where pa_id=$pa_id";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		$sql=   "update menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long'".
 			"where di_name=$di_name";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 	break;
 	case "Supprimer":
 		$sql="delete from menus where di_name='$di_name'";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		$sql="delete from pages where di_name='$di_name'";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		$sql="delete from dictionary where di_name='$di_name'";
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		
 		unlink($filepath);
 	break;	

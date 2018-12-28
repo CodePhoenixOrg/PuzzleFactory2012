@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(mbr_id) from members;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$mbr_id=$rows[0]+1;
 			$mbr_nom="";
 			$mbr_adr1="";
@@ -29,8 +29,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from members where mbr_id='$mbr_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$mbr_id=$rows["mbr_id"];
 			$mbr_nom=$rows["mbr_nom"];
 			$mbr_adr1=$rows["mbr_adr1"];
@@ -78,7 +78,7 @@
 				"'$mbr_ident', ".
 				"'$mbr_mpasse'".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$mbr_id = $_POST["mbr_id"];
@@ -106,11 +106,11 @@
 				"mbr_ident='$mbr_ident', ".
 				"mbr_mpasse='$mbr_mpasse' ".
 			"where mbr_id='$mbr_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from members where mbr_id='$mbr_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

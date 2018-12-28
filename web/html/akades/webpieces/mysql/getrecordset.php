@@ -8,11 +8,11 @@
 	//echo $ua."C'est bien lui que je recois.";
 	if(isset($_GET["d"])) $d=$_GET["d"]; else $d="mysql";
 	if(isset($_GET["q"])) $q=$_GET["q"];
-	mysqli_select_db($d, $cnx) or die(mysqli_error());
+	$cs->select_db($d, $cnx);
  	$sql=urldecode($q);
-	$result=mysqli_query($sql, $cnx) or die(mysqli_error());
+	$result=$cs->query($sql, $cnx);
 	if($result) {
-		$i=mysqli_num_fields($result);
+		$i=$result->num_fields();
 		$k=0;
 
 		// Get row count only if $rc is mentionned with walue 1
@@ -21,8 +21,8 @@
 			$p=strpos($sql, "limit");
 			$sql2=$sql;
 			if($p>0) $sql2=substr($sql,0,$p-1);
-			$result2=mysqli_query($sql2);
-			$line=mysqli_num_rows($result2);
+			$result2=$cs->query($sql2);
+			$line=$result->num_rows(2);
 		}
 		echo $line . CRLF;
 		
@@ -53,7 +53,7 @@
 		echo $line . CRLF;
 
 		// Get recordset data rows
-		while($rows=mysqli_fetch_array($result)) {
+		while($rows=$result->fetch_array()) {
 			//echo $k . "=";
 			$line="";
 			for($j=0; $j<$i; $j++) {
@@ -64,7 +64,7 @@
 			echo $line . CRLF;
 			$k++;
 		}
-		mysqli_free_result($result);
+		$result->free_result();
 	}
 ?>
 </pre></body></html>

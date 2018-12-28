@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(td_id) from todo;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$td_id=$rows[0]+1;
 			$td_title="";
 			$td_text="";
@@ -30,8 +30,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from todo where td_id='$td_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$td_id=$rows["td_id"];
 			$td_title=$rows["td_title"];
 			$td_text=$rows["td_text"];
@@ -81,7 +81,7 @@
 				"$mbr_id".
 			")";
                         
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Modifier":
 			$td_id = $_POST["td_id"];
@@ -108,11 +108,11 @@
 				"td_time='$td_time', ".
 				"mbr_id=$mbr_id ".
 			"where td_id='$td_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from todo where td_id='$td_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

@@ -1,7 +1,7 @@
 <center>
 <?php   
  	if(empty($userdb)) $userdb="webfactory";
-	$cs=connection(CONNECT, $userdb) or die("UserDb='$userdb'<br>");
+	$cs=connection(CONNECT, $userdb);
 	$tmp_filename="tmp.php";
 	$wwwroot=get_www_root();
 	$filepath="$wwwroot/../$userdb/fr/$pa_filename";

@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(br_id) from bugreport;";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$br_id=$rows[0]+1;
 			$br_title="";
 			$br_text="";
@@ -29,8 +29,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from bugreport where br_id='$br_id';";
-			$result = mysqli_query($cs, $sql);
-			$rows = mysqli_fetch_array($result);
+			$result = $cs->query($sql);
+			$rows = $result->fetch_array();
 			$br_id=$rows["br_id"];
 			$br_title=$rows["br_title"];
 			$br_text=$rows["br_text"];
@@ -75,7 +75,7 @@
 				"'$br_time', ".
 				"$mbr_id".
 			")";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 
 			echo 'SQL ADD: ' . $sql;
 		break;
@@ -102,14 +102,14 @@
 				"br_time='$br_time', ".
 				"mbr_id=$mbr_id ".
 			"where br_id='$br_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 
 			echo 'SQL UPDATE: ' . $sql;
 
 		break;
 		case "Supprimer":
 			$sql="delete from bugreport where br_id='$br_id'";
-			$result = mysqli_query($cs, $sql);
+			$result = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

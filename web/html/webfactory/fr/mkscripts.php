@@ -30,8 +30,8 @@
 			$L_sqlFields="";
 			$A_sqlFields=Array();
 			
-			$result = mysqli_query($cs, $sql);
-			while($rows=mysqli_fetch_array($result)) {
+			$result = $cs->query($sql);
+			while($rows=$result->fetch_array()) {
 				$L_sqlFields.=$rows[0].",";
 			}
 			$L_sqlFields=substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
@@ -64,7 +64,7 @@
 		
 			
 			$sql="drop table v_menus;";
-			mysqli_query($cs, $sql);
+			$cs->query($sql);
 			
 			$pa_filename="$siteroot/$catalog_pa_filename";
 			$script=make_script($userdb, $table, $pa_filename, $catalog, $indexfield, $secondfield, $A_sqlFields, $cs, NO_FRAME);
@@ -115,18 +115,18 @@
 		$sql_file=array();
 		$sql_file=file("sql/v_menus_drop.sql");
 		$sql = implode ("", $sql_file);
-		$drop=mysqli_query($cs, $sql) or die(mysqli_error());
+		$drop=$cs->query($sql);
 
 		if($drop) {
 			$sql_file=file("sql/v_menus_create.sql");
 			$sql = implode ("", $sql_file);
-			$create=mysqli_query($cs, $sql) or die(mysqli_error());
+			$create=$cs->query($sql);
 		}
 		
 		if($create) {
 			$sql_file=file("sql/v_menus_insert.sql");
 			$sql = implode ("", $sql_file);
-			$insert=mysqli_query($cs, $sql) or die(mysqli_error());
+			$insert=$cs->query($sql);
 		}
 		
 		if($insert) {
@@ -136,7 +136,7 @@
 		
 		$sql = 'delete from v_menus;';
 
-		$result=mysqli_query($cs, $sql);
+		$result=$cs->query($sql);
 		
 
 		echo $sql;
@@ -158,8 +158,8 @@
 			if($fl>4 && substr($file, $fl-4, 4)==".php") {
 				$sql="select me_id from ${db_prefix}menus, pages ";
 				$sql.="where menus.pa_id=pages.pa_id and pa_filename='$file'";
-				$result=mysqli_query($cs, $sql);
-				$rows=mysqli_fetch_array($result);
+				$result=$cs->query($sql);
+				$rows=$result->fetch_array();
 				echo "<a href='$httproot/$userdb/fr/$file?id=".$rows[0]."&lg=fr&action=Ajouter' target='_new'>$file</a><br>\n";
 			}
 		}

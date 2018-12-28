@@ -99,7 +99,7 @@ function relations($database, $table, $cs)
                     $j++;
                 }
                 $options="\t\t\t\t\t\t<?php   \$sql='select $frn_idfield, $frn_firstfield from $currentTable order by $frn_firstfield';\n";
-                $options.="\t\t\t\t\t\t\$options=create_options_from_query(\$sql, 0, 1, array(), $$frn_idfield, false, \$cs);\n";
+                $options.="\t\t\t\t\t\t\$options=create_options_from_query(\$sql, 0, 1, [], $$frn_idfield, false, \$cs);\n";
                 $options.="\t\t\t\t\t\techo \$options[\"list\"];?>\n";
                 $L_fields.="$frn_idfield;";
                 $L_formFields.="\t\t\t\t<tr>\n" .

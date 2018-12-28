@@ -13,8 +13,8 @@
 <?
 	if($event=="onLoad") {
 		$sql="select * from members where mbr_id=$mbr_id;";
-		$result = mysqli_query($cs, $sql);
-		$rows = mysqli_fetch_array($result);
+		$result = $cs->query($sql);
+		$rows = $result->fetch_array();
 		$mbr_id=$rows["mbr_id"];
 		$mbr_nom=$rows["mbr_nom"];
 		$mbr_email=$rows["mbr_email"];
