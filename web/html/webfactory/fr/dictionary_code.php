@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(di_name) from dictionary;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$di_name=$rows[0]+1;
 			$di_fr_short="";
 			$di_fr_long="";
@@ -28,8 +28,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from dictionary where di_name='$di_name';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$di_name=$rows["di_name"];
 			$di_fr_short=$rows["di_fr_short"];
 			$di_fr_long=$rows["di_fr_long"];
@@ -59,7 +59,7 @@
 				"'$di_ru_short', ".
 				"'$di_ru_long'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$di_name = $_POST["di_name"];
@@ -78,11 +78,11 @@
 				"di_ru_short='$di_ru_short', ".
 				"di_ru_long='$di_ru_long' ".
 			"where di_name='$di_name'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from dictionary where di_name='$di_name'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

@@ -488,7 +488,7 @@ function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, 
 		
 /*	unset($ref_list);
 	unset($data_list);
-	$result=$cs->query($sql);
+	$stmt = $cs->query($sql);
 	
 	$j=$result->num_fields;*/
 	
@@ -496,7 +496,7 @@ function histogram($name, $series, $highlight, $data_type, $unit, $sql, $width, 
 	$column_names[0]="Colonne : ".$names[0];
 	$column_names[1]="Ligne : ".$names[1];
 		
-/*	while($rows=$result->fetch_array()) {
+/*	while($rows=$stmt->fetch()) {
 		$data_list.=$rows[$data_field].",";
 		if($data_field!=$ref_field)
 			$ref_list.=$rows[$ref_field].",";

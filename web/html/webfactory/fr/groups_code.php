@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(grp_group) from groups;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$grp_group=$rows[0]+1;
 			$grp_members_priv="";
 			$grp_menu_priv="";
@@ -32,8 +32,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from groups where grp_group='$grp_group';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$grp_group=$rows["grp_group"];
 			$grp_members_priv=$rows["grp_members_priv"];
 			$grp_menu_priv=$rows["grp_menu_priv"];
@@ -75,7 +75,7 @@
 				"'$grp_newsletter_priv', ".
 				"'$grp_forum_priv'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$grp_group = $_POST["grp_group"];
@@ -102,11 +102,11 @@
 				"grp_newsletter_priv='$grp_newsletter_priv', ".
 				"grp_forum_priv='$grp_forum_priv' ".
 			"where grp_group='$grp_group'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from groups where grp_group='$grp_group'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

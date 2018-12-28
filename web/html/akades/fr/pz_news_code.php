@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(nw_id) from pz_news;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$nw_id=$rows[0]+1;
 			$nw_title="";
 			$nw_author="";
@@ -29,8 +29,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from pz_news where nw_id='$nw_id';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$nw_id=$rows["nw_id"];
 			$nw_title=$rows["nw_title"];
 			$nw_author=$rows["nw_author"];
@@ -72,7 +72,7 @@
 				"'$nw_time', ".
 				"'$nw_date'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$nw_id = $_POST["nw_id"];
@@ -94,11 +94,11 @@
 				"nw_time='$nw_time', ".
 				"nw_date='$nw_date' ".
 			"where nw_id='$nw_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from pz_news where nw_id='$nw_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

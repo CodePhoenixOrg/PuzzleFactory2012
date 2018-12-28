@@ -4,7 +4,7 @@
 	dbconnection("connect");
 	$cs->select_db($d);
  	$sql=urldecode($q);
-	$result=$cs->query($sql);
+	$stmt = $cs->query($sql);
 	if($result) {
 		$i=$result->num_fields();
 		$k=0;
@@ -30,7 +30,7 @@
 		echo $line . "\n";
 
 		// Get recordset data rows
-		while($rows=$result->fetch_array())
+		while($rows=$stmt->fetch())
 		{
 			echo $k . "=";
 			$line="";

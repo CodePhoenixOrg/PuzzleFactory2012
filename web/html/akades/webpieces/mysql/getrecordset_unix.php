@@ -48,7 +48,7 @@
 		echo $line . "\n";
 
 		// Get recordset data rows
-		while($rows=$result->fetch_array()) {
+		while($rows=$stmt->fetch()) {
 			//echo $k . "=";
 			$line="";
 			for($j=0; $j<$i; $j++) {

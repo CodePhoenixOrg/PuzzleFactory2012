@@ -33,13 +33,13 @@ global $dyna_bset_counter;
 
 function create_block_set($database, $column, $id, $lg, $colors) {
 	global $db_prefix;
-        $cs=connection("connect", $database);
+        $cs=connection(CONNECT, $database);
 	
 	$block_set="";
 	$sql="select bl_id from ${db_prefix}blocks where bl_column=$column and bl_type=\"menu\" order by bl_id";
 	//echo "$sql<br>";	
-        $result=$cs->query($sql);
-        while($rows=$result->fetch_array(MYSQLI_NUM)) {
+        $stmt = $cs->query($sql);
+        while($rows=$stmt->fetch()) {
                 $index=$rows[0];
 		$block_set.=create_block($database, $index, $id, $lg, $colors);
 	}
@@ -50,7 +50,7 @@ function create_block_set($database, $column, $id, $lg, $colors) {
 function create_enhanced_block_set($database, $column, $id, $lg, $colors) {
 	global $db_prefix;        
 
-	$cs=connection("connect", $database);
+	$cs=connection(CONNECT, $database);
 	
 	global $dyna_bset_counter, $panel_colors, $diarydb;
 	$border_color=$panel_colors["border_color"];
@@ -60,13 +60,13 @@ function create_enhanced_block_set($database, $column, $id, $lg, $colors) {
 	// debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
 	//echo "$sql<br>";	
-    $result=$cs->query($sql);
+    $stmt = $cs->query($sql);
 	$bl_type="";
 	$old_bl_type="";
 	$first_block=true;
 	$dbs_id=0;
 	$js="<script language='text/javascript'>alert(\" ferme le tableau des block dynamiques !\");</script>";
-        while($rows=$result->fetch_array()) {
+        while($rows=$stmt->fetch()) {
                 $index=$rows[0];
                 $bl_type=$rows[1];
 
@@ -151,8 +151,8 @@ function create_block($database, $block_num, $id, $lg, $colors)
 		"and b.bl_id=$block_num";
 	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 		
-    $result=$cs->query($sql);
-    $rows=$result->fetch_array(MYSQLI_NUM);
+    $stmt = $cs->query($sql);
+    $rows=$stmt->fetch();
     $block_name=$rows[0];
 
     $sql=	"select m.me_id, m.me_level, m.bl_id, d.di_".$lg."_short, m.me_target, p.pa_filename, p.pa_id ".
@@ -169,8 +169,8 @@ function create_block($database, $block_num, $id, $lg, $colors)
     $zero=0;
     $index=0;
     
-    $result=$cs->query($sql);
-    while ($rows=$result->fetch_array(MYSQLI_NUM)) {
+    $stmt = $cs->query($sql);
+    while ($rows=$stmt->fetch()) {
         $index=$rows[0];
         $level=$rows[1];
         $block=$rows[2];
@@ -239,13 +239,13 @@ function create_collapseable_block($block_skin_name, $block_num, $colors)
     $lg=get_variable("lg");
     $database=get_variable("database");
 
-    $cs=connection("connect", $database);
+    $cs=connection(CONNECT, $database);
     $sql=	"select d.di_".$lg."_short, b.bl_column ".
         "from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
         "where  b.di_id=d.di_id ".
         "and b.bl_id=$block_num";
-    $result=$cs->query($sql);
-    $rows=$result->fetch_array();
+    $stmt = $cs->query($sql);
+    $rows=$stmt->fetch();
     $block_name=$rows[0];
     $block_column=$rows[1];
 
@@ -261,8 +261,8 @@ function create_collapseable_block($block_skin_name, $block_num, $colors)
     $count=0;
     $zero=0;
     
-    $result=$cs->query($sql);
-    while ($rows=$result->fetch_array()) {
+    $stmt = $cs->query($sql);
+    while ($rows=$stmt->fetch()) {
         $index=$rows[0];
         $level=$rows[1];
         $block=$rows[2];
@@ -321,13 +321,13 @@ function create_members_block($database, $logout, $di_id, $id, $lg, $colors)
         $fore_color="black";
     }
 
-    $cs=connection("connect", $database);
+    $cs=connection(CONNECT, $database);
     $sql=	"select d.di_".$lg."_short ".
         "from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
         "where  b.di_id=d.di_id ".
         "and b.di_id=\"$di_id\"";
-    $result=$cs->query($sql);
-    $rows=$result->fetch_array(MYSQLI_NUM);
+    $stmt = $cs->query($sql);
+    $rows=$stmt->fetch();
     $block_name=$rows[0];
     
     $table_name="members";
@@ -422,8 +422,8 @@ function get_authentication($login) {
 
 		$cs=connection(CONNECT, $database);
 		$sql="select mbr_id, mbr_nom, mbr_ident, mbr_mpasse from ${db_prefix}members where mbr_ident='$login'";
-		$result=$cs->query($sql);
-		if($rows=$result->fetch_array()) {
+		$stmt = $cs->query($sql);
+		if($rows=$stmt->fetch(PDO::FETCH_ASSOC)) {
 			$index=$rows["mbr_id"];
 			$nom=$rows["mbr_nom"];
 			$mlogin=$rows["mbr_ident"];
@@ -431,7 +431,7 @@ function get_authentication($login) {
 			
 			//echo "login='$mlogin'; passwd='$mpass'; group='$mgroup';<br>";
 		}
-		$result->free();
+		//$stmt->free();
 	
 		$login_ok=($slogin==$mlogin);
 		$passwd_ok=($spass==$mpass);
@@ -475,8 +475,8 @@ function perform_members_ident($login, $pass, $submit) {
 	if($event=="onRun") {
 		
 		$sql="select mbr_id, mbr_nom, mbr_ident, mbr_mpasse from ${db_prefix}members where mbr_ident='$login'";
-		$result=$cs->query($sql);
-		if($rows=$result->fetch_array()) {
+		$stmt = $cs->query($sql);
+		if($rows=$stmt->fetch(PDO::FETCH_ASSOC)) {
 			$index=$rows["mbr_id"];
 			$nom=$rows["mbr_nom"];
 			$ident=$rows["mbr_ident"];
@@ -543,13 +543,13 @@ function create_newsletter_block($database, $di_id, $id, $lg, $colors) {
 		$fore_color="black";
 	}
 
-        $cs=connection("connect", $database);
+        $cs=connection(CONNECT, $database);
 	$sql=	"select d.di_".$lg."_short ".
 		"from ${db_prefix}blocks b, ${db_prefix}dictionary d ".
 		"where  b.di_id=d.di_id ".
 		"and b.di_id=\"$di_id\"";
-	$result=$cs->query($sql);
-	$rows=$result->fetch_array(MYSQLI_NUM);
+	$stmt = $cs->query($sql);
+	$rows=$stmt->fetch();
 	$block_name=$rows[0];
 
 	$table_name="newsltr";
@@ -598,7 +598,7 @@ function perform_newsletter_subscription($email, $radios, $submit) {
 	if(is_array($radios)) $action=$radios[0];
 
 	$sql="select sub_email from ${db_prefix}subscribers where sub_email='$email'";
-	$result = $cs->query($sql);
+	$stmt = $cs->query($sql);
 	$email_exists=($result->num_rows>0);
 
 	$p1=strpos($email, "@");
@@ -631,13 +631,13 @@ function perform_newsletter_subscription($email, $radios, $submit) {
 			") values (".
 				"'$email'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 			$js="alert(\"Votre inscription a bien été prise en compte\\n".
 				"Vous recevrez régulièrement une lettre d'informations.\");";
 		break;
 		case UNSUBSCRIBE:
 			$sql="delete from subscribers where sub_email='$email'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 			$js="alert(\"Dorénavant vous ne recevrez plus de lettre d'informations.\");";
 		break;
 		}

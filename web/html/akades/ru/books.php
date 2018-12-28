@@ -2,7 +2,7 @@
 <!-- BEGIN -->
 <?php 
 	$result=$cs->db_query($dbname, "select * from books where la_country='$lang' order by bo_index");
-	while($rows=$result->fetch_array())
+	while($rows=$stmt->fetch(PDO::FETCH_ASSOC))
 	{
 		$title=$rows["bo_title"];
 		$author=$rows["bo_author"];

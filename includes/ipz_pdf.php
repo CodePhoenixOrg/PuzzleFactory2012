@@ -53,7 +53,7 @@ class pz_pdf extends FPDF {
 			$table_offset=$this->GetLeftMargin()+round(($this->GetWorkSpaceWidth()-$table_width)/2);
 		//$this->SetX($table_offset);
 	
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		
 		//Récupération des noms de champs
 		$n=$result->num_fields;
@@ -64,7 +64,7 @@ class pz_pdf extends FPDF {
 		$fill=0;
 		$begin_page=true;
 		$end_page=false;
-		while($rows=$result->fetch_array()) {
+		while($rows=$stmt->fetch_array(PDO::FETCH_BOTH)) {
 		
 			if($begin_page) {
 				//Ecriture de l'entête de tableau en début de page

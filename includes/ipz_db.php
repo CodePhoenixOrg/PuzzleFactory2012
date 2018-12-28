@@ -118,19 +118,35 @@ function mysqli_to_html($type) {
 }
 
 function mysqli_field_name($result, $i) {
-	$field_info = $result->fetch_field_direct($i);
+	$field_info = $stmt->fetch_field_direct($i);
 	return $field_info->name;
 }
 
 function mysqli_field_len($result, $i) {
-	$field_info = $result->fetch_field_direct($i);
+	$field_info = $stmt->fetch_field_direct($i);
 	return $field_info->length;
 }
 
 function mysqli_field_type($result, $i) {
-	$field_info = $result->fetch_field_direct($i);
+	$field_info = $stmt->fetch_field_direct($i);
 	return $field_info->type;
 }
+
+function pdo_field_name($stmt, $i)
+{
+	return $stmt->getColumnMeta($i)['name'];
+}
+
+function pdo_field_type($stmt, $i)
+{
+	return $stmt->getColumnMeta($i)['pdo_type'];
+}
+
+function pdo_field_len($stmt, $i)
+{
+	return $stmt->getColumnMeta($i)['len'];
+}
+
 
 $my_max_file_size    = "102400";    // in bytes 
 $image_max_width    = "300";    // in pixels 
@@ -263,8 +279,8 @@ function sql_options($champ="", $table="", $like="", $orderby="", $defaut="", $d
 			$liste="<OPTION></OPTION>";
 		*/
 		$sql="select $champ from $table$where_field_like$order_by_field";
-		$resultat = $cs->query($sql);
-		while ($lignes=$result->fetch_array($resultat)) {
+		$stmt = $cs->query($sql);
+		while ($lignes=$stmt->fetch()) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -301,8 +317,8 @@ function options($champ="", $table="", $like="", $orderby="", $defaut="", $defau
 			$liste="<OPTION></OPTION>";
 		*/
 		$sql="select $champ from $table$where_field_like$order_by_field";
-		$resultat = $cs->query($sql);
-		while ($lignes=$result->fetch_array($resultat)) {
+		$stmt = $cs->query($sql);
+		while ($lignes=$stmt->fetch()) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -350,8 +366,8 @@ function sql_options_concat($champ1="", $separe="", $champ2="", $champ, $table="
 
 		//echo "$sql<br>";
 
-		$resultat = $cs->query($sql);
-		while ($lignes=$result->fetch_array($resultat)) {
+		$stmt = $cs->query($sql);
+		while ($lignes=$stmt->fetch()) {
 			$valeur1=$lignes[0];
 			$separe=$lignes[1];
 			$valeur2=$lignes[2];
@@ -394,8 +410,8 @@ function options_concat($champ1="", $separe="", $champ2="", $champ, $table="", $
 
 		//echo "$sql<br>";
 
-		$resultat = $cs->query($sql);
-		while ($lignes=$result->fetch_array($resultat)) {
+		$stmt = $cs->query($sql);
+		while ($lignes=$stmt->fetch()) {
 			$valeur1=$lignes[0];
 			$separe=$lignes[1];
 			$valeur2=$lignes[2];
@@ -440,8 +456,8 @@ function options_select($champ_id, $valeur_id, $champ="", $index, $table="", $or
 			$liste="<OPTION></OPTION>";
 		*/
 		$sql="select $champ from $table where $champ_id=$valeur_id$where_field_like$order_by_field";
-		$resultat = $cs->query($sql);
-		while ($lignes=$result->fetch_array($resultat)) {
+		$stmt = $cs->query($sql);
+		while ($lignes=$stmt->fetch()) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -476,8 +492,8 @@ function options_sql($sql, $defaut="", $defaut_seulement=false) {
 		else
 			$liste="<OPTION></OPTION>";
 		*/
-		$resultat = $cs->query($sql);
-		while ($lignes=$result->fetch_array($resultat)) {
+		$stmt = $cs->query($sql);
+		while ($lignes=$stmt->fetch()) {
 			$option=$lignes[0];
 			//$option=strtoupper($option);
 			if($option==$defaut)
@@ -503,7 +519,7 @@ function sql_array($sql, $conn) {
 	$liste="";
 
 	$result=$cs->query($sql, $conn);
-	while($rows=$result->fetch_array()) {
+	while($rows=$stmt->fetch()) {
 		$liste.=$rows[0] . ",";
 	}
 
@@ -524,7 +540,7 @@ function sql_list($sql, $conn) {
 	$liste="";
 
 	$result=$cs->query($sql, $conn);
-	while($rows=$result->fetch_array()) {
+	while($rows=$stmt->fetch()) {
 		$liste.=$rows[0] . ",";
 	}
 
@@ -769,11 +785,11 @@ function tableau_sql(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -783,9 +799,9 @@ function tableau_sql(
 		
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
-		$index_fieldname=$cs->field_name($resultat, 0);
+		$index_fieldname=$cs->field_name($stmt, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=$cs->field_name($resultat, $j);
+			$fieldname=$cs->field_name($stmt, $j);
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
@@ -793,7 +809,7 @@ function tableau_sql(
 		}
 		echo "</tr>";
 		$r=0;
-		while($rows=$result->fetch_array($resultat)) {
+		while($rows=$stmt->fetch()) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -803,8 +819,8 @@ function tableau_sql(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -832,7 +848,7 @@ function tableau_sql(
 		}
 		echo "</table>";
 
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	//}
 
 	return $num;
@@ -867,11 +883,11 @@ function tableau_sql_scroll(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -889,9 +905,9 @@ function tableau_sql_scroll(
 		echo "<form method='post' id='form_$name'>";
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
-		$index_fieldname=$cs->field_name($resultat, 0);
+		$index_fieldname=$cs->field_name($stmt, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=$cs->field_name($resultat, $j);
+			$fieldname=$cs->field_name($stmt, $j);
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
 			if($image_lien!="" && $j==0) $fieldname="";
@@ -899,7 +915,7 @@ function tableau_sql_scroll(
 		}
 		echo "</tr>";
 		$r=0;
-		while($rows=$result->fetch_array($resultat)) {
+		while($rows=$stmt->fetch()) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -909,8 +925,8 @@ function tableau_sql_scroll(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -938,7 +954,7 @@ function tableau_sql_scroll(
 		}
 		echo "</table></form></div>";
 
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	//}
 
 	return $num;
@@ -977,11 +993,11 @@ function tableau_sql_supp(
 	}
 
 	
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -997,9 +1013,9 @@ function tableau_sql_supp(
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		echo "<td>&nbsp;</td>";
-		$index_fieldname=$cs->field_name($resultat, 0);
+		$index_fieldname=$cs->field_name($stmt, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=$cs->field_name($resultat, $j);
+			$fieldname=$cs->field_name($stmt, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1009,7 +1025,7 @@ function tableau_sql_supp(
 		echo "</tr>";
 		$r=0;
 
-		while($rows=$result->fetch_array($resultat)) {
+		while($rows=$stmt->fetch()) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1019,8 +1035,8 @@ function tableau_sql_supp(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1053,7 +1069,7 @@ function tableau_sql_supp(
 			echo "</tr>";
 		}
 		echo "</table>";
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	}
 
 	return $num;
@@ -1090,11 +1106,11 @@ function tableau_sql_vue(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1110,9 +1126,9 @@ function tableau_sql_vue(
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		echo "<td>&nbsp;</td>";
-		$index_fieldname=$cs->field_name($resultat, 0);
+		$index_fieldname=$cs->field_name($stmt, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=$cs->field_name($resultat, $j);
+			$fieldname=$cs->field_name($stmt, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1122,7 +1138,7 @@ function tableau_sql_vue(
 		echo "</tr>";
 		$r=0;
 
-		while($rows=$result->fetch_array($resultat)) {
+		while($rows=$stmt->fetch()) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1132,8 +1148,8 @@ function tableau_sql_vue(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1166,7 +1182,7 @@ function tableau_sql_vue(
 			echo "</tr>";
 		}
 		echo "</table>";
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	//}
 
 	return $num;
@@ -1213,11 +1229,11 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 	$coul_ligne_paire="#BBB7CC";
 	$coul_ligne_impaire="#C6C3D3";
 	
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1234,7 +1250,7 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 		echo "<table border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		for($j=0; $j<$i; $j++) {
-			$fieldname=$cs->field_name($resultat, $j);
+			$fieldname=$cs->field_name($stmt, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1244,7 +1260,7 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 		echo "<td><input type=checkbox name=checkall value=top onClick='return CheckAll(document.$name);'></td>";
 		echo "</tr>";
 		$r=0;
-		while($rows=$result->fetch_array($resultat)) {
+		while($rows=$stmt->fetch()) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1254,8 +1270,8 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$champ_lien=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1285,7 +1301,7 @@ function tableau_sql_check($name="", $sql="", $page_lien="", $id=0, $champ_lien=
 		}
 		echo "</table>";
 		//echo "</form>";
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	//}
 	
 	$js= "<script language=\"JavaScript\">\n";
@@ -1348,11 +1364,11 @@ function tableau_sql_check_2(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1368,9 +1384,9 @@ function tableau_sql_check_2(
 		//echo "<form method='post' name='$name'>";
 		echo "<table id='$name' border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
-		$index_fieldname=$cs->field_name($resultat, 0);
+		$index_fieldname=$cs->field_name($stmt, 0);
 		for($j=0; $j<$i; $j++) {
-			$fieldname=$cs->field_name($resultat, $j);
+			$fieldname=$cs->field_name($stmt, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1380,7 +1396,7 @@ function tableau_sql_check_2(
 		echo "<td><input type=checkbox name=checkall value=top onClick='return CheckAll(document.$name);'></td>";
 		echo "</tr>";
 		$r=0;
-		while($rows=$result->fetch_array($resultat)) {
+		while($rows=$stmt->fetch()) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1390,8 +1406,8 @@ function tableau_sql_check_2(
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1421,7 +1437,7 @@ function tableau_sql_check_2(
 		}
 		echo "</table>";
 		//echo "</form>";
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	//}
 	
 	$js= "<script language=\"JavaScript\">\n";
@@ -1469,11 +1485,11 @@ function fiche_sql(
 		$coul_ligne_impaire="#DDEEF6";
 	}
 
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	if($num) {
 		//$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		/*if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1487,8 +1503,8 @@ function fiche_sql(
 		$r=0;
 		$tag_width="";
 		if($largeurs_cols[1]!=0) $tag_width=" width='".$largeurs_cols[1]."'";
-		$index_fieldname=$cs->field_name($resultat, 0);
-		while($rows=$result->fetch_array($resultat)) {
+		$index_fieldname=$cs->field_name($stmt, 0);
+		while($rows=$stmt->fetch()) {
 			for($j=0; $j<$i; $j++) {
 			
 				$r++;
@@ -1500,13 +1516,13 @@ function fiche_sql(
 				else
 					$tag_bgcolor=" bgcolor='$coul_ligne_impaire'";
 				
-				$fieldname=$cs->field_name($resultat, $j);
+				$fieldname=$cs->field_name($stmt, $j);
 
 				if($image_lien!="" && $j==0) $fieldname="<img border='0' src='$image_lien'>";
 				
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$index_fieldname=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1531,7 +1547,7 @@ function fiche_sql(
 			echo "</tr>";
 		}
 		echo "</table>";
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	}
 
 	return $num;
@@ -1651,9 +1667,9 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
 //		Array( 'jrn_email','E-mail ',FORMAT_TEXTE,'C',25),
 //	);
  
-	$resultat = $cs->query($sql);
-	$num = $cs->num_rows($resultat);
-	$nbcol = $cs->num_fields($resultat);
+	$stmt = $cs->query($sql);
+	$num = $cs->num_rows($stmt);
+	$nbcol = $cs->num_fields($stmt);
 	
 	
 	if ($num > 0)
@@ -1737,7 +1753,7 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
         for ($cpt = 1; $cpt <= $nbcol; $cpt++)
         {
             echo "F;SDM4;FG0C;".($cpt == 1 ? "Y1;" : "")."X".$cpt."\n";
-            echo "C;N;K\"".$cs->field_name($resultat,$cpt-1)."\"\n";
+            echo "C;N;K\"".$cs->field_name($stmt,$cpt-1)."\"\n";
         }
         echo "\n";
 
@@ -1747,7 +1763,7 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
 		// données
         // --------------------------------------------------------------------
         $ligne = 2;
-        while ($enr = $result->fetch_array($resultat))
+        while ($enr = $stmt->fetch())
         {
             // parcours des champs
             for ($cpt = 0; $cpt < $nbcol; $cpt++)
@@ -1779,9 +1795,9 @@ $message="";
 
 
  
-	$resultat = $cs->query($sql);
-	$num = $cs->num_rows($resultat);
-	$nbcol = $cs->num_fields($resultat);
+	$stmt = $cs->query($sql);
+	$num = $cs->num_rows($stmt);
+	$nbcol = $cs->num_fields($stmt);
 	
 	
 	if ($num > 0)
@@ -1791,7 +1807,7 @@ $message="";
         for ($cpt = 1; $cpt <= $nbcol; $cpt++)
         {
          
-    	$message=$message.$cs->field_name($resultat,$cpt-1).";";
+    	$message=$message.$cs->field_name($stmt,$cpt-1).";";
         }
        	$liste="$message\r\n";
 
@@ -1804,7 +1820,7 @@ $message="";
 		// données
         // --------------------------------------------------------------------
         $ligne = 2;
-        while ($enr = $result->fetch_array($resultat))
+        while ($enr = $stmt->fetch())
         {
             // parcours des champs
 			$message="";
@@ -1851,11 +1867,11 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 	
 	echo "<form method='post' name='myForm' action='$PHP_SELF'>";
 		
-	$resultat = $cs->query($sql, $conn);
-	$num=$cs->num_rows($resultat);
+	$stmt = $cs->query($sql, $conn);
+	$num=$cs->num_rows($stmt);
 	//if($num) {
 		$nb_largeurs=count($largeurs_cols);
-		$i=$cs->num_fields($resultat);
+		$i=$cs->num_fields($stmt);
 		if($nb_largeurs<$i) {
 			
 			$j=$i-$nb_largeurs;
@@ -1866,7 +1882,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 		echo "<table border=0 cellpadding=2 cellspacing=1 bordercolor='#FFFFFF'>";
 		echo "<tr bgcolor='$coul_entete'>";
 		for($j=0; $j<$i; $j++) {
-			$fieldname=$cs->field_name($resultat, $j);
+			$fieldname=$cs->field_name($stmt, $j);
 
 			$tag_width="";
 			if($largeurs_cols[$j]!=0) $tag_width=" width='".$largeurs_cols[$j]."'";
@@ -1875,7 +1891,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 		}
 		echo "</tr>";
 		$r=0;
-		while($rows=$result->fetch_array($resultat)) {
+		while($rows=$stmt->fetch()) {
 			$r++;
 			$r1=$r/2;
 			$r2=round($r1);
@@ -1885,8 +1901,8 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 				echo "<tr bgcolor='$coul_ligne_impaire'>";
 			for($j=0; $j<$i; $j++) {
 				$field=$rows[$j];	
-				$fieldtype=$cs->field_type($resultat, $j);
-				$fieldlen=$cs->field_len($resultat, $j);
+				$fieldtype=$cs->field_type($stmt, $j);
+				$fieldlen=$cs->field_len($stmt, $j);
 					
 				$url="$page_lien?id=$id&$champ_lien=" . $rows[0] . "&action=Modifier";
 				if(!empty($compl_url)) $url.=$compl_url;
@@ -1903,7 +1919,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 						echo "<td$tag_align$tag_width><a href='$url'>$field</a></td>";
 
 				} else {
-					if($cs->field_name($resultat, $j)==$champ_case) {
+					if($cs->field_name($stmt, $j)==$champ_case) {
 						if($rows[$j]==1)
 							$field="<input type='checkbox' value='".$rows[$champ_ref]."' name='cases[]' checked><br>";
 						else
@@ -1921,7 +1937,7 @@ function tableau_sql_cases($sql="", $cases, $valide_cases, $champ_case, $champ_r
 			echo "</tr>";
 		}
 		echo "</table>";
-		$cs->free_result($resultat);
+		$cs->free_result($stmt);
 	//}
 	echo "<input type='submit' name='valide_cases' value='OK'>";
 	echo "</form>";

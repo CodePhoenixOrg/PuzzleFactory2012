@@ -12,8 +12,8 @@
 		case "Ajouter":
 
 			$sql="select max(td_id) from todo;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$td_id=$rows[0]+1;
 			$td_title="";
 			$td_text="";
@@ -27,8 +27,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from todo where td_id='$td_id';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$td_id=$rows["td_id"];
 			$td_title=$rows["td_title"];
 			$td_text=$rows["td_text"];
@@ -69,7 +69,7 @@
 				"'$mbr_id', ".
 				"'$mbr_id'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$sql="update todo set ".
@@ -84,11 +84,11 @@
 				"mbr_id='$mbr_id', ".
 				"mbr_id2='$mbr_id2' ".
 			"where td_id='$td_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from todo where td_id='$td_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

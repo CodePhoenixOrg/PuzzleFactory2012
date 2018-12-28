@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(bl_id) from blocks;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$bl_id=$rows[0]+1;
 			$bl_column="";
 			$bl_type="";
@@ -25,8 +25,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from blocks where bl_id='$bl_id';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$bl_id=$rows["bl_id"];
 			$bl_column=$rows["bl_column"];
 			$bl_type=$rows["bl_type"];
@@ -47,7 +47,7 @@
 				"'$bl_type', ".
 				"'$di_name'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$bl_id = $_POST["bl_id"];
@@ -60,11 +60,11 @@
 				"bl_type='$bl_type', ".
 				"di_name='$di_name' ".
 			"where bl_id='$bl_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from blocks where bl_id='$bl_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

@@ -194,8 +194,8 @@
 			$L_sqlFields="";
 			$A_sqlFields=Array();
 			
-			$result = $cs->query($sql);
-			while($rows=$result->fetch_array()) {
+			$stmt = $cs->query($sql);
+			while($rows=$stmt->fetch()) {
 				$L_sqlFields.=$rows[0].",";
 			}
 			$L_sqlFields=substr($L_sqlFields, 0, strlen($L_sqlFields)-1);

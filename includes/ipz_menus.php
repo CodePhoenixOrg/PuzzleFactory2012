@@ -40,8 +40,8 @@ function get_admin_url($userdb)
     $adm_url="";
     $cs=connection(CONNECT, $userdb);
     $sql="select app_link from ${db_prefix}applications where di_name='modadmin'";
-    $result=$cs->query($sql);
-    if ($rows=$result->fetch_array()) {
+    $stmt = $cs->query($sql);
+    if ($rows=$stmt->fetch(PDO::FETCH_ASSOC)) {
         $adm_url=$rows["app_link"];
     }
     
@@ -87,7 +87,7 @@ function menu_exists($database, $pa_filename="")
         "and p.pa_filename = '$pa_filename' " .
                 "order by m.me_id";
     
-    $result=$cs->query($sql);
+    $stmt = $cs->query($sql);
     $exists=$result->num_rows>0;
     
     return $exists;
@@ -101,8 +101,8 @@ function get_page_id($userdb, $pa_filename)
     $cs = connection(CONNECT, $userdb);
     $sql = "select pa_id from ${db_prefix}pages where pa_filename = '$pa_filename'";
 	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
-    $result = $cs->query($sql);
-    $rows = $result->fetch_array();
+    $stmt = $cs->query($sql);
+    $rows = $stmt->fetch();
     $pa_id = isset($rows[0]) ? (int)$rows[0] : 0;
 
     return $pa_id;
@@ -115,8 +115,8 @@ function get_menu_id($database, $pa_filename)
     $cs = connection(CONNECT, $database);
     $sql = "select m.me_id, p.pa_id from ${db_prefix}menus m left outer join ${db_prefix}pages p on m.pa_id = p.pa_id where p.pa_filename = '$pa_filename'";
 	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
-    $result = $cs->query($sql);
-    $rows = $result->fetch_array();
+    $stmt = $cs->query($sql);
+    $rows = $stmt->fetch();
     $me_id = isset($rows[0]) ? (int)$rows[0] : 0;
 
     return $me_id;
@@ -129,8 +129,8 @@ function get_menu_and_page($userdb, $pa_filename)
     $cs = connection(CONNECT, $userdb);
     $sql = "select m.me_id, p.pa_id from ${db_prefix}menus m left outer join ${db_prefix}pages p on m.pa_id = p.pa_id where p.pa_filename = '$pa_filename'";
 	debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
-    $result = $cs->query($sql);
-    $rows = $result->fetch_array();
+    $stmt = $cs->query($sql);
+    $rows = $stmt->fetch();
     $me_id = isset($rows[0]) ? (int)$rows[0] : 0;
     $pa_id = isset($rows[1]) ? (int)$rows[1] : 0;
 
@@ -147,8 +147,8 @@ function get_page_filename($database, $id=0)
                 "and p.pa_id=m.pa_id " .
                 "and m.me_id=" . $id;
     $cs=connection(CONNECT, $database);
-    $result=$cs->query($sql);
-    $rows=$result->fetch_array();
+    $stmt = $cs->query($sql);
+    $rows=$stmt->fetch();
     $page = $rows[0];
         
     return $page;
@@ -170,14 +170,13 @@ function add_menu_and_page(
             $me_target="page";
         }
         
-        $cs->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+        $cs->beginTransaction();
         $sql = <<<INSERT
     insert into ${db_prefix}dictionary (di_name, di_fr_short, di_fr_long, di_en_short, di_en_long)
     values('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')
 INSERT;
-        $result = $cs->query($sql);
-        $di_id = $cs->insert_id;
-        $affected_rows = $cs->affected_rows;
+        $affected_rows = $cs->exec($sql);
+        $di_id = $cs->lastInsertId();
 
         debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
@@ -185,9 +184,8 @@ INSERT;
     insert into ${db_prefix}pages (di_name, pa_filename)
     values('$di_name', '$pa_filename')
 INSERT;
-        $result = $cs->query($sql);
-        $pa_id = $cs->insert_id;
-        $affected_rows += $cs->affected_rows;
+        $affected_rows += $cs->exec($sql);
+        $pa_id = $cs->lastInsertId();
 
         debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
     
@@ -195,9 +193,8 @@ INSERT;
     insert into ${db_prefix}menus (di_name, me_level, me_target, pa_id)
     values('$di_name', '$me_level', '$me_target', $pa_id)
 INSERT;
-        $result = $cs->query($sql);
-        $me_id = $cs->insert_id;
-        $affected_rows += $cs->affected_rows;
+        $affected_rows += $cs->exec($sql);
+        $me_id = $cs->lastInsertId();
 
         debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
@@ -216,21 +213,18 @@ function update_menu(
 
     $cs=connection(CONNECT, $userdb);
 
-    $cs->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    $cs->beginTransaction();
 
     $sql=   "update ${db_prefix}menus set di_name='$di_name', me_level='$me_level', me_target='$me_target', pa_id=$pa_id ".
         "where me_id=$me_id";
-    $result=$cs->query($sql);
-    $affected_rows = $cs->affected_rows;
+    $affected_rows = $cs->exec($sql);
 
     $sql=   "update ${db_prefix}pages set di_name='$di_name', pa_filename='$pa_filename'".
         "where pa_id=$pa_id";
-    $result=$cs->query($sql);
-    $affected_rows += $cs->affected_rows;
+    $affected_rows += $cs->exec($sql);
 
     $sql=   "update ${db_prefix}menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long' where di_name=$di_name";
-    $result=$cs->query($sql);
-    $affected_rows += $cs->affected_rows;
+    $affected_rows += $cs->exec($sql);
 
     $cs->commit();
 
@@ -243,19 +237,16 @@ function delete_menu($userdb, $di_name)
 
     $cs=connection(CONNECT, $userdb);
 
-    $cs->begin_transaction(MYSQLI_TRANS_START_WITH_CONSISTENT_SNAPSHOT);
+    $cs->beginTransaction();
 
     $sql="delete from ${db_prefix}menus where di_name='$di_name'";
-    $result = $cs->query($sql);
-    $affected_rows = $cs->affected_rows;
+    $affected_rows = $cs->exec($sql);
 
     $sql="delete from ${db_prefix}pages where di_name='$di_name'";
-    $result = $cs->query($sql);
-    $affected_rows += $cs->affected_rows;
+    $affected_rows += $cs->exec($sql);
 
     $sql="delete from ${db_prefix}dictionary where di_name='$di_name'";
-    $result = $cs->query($sql);
-    $affected_rows += $cs->affected_rows;
+    $affected_rows += $cs->exec($sql);
 
     $cs->commit();
 
@@ -381,10 +372,10 @@ function create_main_menu($database, $level=0)
     //		echo $sql . "<br>";
     debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
         
-    $cs=connection("connect", $database);
-    $result=$cs->query($sql);
+    $cs=connection(CONNECT, $database);
+    $stmt = $cs->query($sql);
     $count=0;
-    while ($rows=$result->fetch_array(MYSQLI_NUM)) {
+    while ($rows=$stmt->fetch()) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -402,7 +393,7 @@ function create_main_menu($database, $level=0)
     $main_menu=substr($main_menu, 0, strlen($main_menu)-23);
     $main_menu.="</tr></table>";
     
-    $result->free();
+    //$stmt->free();
 
     return array("index"=>$default_id, "menu"=>$main_menu);
 }
@@ -420,8 +411,8 @@ function create_framed_main_menu($userdb, $color, $text_color, $over_color, $wid
                 "and m.di_name=d.di_name " .
                 "order by m.me_id";
     $cs=connection(CONNECT, $userdb);
-    $result=$cs->query($sql);
-    while ($rows=$result->fetch_array()) {
+    $stmt = $cs->query($sql);
+    while ($rows=$stmt->fetch()) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -437,7 +428,7 @@ function create_framed_main_menu($userdb, $color, $text_color, $over_color, $wid
         $main_menu.="\t<param name=\"url\" valuetype=\"ref\" value=\"$lg/$link?lg=$lg\">\n";
         $main_menu.="</applet>\n\n";
     }
-    $result->free();
+    //$stmt->free();
     return $main_menu;
 }
 
@@ -460,9 +451,9 @@ function create_sub_menu($database, $id=0, $lg="", $orientation)
                 "and m.pa_id=" . $id;
     //and m.me_id<>m.pa_id
 
-    $cs=connection("connect", $database);
-    $result=$cs->query($sql);
-    while ($rows=$result->fetch_array()) {
+    $cs=connection(CONNECT, $database);
+    $stmt = $cs->query($sql);
+    while ($rows=$stmt->fetch()) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -507,7 +498,7 @@ function create_sub_menu($database, $id=0, $lg="", $orientation)
     } elseif ($orientation==SUB_MENU_VERTICAL) {
         $sub_menu.="</table>";
     }
-    $result->free();
+    //$stmt->free();
     return $sub_menu;
 }
 
@@ -531,9 +522,9 @@ function create_menu_tree($database, $id=0, $lg="", $orientation)
 
     //echo "$sql<br>";
 
-    $cs=connection("connect", $database);
-    $result=$cs->query($sql);
-    while ($rows=$result->fetch_array()) {
+    $cs=connection(CONNECT, $database);
+    $stmt = $cs->query($sql);
+    while ($rows=$stmt->fetch()) {
         $page=$rows[5];
     }
     if (!empty($page)) {
@@ -558,8 +549,8 @@ function create_menu_tree($database, $id=0, $lg="", $orientation)
         
     //echo "$sql<br>";
 
-    $result=$cs->query($sql);
-    while ($rows=$result->fetch_array()) {
+    $stmt = $cs->query($sql);
+    while ($rows=$stmt->fetch()) {
         $index=$rows[0];
         $level=$rows[1];
         $caption=$rows[2];
@@ -610,7 +601,7 @@ function create_menu_tree($database, $id=0, $lg="", $orientation)
     } elseif ($orientation==SUB_MENU_VERTICAL) {
         $sub_menu.="</table>";
     }
-    $result->free();
+    //$stmt->free();
     return $sub_menu;
 }
 
@@ -631,8 +622,8 @@ function retrieve_page_by_id($database, $id=0, $lg="")
     //echo $sql . "<br>";
     //"and p.pa_id=m.me_id " .
     $cs=connection(CONNECT, $database);
-    $result=$cs->query($sql);
-    $rows=$result->fetch_assoc();
+    $stmt = $cs->query($sql);
+    $rows=$stmt->fetch(PDO::FETCH_ASSOC);
     $index = $rows["di_name"];
     $page = $rows["pa_filename"];
     $title = $rows["di_".$lg."_long"];
@@ -677,9 +668,9 @@ function retrieve_page_by_menu_id($database, $id=0, $lg="")
 
 //        echo $sql . "<br>";
     //"and p.pa_id=m.me_id " .
-    $cs=connection("connect", $database);
-    $result=$cs->query($sql);
-    $rows=$result->fetch_assoc();
+    $cs=connection(CONNECT, $database);
+    $stmt = $cs->query($sql);
+    $rows=$stmt->fetch(PDO::FETCH_ASSOC);
     $index = $rows["di_name"];
     $page = $rows["pa_filename"];
     $title = $rows["di_".$lg."_long"];
@@ -722,9 +713,9 @@ function retrieve_page_by_dictionary_id($database, $di="", $lg="")
     echo $sql . "<br>";
     // debugLog(__FILE__ . ':' . __LINE__ . ':' . $sql);
 
-    $cs=connection("connect", $database);
-    $result=$cs->query($sql);
-    $rows=$result->fetch_assoc();
+    $cs=connection(CONNECT, $database);
+    $stmt = $cs->query($sql);
+    $rows=$stmt->fetch(PDO::FETCH_ASSOC);
     $index = $rows["me_id"];
     $page = $rows["pa_filename"];
     $charset = $rows["me_charset"];

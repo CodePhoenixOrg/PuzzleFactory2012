@@ -5,8 +5,8 @@
 
 	$sql="select * from books where la_country='$lg' order by bo_index";
 	dbconnection("connect");
-	$result=$cs->query($sql);
-	while($rows=$result->fetch_array())
+	$stmt = $cs->query($sql);
+	while($rows=$stmt->fetch(PDO::FETCH_ASSOC))
 	{
 		$title=$rows["bo_title"];
 		$author=$rows["bo_author"];

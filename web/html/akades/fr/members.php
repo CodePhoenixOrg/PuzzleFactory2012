@@ -13,8 +13,8 @@
 <?
 	if($event=="onLoad") {
 		$sql="select * from members where mbr_id=$mbr_id;";
-		$result = $cs->query($sql);
-		$rows = $result->fetch_array();
+		$stmt = $cs->query($sql);
+		$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		$mbr_id=$rows["mbr_id"];
 		$mbr_nom=$rows["mbr_nom"];
 		$mbr_email=$rows["mbr_email"];

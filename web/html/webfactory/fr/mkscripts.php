@@ -30,8 +30,8 @@
 			$L_sqlFields="";
 			$A_sqlFields=Array();
 			
-			$result = $cs->query($sql);
-			while($rows=$result->fetch_array()) {
+			$stmt = $cs->query($sql);
+			while($rows=$stmt->fetch()) {
 				$L_sqlFields.=$rows[0].",";
 			}
 			$L_sqlFields=substr($L_sqlFields, 0, strlen($L_sqlFields)-1);
@@ -136,7 +136,7 @@
 		
 		$sql = 'delete from v_menus;';
 
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		
 
 		echo $sql;
@@ -158,8 +158,8 @@
 			if($fl>4 && substr($file, $fl-4, 4)==".php") {
 				$sql="select me_id from ${db_prefix}menus, pages ";
 				$sql.="where menus.pa_id=pages.pa_id and pa_filename='$file'";
-				$result=$cs->query($sql);
-				$rows=$result->fetch_array();
+				$stmt = $cs->query($sql);
+				$rows=$stmt->fetch();
 				echo "<a href='$httproot/$userdb/fr/$file?id=".$rows[0]."&lg=fr&action=Ajouter' target='_new'>$file</a><br>\n";
 			}
 		}

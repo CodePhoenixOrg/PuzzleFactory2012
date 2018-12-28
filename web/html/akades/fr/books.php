@@ -2,9 +2,9 @@
 <?php 	
 	//include("puzzle/ipz_mysqlconn.php");
 	$sql="select * from ${db_prefix}books where la_country='$lg' order by bo_id";
-	$cs=connection("connect", "leela");
-	$result=$cs->query($sql);
-	while($rows=$result->fetch_array())
+	$cs=connection(CONNECT, "leela");
+	$stmt = $cs->query($sql);
+	while($rows=$stmt->fetch(PDO::FETCH_ASSOC))
 	{
 		$title=$rows["bo_title"];
 		$author=$rows["bo_author"];

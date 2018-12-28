@@ -67,8 +67,8 @@ function get_parameters($this_profile="") {
 		//echo js_alert("Je prends les paramètres dans la base $database avec le profil $this_profile.");
 		
 		$sql="select p.*, s.* from parameters p, skins s where p.sk_id=s.sk_id and p.par_profile='$this_profile'";
-		$result = $cs->query($sql);
-		$rows = $result->fetch_array();
+		$stmt = $cs->query($sql);
+		$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		$par_id=$rows["par_id"];
 		$par_profile=$rows["par_profile"];
 		$par_page_back_color=$rows["par_page_back_color"];

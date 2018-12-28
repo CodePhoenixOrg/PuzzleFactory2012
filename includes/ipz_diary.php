@@ -120,9 +120,9 @@ function create_diary_control($date, $colors=array()) {
 	$sql="select dy_date, dy_object from ${db_prefix}diary where month(dy_date)=month($sql_date) and year(dy_date)=year($sql_date) group by dy_date order by dy_date";
 
 	//echo $sql;
-	$result=$cs->query($sql)  or die(mysqli_error($cs));
+	$stmt = $cs->query($sql);
 	$rst=array();
-	while($rows=$result->fetch_array()) {
+	while($rows=$stmt->fetch(PDO::FETCH_ASSOC)) {
 		$rst[]=$rows["dy_date"];
 	}
 
@@ -383,9 +383,9 @@ function create_framed_diary_control($date, $target, $colors=array()) {
 		
 	$sql="select dy_date, dy_object from ${db_prefix}diary where month(dy_date)=month($sql_date) and year(dy_date)=year($sql_date) group by dy_date order by dy_date";
 
-	$result=$cs->query($sql);
+	$stmt = $cs->query($sql);
 	$rst=array();
-	while($rows=$result->fetch_array()) {
+	while($rows=$stmt->fetch(PDO::FETCH_ASSOC)) {
 		$rst[]=$rows["dy_date"];
 	}
 
@@ -719,7 +719,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 	$_SESSION["javascript"].="\tvar vdiv$name=eval(document.getElementById(\"div$name\"));\n";
 	$_SESSION["javascript"].="\tvar v$name=eval(document.getElementById(\"$name\"));\n";
 	$_SESSION["javascript"].="\tvar v$tdname0=eval(document.getElementById(\"$tdname0\"));\n";
-	while($rows=$result->fetch_array()) {
+	while($rows=$stmt->fetch(PDO::FETCH_ASSOC)) {
 		$obj=$rows["dy_object"];
 		$len=$rows["dy_length"];
 		$time=$rows["dy_time"];
@@ -843,7 +843,7 @@ function create_diary_grid($name="", $date="", $id=0, $page_link="",  $curl_rows
 	
 	$table1.="</table>\n";
 
-	$result->free();
+	//$stmt->free();
 
 	
 	$table="<div id=\"div$name\" style=\"z-index:1;position:relative;\">\n";

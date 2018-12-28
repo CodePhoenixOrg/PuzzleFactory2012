@@ -3,7 +3,7 @@
 	include_once 'puzzle/ipz_mysqlconn.php';
 	include_once 'puzzle/ipz_misc.php';
 
-	$cs=connection("connect", $userdb);
+	$cs=connection(CONNECT, $userdb);
 	if(empty($lg)) $lg='fr';
 
 	$wwwroot=get_www_root();
@@ -14,13 +14,13 @@ if(empty($valider)) {
 	switch($action) {
 	case "Ajouter":
 		$sql="select max(me_id) from menus";
-		$result=$cs->query($sql);
-		$rows=$result->fetch_array();
+		$stmt = $cs->query($sql);
+		$rows=$stmt->fetch();
 		$me_id=$rows[0]+1;
 
 		$sql="select max(pa_id) from pages";
-		$result=$cs->query($sql);
-		$rows=$result->fetch_array();
+		$stmt = $cs->query($sql);
+		$rows=$stmt->fetch();
 		$new_pa_id=$rows[0]+1;
 		
 		$pa_id=0;
@@ -35,8 +35,8 @@ if(empty($valider)) {
 	break;
 	case "Modifier":
 		$sql="select * from v_menus where me_id=$me_id";
-		$result=$cs->query($sql);
-		$rows=$result->fetch_array();
+		$stmt = $cs->query($sql);
+		$rows=$stmt->fetch();
 		$me_id=$rows[0];
 		$pa_id=$rows[1];
 		$me_target=$rows[2];
@@ -55,17 +55,17 @@ if(empty($valider)) {
 		$sql=   "insert into menus " .
 			"values($me_id, '$di_name', '$me_level', '$me_target', $pa_id)" ;
 		echo "$sql<br>";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		
 		$sql=   "insert into pages " .
 			"values($new_pa_id, '$di_name', '$pa_filename')" ;
 		echo "$sql<br>";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		
 		$sql=   "insert into dictionary " .
 			"values('$di_name', '$di_fr_short', '$di_fr_long', '$di_en_short', '$di_en_long')" ;
 		echo "$sql<br>";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 
 		copy("includes/fichier_vide.php", "fr/$pa_filename");
 		copy("includes/fichier_vide.php", "en/$pa_filename");
@@ -74,21 +74,21 @@ if(empty($valider)) {
 	case "Modifier":
 		$sql=   "update menus set di_name='$di_name', me_level='$me_level', me_target='$me_target', pa_id=$pa_id ".
 			"where me_id=$me_id";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		$sql=   "update pages set di_name='$di_name', pa_filename='$pa_filename'".
 			"where pa_id=$pa_id";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		$sql=   "update menus set di_fr_short='$di_fr_short', di_fr_long='$di_fr_long', di_en_short='$di_en_short', di_en_long='$di_en_long'".
 			"where di_name=$di_name";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 	break;
 	case "Supprimer":
 		$sql="delete from menus where di_name='$di_name'";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		$sql="delete from pages where di_name='$di_name'";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		$sql="delete from dictionary where di_name='$di_name'";
-		$result=$cs->query($sql);
+		$stmt = $cs->query($sql);
 		
 		unlink($filepath);
 	break;	

@@ -13,16 +13,16 @@
 		case "Ajouter":
 
 			$sql="select max(zc_id) from pz_zip_code;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$zc_id=$rows[0]+1;
 			$zc_code="";
 			$zc_city="";
 		break;
 		case "Modifier":
 			$sql="select * from pz_zip_code where zc_id='$zc_id';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$zc_id=$rows["zc_id"];
 			$zc_code=$rows["zc_code"];
 			$zc_city=$rows["zc_city"];
@@ -45,7 +45,7 @@
 				"'$zc_code', ".
 				"'$zc_city'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$zc_id = $_POST["zc_id"];
@@ -58,11 +58,11 @@
 				"zc_code='$zc_code', ".
 				"zc_city='$zc_city' ".
 			"where zc_id='$zc_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from pz_zip_code where zc_id='$zc_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

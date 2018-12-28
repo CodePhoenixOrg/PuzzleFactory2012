@@ -31,17 +31,17 @@ function relations($database, $table, $cs)
     
     $i=0;
     $sql="select * from $table limit 0,1;";
-    $result = $cs->query($sql);
+    $stmt = $cs->query($sql);
     
-    // $rows=$result->fetch_array();
+    // $rows=$stmt->fetch();
     // $k=sizeof($rows)/2;
-    $fields = $result->fetch_fields();
-    $k = count($fields);
+
+    $k = $stmt->columnCount();
     
     while ($i<$k) {
-        $fieldname=mysqli_field_name($result, $i);
-        $fieldtype=mysqli_field_type($result, $i);
-        $fieldsize=mysqli_field_len($result, $i);
+        $fieldname=pdo_field_name($stmt, $i);
+        $fieldtype=pdo_field_type($stmt, $i);
+        $fieldsize=pdo_field_len($stmt, $i);
         $fieldhtml=mysqli_to_html($fieldtype);
         $fieldtype=mysqli_to_string($fieldtype);
 
@@ -68,12 +68,12 @@ function relations($database, $table, $cs)
                 //echo "SQL: $sql<br>";
                 $tab_res=$cs->query($sql);
                 $fieldTable="";
-                while (($tables=$result->fetch_array($tab_res)) && ($fieldTable=="")) {
+                while (($tables=$tab_res->fetch()) && ($fieldTable=="")) {
                     $currentTable=$tables[0];
                     $sql="show fields from $currentTable;";
                     //echo "\tSQL: $sql<br>";
                     $fld_res=$cs->query($sql);
-                    $fields=$result->fetch_array($fld_res);
+                    $fields=$fld_res->fetch();
                     //echo "\t\tField: ".$fields[0]."==$fieldname=";
                     if ($fieldname==$fields[0]) {
                         $fieldTable=$currentTable;
@@ -89,7 +89,7 @@ function relations($database, $table, $cs)
                 //echo "SQL: $sql<br>";
                 $fld_res=$cs->query($sql);
                 $j=0;
-                while (($fields=$result->fetch_array($fld_res)) && $j<2) {
+                while (($fields=$fld_res->fetch()) && $j<2) {
                     if ($j==0) {
                         $frn_idfield=$fields[0];
                     }

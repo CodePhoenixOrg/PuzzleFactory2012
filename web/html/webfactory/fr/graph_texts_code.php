@@ -16,8 +16,8 @@
 		case "Ajouter":
 
 			$sql="select max(gt_id) from graph_texts;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$gt_id=$rows[0]+1;
 			$gt_name="";
 			$gt_text="";
@@ -25,8 +25,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from graph_texts where gt_id='$gt_id';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$gt_id=$rows["gt_id"];
 			$gt_name=$rows["gt_name"];
 			$gt_text=$rows["gt_text"];
@@ -52,7 +52,7 @@
 				"'$gt_text', ".
 				"$si_id".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$gt_id = $_POST["gt_id"];
@@ -66,11 +66,11 @@
 				"gt_text='$gt_text', ".
 				"si_id='$si_id' ".
 			"where gt_id='$gt_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from graph_texts where gt_id='$gt_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";

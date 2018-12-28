@@ -12,8 +12,8 @@
 		case "Ajouter":
 
 			$sql="select max(br_id) from bugreport;";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch();
 			$br_id=$rows[0]+1;
 			$br_title="";
 			$br_text="";
@@ -25,8 +25,8 @@
 		break;
 		case "Modifier":
 			$sql="select * from bugreport where br_id='$br_id';";
-			$result = $cs->query($sql);
-			$rows = $result->fetch_array();
+			$stmt = $cs->query($sql);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 			$br_id=$rows["br_id"];
 			$br_title=$rows["br_title"];
 			$br_text=$rows["br_text"];
@@ -61,7 +61,7 @@
 				"'$br_time', ".
 				"'$mbr_id'".
 			")";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Modifier":
 			$sql="update bugreport set ".
@@ -74,11 +74,11 @@
 				"br_time='$br_time', ".
 				"mbr_id='$mbr_id' ".
 			"where br_id='$br_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		case "Supprimer":
 			$sql="delete from bugreport where br_id='$br_id'";
-			$result = $cs->query($sql);
+			$stmt = $cs->query($sql);
 		break;
 		}
 		$query="SELECT";
