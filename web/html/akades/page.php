@@ -30,23 +30,27 @@
 
 	$_SESSION["javascript"]="";
 	$_SESSION["ses_apply_skin"]="N";
+
+	$lg = get_variable("lg", "fr");
+	$id = get_variable("id", 1);
+	$di = get_variable("di");
+
+	$menus = new Menus($lg, $db_prefix);
 	
-	$main_menu = create_main_menu($database, 1);
-	$sub_menu = create_sub_menu($database, 1, $lg, SUB_MENU_HORIZONTAL);
+	$main_menu = $menus->create_main_menu($database, 1);
+	$sub_menu = $menus->create_sub_menu($database, 1, SUB_MENU_HORIZONTAL);
+
 	$toplinks=$main_menu["menu"];
 	$default_id=$main_menu["index"];
 
-	$id=(isset($_GET["id"])) ? $_GET["id"] : 1;
-	$di=(isset($_GET["di"])) ? $_GET["di"] : '';
-
 	if($di !== '') {
-		$title_page = retrieve_page_by_dictionary_id($database, $di, $lg);
+		$title_page = $menus->retrieve_page_by_dictionary_id($database, $di, $lg);
 		$id=$title_page["index"];
 	} else {
-		$title_page = retrieve_page_by_menu_id($database, $id, $lg);
+		// $title_page = retrieve_page_by_menu_id($database, $id, $lg);
+		$title_page = $menus->retrieve_page_by_id($database, $id, $lg);
 		$di=$title_page["index"];
 	}
-	//echo "id='$id'; di='$di';<br>";
 	
 	debugLog("TITLE PAGE", $title_page);
 

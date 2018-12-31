@@ -2,15 +2,12 @@
 	include_once("puzzle/ipz_mysqlconn.php");
 	include_once("puzzle/ipz_db_controls.php");
 	$cs=connection(CONNECT,$database);
-	$query = get_variable("query");
-	$event = get_variable("event");
-	$action = get_variable("action");
+	$query = get_variable("query", "SELECT");
+	$event = get_variable("event", "onLoad");
+	$action = get_variable("action", "Ajouter");
+	$id = get_variable("id");
+	$di = get_variable("di");
 	$fr_id = get_variable("fr_id");
-	if(empty($query)) $query="SELECT";
-	if(empty($event)) $event="onLoad";
-	if(empty($action)) $action="Ajouter";
-	if(isset($pc)) $curl_pager="&pc=$pc";
-	if(isset($sr)) $curl_pager.="&sr=$sr";
 	if($event=="onLoad" && $query=="ACTION") {
 		switch ($action) {
 		case "Ajouter":
@@ -46,8 +43,7 @@
 			$fr_date = $_POST["fr_date"];
 			$fr_table_name = $_POST["fr_table_name"];
 			$me_id = $_POST["me_id"];
-			$fr_title=escapeChars($fr_title);
-			$fr_table_name=escapeChars($fr_table_name);
+;
 			$sql="insert into forums (".
 				"fr_id, ".
 				"fr_title, ".
@@ -57,10 +53,10 @@
 				"me_id".
 			") values (".
 				"$fr_id, ".
-				"'$fr_title', ".
-				"'$fr_description', ".
-				"'$fr_date', ".
-				"'$fr_table_name', ".
+				"$fr_title, ".
+				"$fr_description, ".
+				"$fr_date, ".
+				"$fr_table_name, ".
 				"$me_id".
 			")";
 			$stmt = $cs->query($sql);
@@ -72,15 +68,14 @@
 			$fr_date = $_POST["fr_date"];
 			$fr_table_name = $_POST["fr_table_name"];
 			$me_id = $_POST["me_id"];
-			$fr_title=escapeChars($fr_title);
-			$fr_table_name=escapeChars($fr_table_name);
+;
 			$sql="update forums set ".
-				"fr_id=$fr_id, ".
+				"fr_id='$fr_id', ".
 				"fr_title='$fr_title', ".
 				"fr_description='$fr_description', ".
 				"fr_date='$fr_date', ".
 				"fr_table_name='$fr_table_name', ".
-				"me_id=$me_id ".
+				"me_id='$me_id' ".
 			"where fr_id='$fr_id'";
 			$stmt = $cs->query($sql);
 		break;

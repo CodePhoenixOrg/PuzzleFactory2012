@@ -52,9 +52,9 @@
 	);
 
 	//Initialisation de l'affichage sur la première page du menu en français
-	if(!isset($id)) $id="17";
-	if(!isset($lg)) $lg="fr";
+	// if(!isset($id)) $id="17";
+	// if(!isset($lg)) $lg="fr";
 
+	$lg="fr";
 	$database="webfactory";
 	$db_prefix="";
-?>

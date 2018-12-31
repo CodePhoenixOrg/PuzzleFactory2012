@@ -10,17 +10,18 @@
 <body text="#000000" link="#888888" vlink="#880000" alink="#FF0000" leftmargin="0" topmargin="0" style="text-align:center;background-color:#FFFFFF;">
 <?php    
 	//include_once 'puzzle/ipz_mysqlconn.php';
+	include_once 'pz_defaults.php';
+	include_once 'puzzle/ipz_menus.php';
 	
 	//$default_include_path = ini_get("include_path");
 	//ini_set("include_path","$default_include_path:/usr/share/php/ipuzzle.inc/");
 
-	$cs=connection(CONNECT, "webfactory");
-	$index = get_menu_id_ac($cs, "mkmain.php");
-	if(empty($lg)) $lg="fr";
+	// $cs=connection(CONNECT, "webfactory");
+	//if(empty($lg)) $lg="fr";
+	$menus = new Menus($lg, $db_prefix);
+	$index = $menus->get_page_id($database, "news.php");
 
-	$fh=fopen("VERSION", 'r');
-	$version=fgets($fh);
-	fclose($fh);
+	$version = file_get_contents("VERSION");
 
 	$img="images";
 ?>

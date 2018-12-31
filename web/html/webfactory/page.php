@@ -23,22 +23,23 @@
 //	}
 	$_SESSION["javascript"]="";
 	
-	if(!isset($lg)) $lg="fr";
-	
-	$main_menu = create_main_menu($database, 1);
-	$sub_menu = create_sub_menu($database, 1, $lg, SUB_MENU_HORIZONTAL);
-	$toplinks=$main_menu["menu"];
-	$default_id=$main_menu["index"];
-	
+	$lg = get_variable("lg", "fr");
 	$id = get_variable("id", 1);
 	$di = get_variable("di");
 
+	$menus = new Menus($lg, $db_prefix);
+	
+	$main_menu = $menus->create_main_menu($database, 1);
+	$sub_menu = $menus->create_sub_menu($database, 1, SUB_MENU_HORIZONTAL);
+	$toplinks=$main_menu["menu"];
+	$default_id=$main_menu["index"];
+
 	if($di !== '') {
-		$title_page = retrieve_page_by_dictionary_id($database, $di, $lg);
+		$title_page = $menus->retrieve_page_by_dictionary_id($database, $di, $lg);
 		$id=$title_page["index"];
 	} else {
 		// $title_page = retrieve_page_by_menu_id($database, $id, $lg);
-		$title_page = retrieve_page_by_id($database, $id, $lg);
+		$title_page = $menus->retrieve_page_by_id($database, $id, $lg);
 		$di=$title_page["index"];
 	}
 
@@ -60,7 +61,6 @@
 		$alink_color="black";
 	}
 
-	global $img;
 	$img="images";
 	
 	//$ses_login=$_SESSION["ses_login"];
